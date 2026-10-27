@@ -9,3 +9,13 @@
 - Figma desktop automation is forbidden; use the connector or explicitly authorized shared web links.
 - Run `npm run build`, `npm test`, `npm run test:db` and relevant Playwright flows. Never claim remote OAuth/deployment verified when only local fixtures were tested.
 - Do not spawn parallel agents unless the user explicitly requests them.
+
+## IDE handoff and workflow
+
+- Start with `START_HERE.md`, then docs/01, docs/02, docs/03 and docs/05. IDE setup is in docs/06; the first scoped task is in prompts/first-task.md.
+- Keep the existing stack and accepted D-01~D-08 decisions. Follow specification → one user flow → data/RPC/UI → meaningful verification → status documentation.
+- Use local Codex with the existing ChatGPT entitlement. Never switch to API-key billing, buy credits or delegate cloud work when a limit is reached; stop until the allowance resets.
+- Preserve user changes and local data. Use `codex/` branches; do not reset the local database or remove volumes as a routine startup or migration step.
+- Read docs/05 before selecting work. The next slice is animal general-field editing, not all of F-03. Production OAuth and free deployment remain unverified.
+- Add new migrations for database changes. Do not replay the initial migration or database/schema.sql against an already migrated database.
+- Update docs/05 with observed results and unresolved gaps. Do not merge main or deploy remotely without user authorization for that step.
