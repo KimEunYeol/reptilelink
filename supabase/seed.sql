@@ -1,0 +1,1 @@
+-- Local fixtures are provisioned explicitly by npm run local:seed.

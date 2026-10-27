@@ -1,0 +1,67 @@
+{
+  "name": "reptilelink",
+  "version": "0.1.0",
+  "description": "브리더가 파충류 개체·성장 기록·일정·외부 링크를 관리하고 자신의 공개 페이지로 공유하는 모바일 우선 웹 서비스.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "test": "vitest run tests/domain.test.ts",
+    "test:e2e": "playwright test",
+    "local:start": "bash scripts/local-start.sh",
+    "local:stop": "supabase stop",
+    "local:env": "node scripts/local-env.mjs",
+    "local:seed": "node scripts/local-seed.mjs",
+    "test:db": "node scripts/test-db.mjs",
+    "worker:preview": "wrangler dev --local --ip 127.0.0.1 --port 8787",
+    "dev:all": "node scripts/dev.mjs",
+    "local:cleanup": "node scripts/local-cleanup.mjs",
+    "test:media": "node scripts/test-media.mjs",
+    "local:reset": "supabase --network-id reptilelink-local db reset --local && node scripts/local-env.mjs && node scripts/local-seed.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KimEunYeol/reptilelink.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/KimEunYeol/reptilelink/issues"
+  },
+  "homepage": "https://github.com/KimEunYeol/reptilelink#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
+    "lucide-react": "1.62.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.4",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "supabase": "2.122.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5",
+    "wrangler": "4.153.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261023.1": true
+  },
+  "private": true,
+  "engines": {
+    "node": ">=24 <25"
+  }
+}

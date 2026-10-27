@@ -1,0 +1,44 @@
+import { z } from 'zod';
+
+export const profileSchema = z.object({
+  slug: z.string().trim().toLowerCase().regex(/^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/, '주소는 소문자 영문·숫자·하이픈 3~30자로 입력해주세요.'),
+  name: z.string().trim().min(1, '이름을 입력해주세요.').max(40),
+  bio: z.string().trim().max(300),
+});
+export const animalSchema = z.object({
+  name: z.string().trim().min(1, '개체 이름을 입력해주세요.').max(40),
+  species: z.string().trim().min(1, '종류를 입력해주세요.').max(80),
+  morph: z.string().trim().max(120),
+  sex: z.enum(['unknown', 'male', 'female']),
+  description: z.string().trim().max(500),
+  listing_status: z.enum(['not_listed', 'available', 'reserved', 'rehomed']),
+  is_public: z.boolean(),
+});
+export type AnimalInput = z.infer<typeof animalSchema>;
+export type Photo = { asset_id: string; sort_order: number };
+export type Animal = AnimalInput & { id: string; sort_order: number; photos: Photo[] };
+export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string };
+export type Dashboard = { account_status: string; profile: Profile | null; animals: Animal[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
+export type PublicPage = { profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token'>; animals: Animal[] };
+export const sexLabels = { unknown: '미구분', male: '수컷', female: '암컷' };
+export const statusLabels = { not_listed: '함께하는 아이', available: '분양 중', reserved: '예약 중', rehomed: '분양 완료' };
+export function formatBytes(bytes: number) { return bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`; }
+export function userMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : String((error as { message?: string })?.message ?? error);
+  const translations: Record<string, string> = {
+    VERSION_CONFLICT: '다른 화면에서 정보가 변경됐습니다. 최신 내용을 불러온 뒤 다시 적용해주세요.',
+    QUOTA_EXCEEDED: '무료 사용 한도에 도달했습니다. 기존 항목이나 사진을 정리해주세요.',
+    ACCOUNT_NOT_ACTIVE: '승인된 계정만 사용할 수 있습니다.',
+    NOT_FOUND: '항목을 찾을 수 없거나 접근할 수 없습니다.',
+    SLUG_LOCKED: '공개한 페이지의 주소는 변경할 수 없습니다.',
+    SLUG_RESERVED: '사용할 수 없는 주소입니다. 다른 주소를 입력해주세요.',
+    CONSENT_REQUIRED: '이용 안내에 동의해주세요.',
+    SERVICE_UNAVAILABLE: '지금은 저장을 잠시 사용할 수 없습니다.',
+    UPLOAD_EXPIRED: '사진 업로드 시간이 만료됐습니다. 다시 시도해주세요.',
+  };
+  for (const [code, translation] of Object.entries(translations)) if (message.includes(code)) return translation;
+  if (message.includes('duplicate key') || message.includes('23505')) return '이미 사용 중인 주소입니다. 다른 주소를 입력해주세요.';
+  if (message.includes('Invalid login credentials')) return '로그인 정보를 확인해주세요. 로컬 테스트 계정은 먼저 준비해야 합니다.';
+  if (/fetch|network|Failed to fetch/i.test(message)) return '연결을 확인해주세요. 로컬 백엔드가 실행 중인지 확인해주세요.';
+  return '요청을 처리하지 못했습니다. 입력 내용을 확인하고 다시 시도해주세요.';
+}

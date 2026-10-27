@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.wrangler/
+supabase/.temp/
+supabase/.branches/
+test-results/
+playwright-report/
+artifacts/
+*.log
+*.tsbuildinfo
+.local/
