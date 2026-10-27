@@ -7,6 +7,7 @@
 1. `AGENTS.md`, `docs/01-functional-spec.md`, `docs/02-data-model.md`, `docs/03-free-development-plan.md`.
 2. `docs/04-local-development.md`, `docs/05-implementation-status.md`, `docs/06-vscode-codex-setup.md`.
 3. `git status --short --branch`, 현재 브랜치와 커밋, 기존 사용자 변경. 작업은 `/home/eykim/projects/reptilelink`와 WSL 도구로만 실행한다.
+   `docs/07-agentic-workflow.md`, `design/README.md`, `docs/08-design-contract.md`를 읽고, `design/마이페이지-개체관리.png`, `design/마이페이지-개체관리-m.png`, `design/마이페이지-개체관리-m-1.png`와 전체 보드의 관련 설명을 실제 확인한다. 기존 임의 일러스트·레이아웃을 승인된 원본으로 간주하지 않는다.
 4. `src/App.tsx`, `src/lib/domain.ts`, `src/lib/supabase.ts`, `worker/index.ts`, 기존 마이그레이션과 DB/E2E 검사를 조사한다. 비밀값·토큰·인증 파일 본문은 출력하지 않는다.
 
 ## 고정 조건
@@ -38,11 +39,11 @@
 ## 진행 방법
 
 1. 현재 상태와 목표를 짧게 요약하고, 명세 → 데이터 변경 → API/RPC → UI → 검증 순서의 작은 계획을 알린다. 통상적인 가역 구현은 매번 확인 질문으로 중단하지 말고 진행한다.
-2. 기존 변경을 보존하고 `codex/animal-edit` 이름으로 작업 브랜치를 만든다. 이미 같은 브랜치가 있으면 상태를 조사해 재사용하거나 이름 충돌을 피한다. 기능 명세 전체를 완료했다고 표시하지 않는다.
+2. GitHub의 [F-03 일반 필드 수정 이슈 #3](https://github.com/KimEunYeol/reptilelink/issues/3)을 확인하고 재사용한다. 없거나 범위가 바뀐 경우에만 새 이슈를 등록하고 type:feat/area:animals 라벨을 붙인다. 하네스 PR이 main에 반영된 뒤 `npm run harness:install` 후 `npm run task:start -- feat 3 animal-edit`로 최신 origin/main에서 독립 브랜치를 만든다. 기존 변경이 있으면 보존하고 새 기능을 이전 브랜치에서 분기하지 않는다. `harness/tasks/3.json`에 수용 기준·계획·디자인 설명과 원본 참조를 채운다. 기능 명세 전체를 완료했다고 표시하지 않는다.
 3. DB 변경은 새 마이그레이션으로 작성한다. 이미 적용된 초기 마이그레이션·리뷰용 `database/schema.sql`을 DB에 다시 실행하지 않는다. CLI 도움말로 로컬 적용 명령을 확인하고 로컬 대상에만 적용한다. 새 구조에 맞춰 데이터 문서도 갱신한다.
 4. 실제 권한·충돌·저장 유지·취소를 검증할 의미 있는 회귀 검사를 추가한다. 사용자 개발 데이터 대신 전용 QA fixture를 사용한다.
-5. `npm run build`, `npm test`, `npm run test:db`, 관련 Playwright 검사를 실행한다. 업로드 동작을 바꿨다면 `npm run test:media`도 실행한다. 서버가 이미 떠 있으면 재사용하고, 없으면 로컬 안내대로 준비한다.
+5. `npm run verify`로 하네스·build·unit·DB·media·Playwright를 실행한다. 서버가 이미 떠 있으면 재사용하고, 없으면 로컬 안내대로 준비한다. 디자인 검토 결과와 실제 폭별 증거를 작업 기록에 남기고 완료 시 status=verified로 기록한다. 최종 기록 변경 후 검증을 재실행한다.
 6. `docs/05-implementation-status.md`에 구현 범위·검증 결과·남은 차이를 갱신한다. diff와 비밀 파일 제외를 확인한다. 사용자 승인 없이 main 병합·원격 배포는 하지 않는다.
-7. 완료 응답에는 변경한 사용자 동작, 테스트 결과, 확인하지 못한 사항, 다음 한 작업을 설명한다. 로컬 fixture 검증을 실제 Google OAuth·운영 배포 검증으로 표현하지 않는다.
+7. 커밋·push 후 main 대상 PR을 템플릿대로 만들고 Closes #<이슈번호>로 연결한다. 원격 head SHA·base·변경 파일·mergeability를 다시 확인한다. 완료 응답에는 PR/이슈 링크, 변경한 사용자 동작, 테스트 결과, 확인하지 못한 사항, 다음 한 작업을 설명한다. 로컬 fixture 검증을 실제 Google OAuth·운영 배포 검증으로 표현하지 않는다. 착수·구현·검증·PR 각 단계에서 중간보고한다.
 
 먼저 파일과 환경을 확인한 뒤 바로 이번 목표를 구현해라.

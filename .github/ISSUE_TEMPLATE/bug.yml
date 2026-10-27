@@ -1,0 +1,30 @@
+name: 버그
+description: 재현 가능한 동작/시안 불일치
+labels: ["type:fix"]
+body:
+  - type: textarea
+    id: repro
+    attributes:
+      label: 재현 순서·환경
+      description: 로컬 fixture/원격 환경과 화면 폭을 구분하고 키·개인정보는 제거합니다.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 동작·실제 동작·수용 기준
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: 관련 명세·디자인 설명
+      description: design/ 원본 경로와 전체 보드 설명 위치. UI와 무관하면 이유를 적습니다.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: 회귀 검증 계획
+    validations:
+      required: true

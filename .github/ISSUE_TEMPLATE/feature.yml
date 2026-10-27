@@ -1,0 +1,39 @@
+name: 기능·설정 작업
+description: 명세와 디자인에 근거한 작은 작업 하나
+labels: ["type:feat"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: 분류·기능
+      options: ["F-01 인증·계정", "F-02 프로필·디자인", "F-03 개체·사진", "F-04 성장", "F-05 링크", "F-06 일정", "F-07 공개", "F-08 반응·운영", "F-09 통계·알림", "F-10 사용량", "개발 하네스·설정"]
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: 문제·목표·범위
+      description: 이번에 끝낼 사용자 흐름과 제외 범위. 설정/문서 작업은 생성 후 type 라벨을 조정합니다.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 수용 기준
+      description: 실제 관찰할 수 있는 동작과 실패/권한/저장 조건을 적습니다.
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: 디자인 원본·설명·재사용 패턴
+      description: design/의 PC/모바일/전체 보드 위치와 설명을 적습니다. 미해당이면 이유를 적습니다.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: 구현·검증 계획
+      description: 데이터/RPC/UI 순서, 로컬 검사, 화면 폭, 의존 이슈를 적습니다. 추가 지출 0원·Actions 금지.
+    validations:
+      required: true

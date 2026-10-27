@@ -24,10 +24,12 @@ WSL CLI의 ChatGPT 로그인은 준비 시 확인했다. 확장의 로그인 화
 Codex에 아래 문장을 보낸다. 전체 작업 지시는 파일에 저장되어 있다.
 
 ```text
-AGENTS.md와 prompts/first-task.md를 읽고, 거기에 정의된 첫 작업을 진행해. 기존 명세와 추가 지출 0원 조건을 지키고 WSL에서 개체 정보 수정 기능을 구현·검증해.
+AGENTS.md와 docs/07-agentic-workflow.md, prompts/first-task.md를 읽고 진행해. 기능 이슈를 먼저 만들고 최신 main에서 새 브랜치로 시작해. 디자인은 design/ 원본의 설명과 PC·모바일 화면을 확인하고 그대로 따라. 로컬 검증 후 main 대상 PR까지 만들고 중간보고해. 추가 지출은 0원이야.
 ```
 
 이번 목표는 **F-03 개체 정보 수정**이다. 삭제·사진 교체·성장 기록·실제 OAuth·클라우드 배포는 후속 작업이다. 설계부터 다시 시작하거나 이미 구현된 기능을 중복 개발하지 않는다.
+
+새 clone에서는 먼저 `npm run harness:install`을 실행한다. 기능 이슈를 확인한 뒤 `npm run task:start -- feat <이슈번호> animal-edit`로 시작한다. 현재 브랜치에 미병합 하네스 PR이 있으면 그 PR이 main에 반영되어야 이 절차를 main에서 이어갈 수 있다. 전체 절차와 검증 명령은 [개발 하네스](docs/07-agentic-workflow.md), 디자인 설명/화면 일치 기준은 [디자인 계약](docs/08-design-contract.md)에 있다.
 
 ## 4. 앱을 직접 실행하려면
 
@@ -53,3 +55,5 @@ npm run dev:all
 - [무료 개발·배포 계획](docs/03-free-development-plan.md)
 - [실행 안내](docs/04-local-development.md), [구현 상태](docs/05-implementation-status.md)
 - [IDE 설정·인계 기록](docs/06-vscode-codex-setup.md)
+- [이슈·브랜치·검증·PR 하네스](docs/07-agentic-workflow.md)
+- [디자인 원본 안내](design/README.md), [디자인 계약](docs/08-design-contract.md)

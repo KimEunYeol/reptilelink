@@ -11,6 +11,8 @@
 
 [시작 안내](START_HERE.md)와 [첫 작업 프롬프트](prompts/first-task.md)를 사용한다. 공식 WSL/Codex 확장은 설치되어 있으며 설정·인계 기록은 [IDE 안내](docs/06-vscode-codex-setup.md)에 있다.
 
+개발은 [이슈 → main 기준 브랜치 → 로컬 검증 → PR](docs/07-agentic-workflow.md) 절차를 따른다. 새 clone은 `npm run harness:install`로 로컬 훅을 설치한다. 디자인은 [design 원본](design/README.md)의 설명과 화면을 함께 따르며 [디자인 계약](docs/08-design-contract.md)에 없는 새 시각 방향을 만들지 않는다. `npm run verify`가 전체 로컬 검증의 진입점이다.
+
 ## 로컬 실행
 
 WSL에서 Node 24와 실행 중인 Docker Engine이 필요하다.
