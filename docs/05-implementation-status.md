@@ -74,3 +74,5 @@
 파일럿 테스트 커밋 [`eb7fc6e`](https://github.com/KimEunYeol/reptilelink/commit/eb7fc6e5b8cfda61752fca251ded150de8f15279)를 실제 훅을 통과해 push하고 [PR #4](https://github.com/KimEunYeol/reptilelink/pull/4)를 생성했다. 원격 head와 로컬 HEAD 일치, base=main, `mergeable=true`/`clean`, 변경 파일 126개(원본 PNG 97개 포함), 이슈 #1 타임라인의 PR 연결, main 미변경, Actions 비활성 및 실행 0개를 재조회로 확인했다. 실제 pre-push는 main 대상 ref를 거절했고, 문서 전용 verify는 하네스/도구 변경을 거절했다. 최종 기록과 코드 검토에서 보완한 기존 task 덮어쓰기 방지·이미지 자산 UI 판정도 재검증 후 같은 PR에 반영한다. PR은 병합하지 않고 검토 가능한 상태로 남긴다.
 
 WSL의 기존 Windows Git Credential Manager 경로 오류는 이 저장소의 로컬 helper 설정에서 Git for Windows 경로를 보정해 해결했다. 임시 helper 지정 없이 일반 `git fetch origin`이 성공했고, 기존 helper 설정은 `.local/`에 보존했다. 새 자격증명 발급·평문 비밀 저장·전역 Git 설정 변경은 하지 않았다.
+
+PR의 기존 자동 리뷰 [지적 1건](https://github.com/KimEunYeol/reptilelink/pull/4#discussion_r4390942696)을 확인했다. 파일 삭제 후 검증 → stage/commit 순서에서 삭제된 index 경로가 사라져 검증 해시가 달라지는 문제였다. 해시는 실제 존재하는 파일 상태를 기준으로 계산하도록 수정했고, 삭제 시 해시 변경 및 stage/commit 뒤 해시 유지 회귀를 추가했다. dangling symlink는 lstat/readlink로 추적해 파일 내용 변화가 누락되지 않게 유지한다. 추가 클라우드 리뷰를 요청하지 않고 로컬 전체 검증 후 동일 PR에 반영한다.

@@ -24,6 +24,7 @@
     "remoteAudit": "Initial remote head matched local HEAD; mergeable=true/clean; 126 changed files including 97 original PNGs; issue #1 timeline cross-reference confirmed; main unchanged; Actions disabled and zero workflow runs.",
     "hookAudit": "Actual pre-commit and pre-push passed. Main-target ref and docs-only validation of tooling changes rejected. Final report changes are reverified before push.",
     "gitAuth": "Repaired existing Windows GCM path in repo-local credential.helper; ordinary git fetch origin passed without the temporary helper. Original helper settings saved under ignored .local; no plaintext credentials or global config changes.",
+    "reviewFix": "PR review discussion_r4390942696 identified deletion fingerprint instability. Normalize missing files out of the hash; regression verifies that deleting changes the digest and staging/committing that deletion preserves it. Full verification rerun before push; no additional cloud review requested.",
     "followUpIssues": [2, 3],
     "merge": "Not merged; user review/authorization required."
   },

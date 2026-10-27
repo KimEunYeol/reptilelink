@@ -82,13 +82,14 @@ test('design inventory detects changed bytes, missing PNGs and unexpected additi
     assert.throws(() => checkInventory(dir), /mismatch/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
-test('verification fingerprint changes for edits, additions and deletions, ignores ignored evidence', () => {
+test('fingerprint detects content changes, ignores evidence and stays stable across staging/committing deletion', () => {
   const dir = mkdtempSync(join(tmpdir(), 'reptilelink-fingerprint-'));
   try {
     execFileSync('git', ['init', '-q', dir]);
     writeFileSync(join(dir, '.gitignore'), '.local/\n');
     writeFileSync(join(dir, 'source.txt'), 'original');
     execFileSync('git', ['-C', dir, 'add', '.']);
+    execFileSync('git', ['-C', dir, '-c', 'user.name=Harness Fixture', '-c', 'user.email=harness@reptilelink.test', 'commit', '-qm', 'initial fixture']);
     const original = fingerprint(dir);
     mkdirSync(join(dir, '.local'));
     writeFileSync(join(dir, '.local/report.json'), '{}');
@@ -102,6 +103,11 @@ test('verification fingerprint changes for edits, additions and deletions, ignor
     unlinkSync(join(dir, 'new.txt'));
     unlinkSync(join(dir, 'source.txt'));
     assert.notEqual(fingerprint(dir), original);
+    const deleted = fingerprint(dir);
+    execFileSync('git', ['-C', dir, 'add', '-u']);
+    assert.equal(fingerprint(dir), deleted);
+    execFileSync('git', ['-C', dir, '-c', 'user.name=Harness Fixture', '-c', 'user.email=harness@reptilelink.test', 'commit', '-qm', 'stage verified deletion']);
+    assert.equal(fingerprint(dir), deleted);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 test('task:start fetches main, preserves dirty work and installs hooks without replacing existing hooks', () => {

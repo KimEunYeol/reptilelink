@@ -49,8 +49,13 @@ export function fingerprint(cwd = root) {
   const hash = createHash('sha256');
   for (const path of paths) {
     const full = resolve(cwd, path);
-    if (!existsSync(full)) { hash.update(`deleted:${path}\0`); continue; }
-    const stat = lstatSync(full);
+    let stat;
+    try { stat = lstatSync(full); }
+    catch (error) {
+      // Hash the resulting file state: staging a verified deletion must not change it.
+      if (error.code === 'ENOENT') continue;
+      throw error;
+    }
     hash.update(`${path}\0${stat.mode & 0o777}\0`);
     hash.update(stat.isSymbolicLink() ? readlinkSync(full) : readFileSync(full));
     hash.update('\0');
