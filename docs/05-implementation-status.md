@@ -70,3 +70,7 @@
 실행 결과: production build 성공(기존 번들 500kB 초과 경고 유지), 단위 5개, 실제 로컬 Auth/DB/RLS/한도 20개, 업로드 API 8개, Playwright 3개 통과. 하네스 회귀 12개는 잘못된 브랜치·이슈/디자인 기록·stale/불완전 테스트 증거·비정상 push·디자인 변경 감지 및 실제 임시 Git 저장소의 main 분기/사용자 변경 보존/기존 훅 보존을 포함한다. 샌드박스 내 Node 자식 프로세스·Docker 접근은 EPERM/권한 오류여서 허용된 로컬 실행 권한으로 재검증했다. DB 초기화·운영 OAuth·원격 배포는 수행하지 않았다.
 
 후속 작업은 [기존 UI와 원본 차이 조사 #2](https://github.com/KimEunYeol/reptilelink/issues/2), [F-03 개체 일반 필드 수정 #3](https://github.com/KimEunYeol/reptilelink/issues/3)으로 등록했다. 기존 UI의 수제 Gecko와 전체 화면의 원본 일치 문제는 미해결이다. 이번 작업에서 제품 화면을 변경하거나 디자인 일치를 완료한 것으로 보고하지 않는다.
+
+파일럿 테스트 커밋 [`eb7fc6e`](https://github.com/KimEunYeol/reptilelink/commit/eb7fc6e5b8cfda61752fca251ded150de8f15279)를 실제 훅을 통과해 push하고 [PR #4](https://github.com/KimEunYeol/reptilelink/pull/4)를 생성했다. 원격 head와 로컬 HEAD 일치, base=main, `mergeable=true`/`clean`, 변경 파일 126개(원본 PNG 97개 포함), 이슈 #1 타임라인의 PR 연결, main 미변경, Actions 비활성 및 실행 0개를 재조회로 확인했다. 실제 pre-push는 main 대상 ref를 거절했고, 문서 전용 verify는 하네스/도구 변경을 거절했다. 최종 기록과 코드 검토에서 보완한 기존 task 덮어쓰기 방지·이미지 자산 UI 판정도 재검증 후 같은 PR에 반영한다. PR은 병합하지 않고 검토 가능한 상태로 남긴다.
+
+WSL의 기존 Windows Git Credential Manager 경로 오류는 이 저장소의 로컬 helper 설정에서 Git for Windows 경로를 보정해 해결했다. 임시 helper 지정 없이 일반 `git fetch origin`이 성공했고, 기존 helper 설정은 `.local/`에 보존했다. 새 자격증명 발급·평문 비밀 저장·전역 Git 설정 변경은 하지 않았다.

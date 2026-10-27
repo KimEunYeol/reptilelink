@@ -61,7 +61,7 @@ git push -u origin HEAD
 
 ## 인증·환경 복구
 
-이 세션에서는 WSL의 Windows Git Credential Manager가 `git.exe`를 찾지 못했다. 일회성 helper에서 기존 Git for Windows bin을 Windows PATH에 추가해 기존 인증을 재사용하고 fetch/push를 검증했다. 토큰을 새로 발급하거나 프로젝트 설정에 저장하지 않았다. 해당 임시 helper 경로는 다른 세션/clone의 전제 조건이 아니다. 다음 세션에서 일반 Git 인증이 실패하면 GitHub 연결 도구를 사용하거나 기존 Git for Windows 경로를 복구한 뒤 재시도한다. 인증 우회를 위해 비공개 저장소를 공개로 바꾸지 않는다.
+이 세션에서는 WSL의 Windows Git Credential Manager가 `git.exe`를 찾지 못했다. 먼저 일회성 helper로 기존 인증을 재사용해 파일럿 fetch/push를 수행했고, 이어 이 저장소의 로컬 `credential.helper`에서 기존 Git for Windows bin을 Windows PATH에 추가하도록 보정해 일반 `git fetch origin`도 검증했다. 전역 설정은 변경하지 않았다. 기존 helper 설정은 무시되는 `.local/git-credential-helper-before.json`에 보존했다. 토큰을 새로 발급하거나 파일에 저장하지 않았다. 임시 helper는 다음 세션의 전제 조건이 아니다. 새 clone/다른 PC에서 인증이 실패하면 GitHub 연결 도구를 사용하거나 그 PC의 기존 Git 인증 경로를 복구한다. 인증 우회를 위해 비공개 저장소를 공개로 바꾸지 않는다.
 
 새 환경의 Docker 권한/브라우저/네트워크 제한과 원격 OAuth·배포 미검증은 구분해서 보고한다. 로컬 실행 증거는 원격 운영 검증이 아니다.
 

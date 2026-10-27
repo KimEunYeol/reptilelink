@@ -12,7 +12,7 @@ const json = path => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const split = text => text.split('\0').filter(Boolean);
 const nonempty = value => typeof value === 'string' && value.trim().length > 0;
-export const isUI = path => /^(src\/.*\.(tsx|jsx|css)|worker\/index\.ts$|index\.html$|public\/)/.test(path);
+export const isUI = path => /^(src\/.*\.(tsx|jsx|css|svg|png|jpe?g|webp|avif|gif)$|worker\/index\.ts$|index\.html$|public\/)/.test(path);
 export const isDocsOnly = paths => paths.every(path => /^(docs\/|prompts\/|harness\/tasks\/)|(^|\/)[^/]+\.md$/.test(path));
 
 export function validatePaths(paths) {
@@ -120,6 +120,7 @@ function start([type, issue, slug]) {
   assert(!git(['status', '--porcelain']), 'Preserve existing changes; task:start requires a clean working tree.');
   execFileSync('git', ['fetch', 'origin', 'main'], { cwd: root, stdio: 'inherit' });
   const baseSha = git(['rev-parse', 'origin/main']);
+  assert(spawnSync('git', ['cat-file', '-e', `origin/main:harness/tasks/${issue}.json`], { cwd: root, stdio: 'ignore' }).status !== 0, 'This issue already has a task record on main; inspect it or create a new issue.');
   execFileSync('git', ['switch', '--no-track', '-c', branch, 'origin/main'], { cwd: root, stdio: 'inherit' });
   mkdirSync(resolve(root, 'harness/tasks'), { recursive: true });
   writeFileSync(resolve(root, `harness/tasks/${issue}.json`), JSON.stringify({

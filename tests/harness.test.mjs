@@ -24,6 +24,7 @@ test('rejects main and mismatched issue links', () => {
 test('UI cannot opt out of design; non-UI work needs a reason', () => {
   const value = { ...task(), design: { applicable: false, reason: 'Tooling only' } };
   assert.throws(() => valid(value), /cannot mark design/);
+  assert.throws(() => validateTask(value, branch, ['src/assets/logo.svg']), /cannot mark design/);
   validateTask(value, branch, ['scripts/harness.mjs'], true);
   assert.throws(() => validateTask({ ...value, design: { applicable: false } }, branch, []), /Explain/);
 });
@@ -116,6 +117,8 @@ test('task:start fetches main, preserves dirty work and installs hooks without r
     mkdirSync(join(seed, 'scripts'));
     for (const script of ['harness.mjs', 'design-inventory.mjs']) copyFileSync(new URL(`../scripts/${script}`, import.meta.url), join(seed, 'scripts', script));
     writeFileSync(join(seed, 'package.json'), '{"type":"module"}\n');
+    mkdirSync(join(seed, 'harness/tasks'), { recursive: true });
+    writeFileSync(join(seed, 'harness/tasks/9.json'), '{"scope":"existing user record"}\n');
     runGit(seed, 'add', '.');
     runGit(seed, '-c', 'user.name=Harness Fixture', '-c', 'user.email=harness@reptilelink.test', 'commit', '-qm', 'fixture main');
     execFileSync('git', ['clone', '-q', '--bare', seed, remote]);
@@ -126,6 +129,9 @@ test('task:start fetches main, preserves dirty work and installs hooks without r
     assert.equal(readFileSync(join(clone, 'user-work.txt'), 'utf8'), 'preserve');
     assert.equal(runGit(clone, 'branch', '--show-current'), 'previous-feature');
     unlinkSync(join(clone, 'user-work.txt'));
+    assert.notEqual(run('start', 'feat', '9', 'existing').status, 0);
+    assert.equal(runGit(clone, 'branch', '--show-current'), 'previous-feature');
+    assert.equal(JSON.parse(readFileSync(join(clone, 'harness/tasks/9.json'), 'utf8')).scope, 'existing user record');
     const started = run('start', 'feat', '3', 'animal-edit');
     assert.equal(started.status, 0, started.stderr);
     assert.equal(runGit(clone, 'branch', '--show-current'), branch);

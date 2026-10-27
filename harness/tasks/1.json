@@ -17,6 +17,16 @@
     "실제 로컬 테스트 및 부정 경로 검사 후 커밋·PR 생성/조회"
   ],
   "status": "verified",
+  "pilot": {
+    "pr": "https://github.com/KimEunYeol/reptilelink/pull/4",
+    "initialCommit": "eb7fc6e5b8cfda61752fca251ded150de8f15279",
+    "base": "main",
+    "remoteAudit": "Initial remote head matched local HEAD; mergeable=true/clean; 126 changed files including 97 original PNGs; issue #1 timeline cross-reference confirmed; main unchanged; Actions disabled and zero workflow runs.",
+    "hookAudit": "Actual pre-commit and pre-push passed. Main-target ref and docs-only validation of tooling changes rejected. Final report changes are reverified before push.",
+    "gitAuth": "Repaired existing Windows GCM path in repo-local credential.helper; ordinary git fetch origin passed without the temporary helper. Original helper settings saved under ignored .local; no plaintext credentials or global config changes.",
+    "followUpIssues": [2, 3],
+    "merge": "Not merged; user review/authorization required."
+  },
   "verification": {
     "harness": "12 regression checks, including temporary Git repository task:start and hook preservation",
     "build": "passed; existing >500kB bundle warning remains",
