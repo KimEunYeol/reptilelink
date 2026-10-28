@@ -1,0 +1,19 @@
+{
+  "chatgpt.openOnStartup": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.wrangler": true,
+    "**/test-results": true,
+    "**/playwright-report": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.wrangler/**": true,
+    "**/test-results/**": true
+  }
+}

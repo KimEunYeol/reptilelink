@@ -6,6 +6,13 @@
     "doc": "docs"
   },
   "scripts": {
+    "harness:install": "node scripts/harness.mjs install",
+    "harness:check": "node scripts/harness.mjs check",
+    "task:start": "node scripts/harness.mjs start",
+    "design:check": "node scripts/design-inventory.mjs",
+    "design:inventory": "node scripts/design-inventory.mjs --write",
+    "test:harness": "node --test tests/harness.test.mjs",
+    "verify": "node scripts/harness.mjs verify",
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173",

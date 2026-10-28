@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Reptilelink: 하네스·디자인 검사",
+      "type": "npm",
+      "script": "harness:check",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reptilelink: 전체 로컬 검증",
+      "type": "npm",
+      "script": "verify",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Reptilelink: 로컬 백엔드 시작",
+      "type": "npm",
+      "script": "local:start",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reptilelink: 빌드",
+      "type": "npm",
+      "script": "build",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Reptilelink: 개발 서버",
+      "type": "npm",
+      "script": "dev:all",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Reptilelink: 로컬 백엔드 시작", "Reptilelink: 빌드"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Reptilelink: 단위 검사",
+      "type": "npm",
+      "script": "test",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Reptilelink: DB 권한 검사",
+      "type": "npm",
+      "script": "test:db",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reptilelink: 업로드 검사",
+      "type": "npm",
+      "script": "test:media",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reptilelink: 브라우저 검사",
+      "type": "npm",
+      "script": "test:e2e",
+      "problemMatcher": []
+    }
+  ]
+}

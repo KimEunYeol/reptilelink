@@ -1,0 +1,7 @@
+# Ownership routing; current private Free plan does not enforce code-owner approval.
+* @KimEunYeol
+/design/ @KimEunYeol
+/supabase/ @KimEunYeol
+/worker/ @KimEunYeol
+/.github/ @KimEunYeol
+/AGENTS.md @KimEunYeol

@@ -9,3 +9,24 @@
 - Figma desktop automation is forbidden; use the connector or explicitly authorized shared web links.
 - Run `npm run build`, `npm test`, `npm run test:db` and relevant Playwright flows. Never claim remote OAuth/deployment verified when only local fixtures were tested.
 - Do not spawn parallel agents unless the user explicitly requests them.
+
+## IDE handoff and workflow
+
+- Start with `START_HERE.md`, then docs/01, docs/02, docs/03 and docs/05. IDE setup is in docs/06; the first scoped task is in prompts/first-task.md.
+- Keep the existing stack and accepted D-01~D-08 decisions. Follow specification → one user flow → data/RPC/UI → meaningful verification → status documentation.
+- Use local Codex with the existing ChatGPT entitlement. Never switch to API-key billing, buy credits or delegate cloud work when a limit is reached; stop until the allowance resets.
+- Preserve user changes and local data. Use `codex/` branches; do not reset the local database or remove volumes as a routine startup or migration step.
+- Read docs/05 before selecting work. The next slice is animal general-field editing, not all of F-03. Production OAuth and free deployment remain unverified.
+- Add new migrations for database changes. Do not replay the initial migration or database/schema.sql against an already migrated database.
+- Update docs/05 with observed results and unresolved gaps. Do not merge main or deploy remotely without user authorization for that step.
+
+## Agentic development contract
+
+- Use [docs/07-agentic-workflow.md](docs/07-agentic-workflow.md) for every scoped task. One agent performs specification, implementation, design review and verification in sequence; these are responsibilities, not permission to spawn agents.
+- Register a GitHub issue before implementation. Fetch `origin/main`, then create a new `codex/<feat|fix|chore|docs|design>/<issue>-<slug>` branch from it for each category/feature. Never branch a new feature from the previous feature branch. Use `npm run task:start -- <type> <issue> <slug>` after confirming the issue exists.
+- Keep a concrete plan, acceptance criteria, design references and results in `harness/tasks/<issue>.json`. Report at discovery, harness/implementation completion, verification and PR completion; report material blockers promptly. Continue authorized reversible work without repeated confirmation.
+- **The sole visual source is `design/`.** Read [design/README.md](design/README.md) and [docs/08-design-contract.md](docs/08-design-contract.md), inspect the whole board's explanation text and the relevant desktop/mobile images before editing UI. Match both the written behavior and the screen. No invented layouts, branding, illustrations or new visual direction; additions must reuse demonstrated patterns. Missing/conflicting evidence must be recorded and resolved before dependent UI work.
+- Do not treat the existing UI or handcrafted `Gecko` illustration as approved design. Existing gaps are tracked separately; they are not permission for new invention. Preserve accepted D-01~D-08 behavior; record conflicts with old design text explicitly rather than silently undoing those decisions.
+- Install repo-local hooks with `npm run harness:install`. Run `npm run harness:check` and `npm run verify` before push. `verify -- --docs-only` is permitted only for documentation-only work, never runtime/harness/tooling changes. UI changes require design evidence and human-readable review in the task record.
+- Use a main-targeted GitHub Pull Request (the GitHub equivalent of MR), the PR template, `Closes #<issue>`, type/area labels and actual local test results. Inspect the remote head/base, issue link, changed files and mergeability after creation. Keep the issue open until merge. No direct main push, force push, self-approval, auto-merge, paid CI or deployment.
+- Local hooks and recorded review are bypassable safeguards. Private-repository server branch protection is unavailable on the current plan (403 confirmed 2026-10-28); never claim server enforcement. See docs/07 for the settings audit and recovery procedure.

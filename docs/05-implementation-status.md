@@ -56,3 +56,23 @@
 ## 다음 작업
 
 첫 사용자 흐름의 일반 수정·삭제와 사진 복구 경험을 보완한 뒤, 무료 계정 조건 확인과 Google OAuth·초대 Hook 연결을 검증한다. 결제수단·유료 플랜·유료 AI API를 요구하는 단계는 실행하지 않는다. 이후 단계 B, C를 명세 순서대로 진행한다.
+
+## 2026-10-28 개발 하네스·GitHub·디자인 기준 점검
+
+파일럿: [이슈 #1](https://github.com/KimEunYeol/reptilelink/issues/1), `codex/chore/1-agentic-harness`. 최신 `origin/main`의 `d044045`에서 분기했고 기존 IDE 인계 커밋을 cherry-pick해 보존했다. 기존 `codex/wsl-vscode-setup` 브랜치와 사용자 PNG 원본을 변경하거나 삭제하지 않았다.
+
+- 기존에는 이슈/PR 템플릿·분류 라벨·기능별 main 분기·디자인 검토 계약이 없었다. AGENTS/시작 안내/첫 작업 프롬프트/IDE 작업에 [개발 하네스](07-agentic-workflow.md)를 연결했다.
+- 원본 PNG 97개(17,542,550 bytes)를 Git 추적 대상으로 추가하고 경로·치수·SHA-256 인벤토리를 만들었다. 전체 보드 설명과 PC/모바일 화면 참조·새 창작 금지·기존 패턴 재사용·시안/기능 충돌 기록 기준은 [디자인 계약](08-design-contract.md)에 있다. 자동 검사는 의미/시각 일치 판정을 대신하지 않는다.
+- `task:start`, `harness:install/check`, `design:check/inventory`, `verify`와 pre-commit/pre-push를 구성했다. main/다른 ref/강제 갱신, 디자인 기록 누락, 미검증 파일 상태를 거절한다. 소스·도구 변경에는 문서 전용 검사로 우회할 수 없다. task:start는 사용자 변경을 자동 stash/reset하지 않는다.
+- GitHub 16개 관리 라벨, 기능/버그 이슈 폼, PR 템플릿, CODEOWNERS를 추가했다. Issues·squash 전용 병합·PR 제목/본문 기본값·병합 브랜치 자동 정리·Update branch 활성과 auto-merge 비활성을 실제 API로 적용·재조회했다. Actions는 저장소 권한 자체를 비활성으로 변경하고 재확인했다. 저장소 비공개와 main 기본 브랜치를 유지했다.
+- Rulesets와 main branch protection 조회는 현재 비공개 Free 플랜에서 모두 403으로 거절됐다. 유료 전환·공개 전환 없이 로컬 훅과 PR 검토를 사용한다. 로컬 훅은 우회 가능하며 서버 보호를 활성화한 상태가 아니다.
+
+실행 결과: production build 성공(기존 번들 500kB 초과 경고 유지), 단위 5개, 실제 로컬 Auth/DB/RLS/한도 20개, 업로드 API 8개, Playwright 3개 통과. 하네스 회귀 12개는 잘못된 브랜치·이슈/디자인 기록·stale/불완전 테스트 증거·비정상 push·디자인 변경 감지 및 실제 임시 Git 저장소의 main 분기/사용자 변경 보존/기존 훅 보존을 포함한다. 샌드박스 내 Node 자식 프로세스·Docker 접근은 EPERM/권한 오류여서 허용된 로컬 실행 권한으로 재검증했다. DB 초기화·운영 OAuth·원격 배포는 수행하지 않았다.
+
+후속 작업은 [기존 UI와 원본 차이 조사 #2](https://github.com/KimEunYeol/reptilelink/issues/2), [F-03 개체 일반 필드 수정 #3](https://github.com/KimEunYeol/reptilelink/issues/3)으로 등록했다. 기존 UI의 수제 Gecko와 전체 화면의 원본 일치 문제는 미해결이다. 이번 작업에서 제품 화면을 변경하거나 디자인 일치를 완료한 것으로 보고하지 않는다.
+
+파일럿 테스트 커밋 [`eb7fc6e`](https://github.com/KimEunYeol/reptilelink/commit/eb7fc6e5b8cfda61752fca251ded150de8f15279)를 실제 훅을 통과해 push하고 [PR #4](https://github.com/KimEunYeol/reptilelink/pull/4)를 생성했다. 원격 head와 로컬 HEAD 일치, base=main, `mergeable=true`/`clean`, 변경 파일 126개(원본 PNG 97개 포함), 이슈 #1 타임라인의 PR 연결, main 미변경, Actions 비활성 및 실행 0개를 재조회로 확인했다. 실제 pre-push는 main 대상 ref를 거절했고, 문서 전용 verify는 하네스/도구 변경을 거절했다. 최종 기록과 코드 검토에서 보완한 기존 task 덮어쓰기 방지·이미지 자산 UI 판정도 재검증 후 같은 PR에 반영한다. PR은 병합하지 않고 검토 가능한 상태로 남긴다.
+
+WSL의 기존 Windows Git Credential Manager 경로 오류는 이 저장소의 로컬 helper 설정에서 Git for Windows 경로를 보정해 해결했다. 임시 helper 지정 없이 일반 `git fetch origin`이 성공했고, 기존 helper 설정은 `.local/`에 보존했다. 새 자격증명 발급·평문 비밀 저장·전역 Git 설정 변경은 하지 않았다.
+
+PR의 기존 자동 리뷰 [지적 1건](https://github.com/KimEunYeol/reptilelink/pull/4#discussion_r4390942696)을 확인했다. 파일 삭제 후 검증 → stage/commit 순서에서 삭제된 index 경로가 사라져 검증 해시가 달라지는 문제였다. 해시는 실제 존재하는 파일 상태를 기준으로 계산하도록 수정했고, 삭제 시 해시 변경 및 stage/commit 뒤 해시 유지 회귀를 추가했다. dangling symlink는 lstat/readlink로 추적해 파일 내용 변화가 누락되지 않게 유지한다. 추가 클라우드 리뷰를 요청하지 않고 로컬 전체 검증 후 동일 PR에 반영한다.

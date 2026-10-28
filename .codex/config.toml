@@ -1,0 +1,7 @@
+# Project-scoped configuration. Codex loads it after this project is trusted.
+# Use the existing ChatGPT entitlement; never configure API-key billing here.
+# Durable task/branch/design policy is loaded from AGENTS.md.
+# Run npm run harness:install in each clone; see docs/07-agentic-workflow.md.
+forced_login_method = "chatgpt"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"

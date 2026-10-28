@@ -1,0 +1,21 @@
+{
+  "repository": "KimEunYeol/reptilelink",
+  "settings": {
+    "has_issues": true,
+    "allow_squash_merge": true,
+    "allow_merge_commit": false,
+    "allow_rebase_merge": false,
+    "allow_auto_merge": false,
+    "delete_branch_on_merge": true,
+    "allow_update_branch": true,
+    "squash_merge_commit_title": "PR_TITLE",
+    "squash_merge_commit_message": "PR_BODY"
+  },
+  "actions": { "enabled": false },
+  "constraints": {
+    "visibility": "private",
+    "default_branch": "main",
+    "additional_spending": 0,
+    "server_protection": "Unavailable on current private Free plan; HTTP 403 verified 2026-10-28. Local hooks and PR review are bypassable substitutes."
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "issue": 1,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/1",
+  "branch": "codex/chore/1-agentic-harness",
+  "baseSha": "d0440450a781b8578974a38073f6d3b267d4fe6a",
+  "scope": "프로젝트 하네스·GitHub 절차·디자인 기준 정비와 실제 이슈/커밋/PR 파일럿",
+  "acceptance": [
+    "기능별 이슈와 main 기준 브랜치·PR 규칙을 에이전트 및 인계에 반영",
+    "design 원본 보존·전체 보드 설명/PC/모바일 참조·새 창작 금지 규칙",
+    "로컬 훅·검증 및 거절 경로를 검증하고 무료 GitHub 설정 적용",
+    "파일럿 커밋과 main 대상 PR을 원격 조회해 연결 확인"
+  ],
+  "plan": [
+    "기존 문서·브랜치·원본·GitHub 기능/비용 제약 조사",
+    "main에서 독립 브랜치 생성 및 기존 IDE 인계 보존",
+    "계약·인벤토리·템플릿·로컬 하네스와 검증 기록 구성",
+    "실제 로컬 테스트 및 부정 경로 검사 후 커밋·PR 생성/조회"
+  ],
+  "status": "verified",
+  "pilot": {
+    "pr": "https://github.com/KimEunYeol/reptilelink/pull/4",
+    "initialCommit": "eb7fc6e5b8cfda61752fca251ded150de8f15279",
+    "base": "main",
+    "remoteAudit": "Initial remote head matched local HEAD; mergeable=true/clean; 126 changed files including 97 original PNGs; issue #1 timeline cross-reference confirmed; main unchanged; Actions disabled and zero workflow runs.",
+    "hookAudit": "Actual pre-commit and pre-push passed. Main-target ref and docs-only validation of tooling changes rejected. Final report changes are reverified before push.",
+    "gitAuth": "Repaired existing Windows GCM path in repo-local credential.helper; ordinary git fetch origin passed without the temporary helper. Original helper settings saved under ignored .local; no plaintext credentials or global config changes.",
+    "reviewFix": "PR review discussion_r4390942696 identified deletion fingerprint instability. Normalize missing files out of the hash; regression verifies that deleting changes the digest and staging/committing that deletion preserves it. Full verification rerun before push; no additional cloud review requested.",
+    "followUpIssues": [2, 3],
+    "merge": "Not merged; user review/authorization required."
+  },
+  "verification": {
+    "harness": "12 regression checks, including temporary Git repository task:start and hook preservation",
+    "build": "passed; existing >500kB bundle warning remains",
+    "unit": "5 passed",
+    "database": "20 local Auth/DB/RLS/quota checks passed",
+    "media": "8 upload API checks passed",
+    "browser": "3 Playwright flows passed; no product UI changes",
+    "remoteSettings": "16 labels; squash only; auto-delete branches; auto-merge off; Actions disabled; settings re-fetched",
+    "limits": "Private Free branch protection/rulesets returned 403; local hooks are bypassable. Existing UI design fidelity and remote OAuth/deployment remain unverified."
+  },
+  "design": {
+    "applicable": false,
+    "reason": "이번 변경은 원본 PNG 추적·디자인 준수 계약·개발 도구 구성이다. 제품 UI/Worker 렌더링은 변경하지 않으며 원본 일치 구현은 별도 이슈로 추적한다."
+  }
+}
