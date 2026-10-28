@@ -301,6 +301,15 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .animal-edit-heading h2 { font-size: 24px; font-weight: 700; margin: 0; }
 .animal-edit-body { padding: 28px 20px 24px; max-height: calc(90dvh - 100px); overflow-y: auto; }
 .edit-photo { aspect-ratio: 1.6; border-radius: 18px; overflow: hidden; margin-bottom: 18px; }
+.edit-photos { min-width: 0; padding: 0; border: 0; margin: 0 0 18px; }
+.edit-photos .edit-photo { margin-bottom: 10px; }
+.edit-photos .edit-photo img { width: 100%; height: 100%; object-fit: cover; }
+.edit-photo-add { width: 100%; height: 100%; display: grid; place-items: center; border: 1px solid #e5e7eb; border-radius: 18px; background: #f6f6f6; color: #dedede; }
+.edit-photo-pages { display: flex; gap: 6px; justify-content: center; margin: 10px 0; }
+.edit-photo-pages button { display: grid; place-items: center; border: 1px solid #e5e7eb; width: 24px; height: 24px; padding: 0; border-radius: 50%; font-size: 11px; }
+.edit-photo-pages [aria-current=true] { color: white; background: #2cbb50; border-color: #2cbb50; }
+.edit-photo-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.edit-photo-hint { font-size: 11px; color: #6d7671; line-height: 1.7; margin-top: 12px; }
 .edit-sex { border: 0; padding: 0 0 18px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .edit-sex legend { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
 .edit-sex label { display: flex; flex-direction: row; align-items: center; gap: 12px; margin: 0; font-size: 14px; white-space: nowrap; }

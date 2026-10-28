@@ -53,14 +53,15 @@ export default {
       }
       if (path === '/api/uploads' && request.method === 'POST') {
         const c = await actor(request, env);
-        const input = z.object({ animal_id: uuid }).parse(await body(request));
-        const manifest = await call<{ asset_id: string; objects: { path: string; variant: string }[] }>(c.user, 'reserve_upload', { p_animal_id: input.animal_id });
+        const input = z.object({ animal_id: uuid, editing: z.boolean().optional() }).strict().parse(await body(request));
+        const manifest = await call<{ asset_id: string; objects: { path: string; variant: string }[] }>(c.user, input.editing ? 'reserve_photo_edit' : 'reserve_upload', { p_animal_id: input.animal_id });
         const objects = [];
         for (const object of manifest.objects) {
           const { data, error } = await c.admin.storage.from('animal-media').createSignedUploadUrl(object.path, { upsert: false });
           if (error) throw new Error('UPLOAD_FAILED');
           objects.push({ ...object, token: data.token });
         }
+        await call(c.admin, 'register_upload_lease', { p_asset_id: manifest.asset_id, p_actor: c.id });
         return json({ asset_id: manifest.asset_id, objects });
       }
       const finalize = path.match(/^\/api\/uploads\/([^/]+)\/(complete|cancel)$/);
@@ -68,6 +69,7 @@ export default {
         const asset = uuid.parse(finalize[1]), c = await actor(request, env);
         if (finalize[2] === 'cancel') {
           const paths = await call<string[]>(c.admin, 'cleanup_manifest', { p_asset_id: asset, p_actor: c.id });
+          if (!paths) return json({ ok: true, cleanup_pending: true });
           const removed = await c.admin.storage.from('animal-media').remove(paths);
           if (removed.error) throw new Error('CLEANUP_PENDING');
           await call(c.admin, 'finish_cleanup', { p_asset_id: asset });

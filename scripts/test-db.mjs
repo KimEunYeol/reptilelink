@@ -18,7 +18,7 @@ for (const [client, slug] of [[a,'qa-owner'],[b,'qa-other']]) {
 }
 // Only these dedicated QA fixtures may be reset; localStatus refuses every non-loopback server.
 const oldAssets = JSON.parse(localQuery(`select coalesce(json_agg(json_build_object('id',id,'profile_id',profile_id)),'[]') from private.media_assets where profile_id in ('${aId}','${bId}');`).trim());
-for (const row of oldAssets) { await rpc(admin,'cleanup_manifest',{p_asset_id:row.id,p_actor:row.profile_id}); await rpc(admin,'finish_cleanup',{p_asset_id:row.id}); }
+for (const row of oldAssets) { localQuery(`delete from public.animal_photos where asset_id='${row.id}'; update private.media_assets set cleanup_after=now()-interval '1 second' where id='${row.id}'`); const paths=await rpc(admin,'cleanup_manifest',{p_asset_id:row.id,p_actor:row.profile_id}); if(paths?.length) assert.ifError((await admin.storage.from('animal-media').remove(paths)).error); await rpc(admin,'finish_cleanup',{p_asset_id:row.id}); }
 localQuery(`delete from public.animals where profile_id in ('${aId}'::uuid,'${bId}'::uuid);`);
 let dash = await rpc(a, 'my_dashboard');
 await rpc(a, 'set_profile_public', { p_public: false, p_expected: dash.profile.revision });
@@ -39,7 +39,7 @@ await expectError(a,'media_access',{p_asset_id:crypto.randomUUID(),p_variant:'th
 const reservations = await Promise.all(Array.from({length:5},()=>a.schema('api').rpc('reserve_upload',{p_animal_id:created.id})));
 assert.equal(reservations.filter(result=>!result.error).length,2); checked++;
 const usage = (await rpc(a,'my_dashboard')).usage; assert.equal(usage.reserved_bytes,614400); checked++;
-for (const reserved of reservations.filter(result=>!result.error)) { await rpc(admin,'cleanup_manifest',{p_asset_id:reserved.data.asset_id,p_actor:aId}); await rpc(admin,'finish_cleanup',{p_asset_id:reserved.data.asset_id}); }
+for (const reserved of reservations.filter(result=>!result.error)) { localQuery(`update private.media_assets set cleanup_after=now()-interval '1 second' where id='${reserved.data.asset_id}' and profile_id='${aId}'`); await rpc(admin,'cleanup_manifest',{p_asset_id:reserved.data.asset_id,p_actor:aId}); await rpc(admin,'finish_cleanup',{p_asset_id:reserved.data.asset_id}); }
 assert.equal((await rpc(a,'my_dashboard')).usage.reserved_bytes,0); checked++;
 let revision = (await rpc(a,'my_dashboard')).profile.revision;
 revision=(await rpc(a,'set_animal_public',{p_animal_id:created.id,p_public:true,p_expected:revision})).revision;

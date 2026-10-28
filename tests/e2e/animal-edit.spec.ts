@@ -86,7 +86,7 @@ test.describe('animal general field edit with real local QA identity', () => {
       await page.screenshot({ path: `artifacts/design-review-3/edit-bottom-${width}.png` });
       await d.getByRole('button', { name: '편집 닫기', exact: true }).focus();
       await page.keyboard.press('Tab');
-      await expect(d.locator('input[type=radio]:checked')).toBeFocused();
+      await expect(d.getByRole('button', { name: '사진 추가', exact: true })).toBeFocused();
       await page.keyboard.press('Shift+Tab');
       await expect(d.getByRole('button', { name: '편집 닫기', exact: true })).toBeFocused();
       const before = (await dashboard()).profile!.revision;

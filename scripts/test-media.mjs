@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createClient } from '@supabase/supabase-js';
-import { fixturePassword, localStatus } from './local-utils.mjs';
+import { fixturePassword, localStatus, localQuery } from './local-utils.mjs';
 const status=localStatus();
 async function login(email) { const client=createClient(status.url,status.publishable,{auth:{persistSession:false,autoRefreshToken:false}}); const result=await client.auth.signInWithPassword({email,password:fixturePassword}); assert.ifError(result.error); return {client,token:result.data.session.access_token}; }
 const a=await login('qa-owner@reptilelink.test'),b=await login('qa-other@reptilelink.test');
@@ -19,5 +19,9 @@ for(const object of manifest.objects) {
 assert.equal((await post(`/api/uploads/${manifest.asset_id}/complete`,b.token)).status,404);
 const invalid=await post(`/api/uploads/${manifest.asset_id}/complete`,a.token); assert.equal(invalid.status,400); assert.equal((await invalid.json()).code,'INVALID_IMAGE');
 const cancelled=await post(`/api/uploads/${manifest.asset_id}/cancel`,a.token); assert.equal(cancelled.status,200);
-const cleaned=await a.client.schema('api').rpc('my_dashboard'); assert.equal(cleaned.data.usage.reserved_bytes,0);
-console.log('Passed 8 upload API checks: authentication, owner isolation, create-only tokens, byte validation and cleanup.');
+let cleaned=await a.client.schema('api').rpc('my_dashboard'); assert.equal(cleaned.data.usage.reserved_bytes,450560);
+// This execution's disposable reservation only: simulate upload-token expiry.
+localQuery(`update private.media_assets set cleanup_after=now()-interval '1 second' where id='${manifest.asset_id}'`);
+assert.equal((await post(`/api/uploads/${manifest.asset_id}/cancel`,a.token)).status,200);
+cleaned=await a.client.schema('api').rpc('my_dashboard'); assert.equal(cleaned.data.usage.reserved_bytes,0);
+console.log('Passed 10 upload API checks: authentication, owner isolation, create-only tokens, byte validation and cleanup.');

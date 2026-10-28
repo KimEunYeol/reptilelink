@@ -1,0 +1,51 @@
+{
+  "issue": 10,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/10",
+  "branch": "codex/feat/10-animal-photo-edit",
+  "baseSha": "b3c861e15262db982e7039599b40d85d1af3d3f1",
+  "scope": "F-03/F-10 최대3장 사진 편집·일반 정보 원자적 저장·지연 파일 정리",
+  "acceptance": [
+    "0/1/3장 교체/삭제/대표 순서; 저장 전 공개 불변",
+    "소유권/동의/전체사진/한도/revision/영수증·실패 원상 유지",
+    "응답 유실/충돌/재조회 실패·취소/이동 보호",
+    "살아있는 업로드 토큰 동안 파일/사용량 보존, 실제 제거 후 반환",
+    "7개 폭 원본 비교·전체 verify·PR·main 복귀"
+  ],
+  "plan": [
+    "원본/기존 미디어 계약 확정",
+    "새 편집 RPC·staging 예약·안전한 정리 유예·로컬 DB 검증/새 migration",
+    "기존 수정창 내 파일 초안/교체/삭제/대표·단일 저장·복구",
+    "실제 DB/Storage/브라우저·원본 직접 비교·전체 verify",
+    "정상 커밋/push·Closes PR·원격 확인·main 복귀"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png"
+    ],
+    "notes": "보드 x6030~7230,y4100~6800의 개체 수정 전체와 PC 안내 y8270~ 확인. 대표 사진 아래 부/모는 부모용이므로 추가 사진 슬롯으로 오용하지 않는다. 원본 대표 사진/회색 추가 면·페이지/텍스트 버튼·저장취소 패턴을 최소 조합해 명세 최대3장 초안을 표시한다. 상세 사진편집 UI는 원본에 없어 이 확장과 차이를 문서화한다.",
+    "review": {
+      "status": "passed",
+      "summary": "전체 보드의 수정 팝업/PC 안내, 관리 PC/모바일/수정 원본과 실제 7개 폭 사진 초안·내부 스크롤·하단 저장/취소·미확인 상태 캡처를 열어 대조했다. 부/모 부모 슬롯은 재사용하지 않았고 대표 사진 영역·원형 페이지·텍스트 버튼 패턴을 최소 조합했다. 정확한 폰트/기존 네이티브 컨트롤/부모·성장/다른 화면 차이는 #2와 docs/12에 남긴다. 전체 픽셀 동일/사용자 승인을 주장하지 않는다."
+    },
+    "evidence": [
+      "docs/12-animal-photo-edit.md (원본/동작/실패/한계)",
+      "artifacts/photo-10/draft-{320,360,390,450,768,1440,1920}.png 및 overview.png (직접 비교)",
+      "artifacts/photo-10/bottom-{320,390,1440}.png 및 unresolved-390.png (직접 검토)"
+    ]
+  },
+  "verification": {
+    "status": "passed",
+    "fullSuite": "production build+230 checks (12 harness,11 unit,166 DB,10 media,31 E2E); sequential local QA",
+    "database": "20 existing+55 edit+46 collection+45 photo; real functions/transactions/ownership/concurrency/receipts; staged metadata fixtures separate from real file E2E",
+    "browser": "31 total; 8 new photo cases, full replacement/order/delete, no writes before save, lost response retry/cancel, authoritative reconciliation, conflict including all3 files, failed upload verification, SPA navigation",
+    "media": "10 API checks; real browser files partially removed retain stored bytes, finish refuses FILES_REMAIN until all files removed; lease time simulated only on this execution QA assets",
+    "migration": "CLI-generated 20261028193831_animal_photo_edit.sql; --local history matches; security advisors no warning; initial existing animal-row hash preserved; no reset",
+    "design": "7 widths, photos/page/text-button patterns, bottom scroll/actions and unresolved-state screenshots directly inspected; source parent slots not repurposed",
+    "review": "Legacy reserve contract retained, signed-token lease registered after token issuance, unknown save is settled before authoritative cancel/review; latest acceptance waits for staging cleanup before allowing reupload. Final recorded state requires verify before push."
+  }
+}

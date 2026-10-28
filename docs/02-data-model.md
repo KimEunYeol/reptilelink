@@ -405,3 +405,12 @@ PK `(actor_id, action, window_started_at, window_seconds)`. 댓글·좋아요·�
 프로필 행 잠금으로 기존 등록/편집/공개 명령과 직렬화한다. 활성 계정·필수 동의를 확인하고 영수증의 명령/본문 hash와 만료를 검사한 뒤 expected revision을 검사한다. 순서와 개체 공개만 한 트랜잭션으로 변경하고 실제 변경이 있으면 revision을 한 번 올린다. 동일 목록/빈 목록은 revision을 올리지 않으며 재전송 영수증은 남긴다. 같은 request_id/같은 배열은 기존 결과, 다른 배열/명령은 REQUEST_CONFLICT다.
 
 기존 정책에 따라 writes_enabled=false이면 순서 변경과 새 공개는 차단하되 동일 순서에서 숨기기는 허용한다. 일반 필드·소유자·프로필 공개·사진·성장 공개는 건드리지 않는다. 신규 테이블/DTO 공개 필드는 없다. 보안 advisors 경고 이상 없음, 기존 개체 행 해시 보존을 확인한 뒤 CLI db pull --local로 `20261028170427_animal_collection_apply.sql`을 생성하고 로컬 이력을 확인했다. 초기/기존 마이그레이션과 개발 DB를 다시 적용하거나 초기화하지 않았다.
+
+
+## 이슈 #10 사진 편집 명령과 정리 유예
+
+`api.save_animal_edit(p_animal_id,p_data,p_assets,p_expected,p_request_id)`는 기존 일반 수정의 엄격한7개 필드와 사진 asset 전체 배열(0~3개)을 한 트랜잭션·한 revision/영수증으로 저장한다. 사진의 소유자·개체·ready/verified·만료·두 stored 변형 및 중복/형식을 검증한다. 사진 제거/교체는 기존 연결을 지우고 제거된 asset을 delete_pending으로 보낸다. 공개/성장/개체 순서는 변경하지 않는다. 기존 일반 수정 API는 유지한다.
+
+`reserve_photo_edit`는 연결된 최대3장과 별개로 준비 사진을 최대3장, 동시 reserved는 계정당2개 허용한다. 모든 준비/정리 대기도 예산에 포함한다. `media_assets.cleanup_after timestamptz nullable`은 업로드 토큰 종료 전 파일/용량 해제를 막는다. 새 Worker의 서비스 전용 `register_upload_lease`는 토큰 발급 뒤 최소2시간5분 보호와 최대450,560바이트 예약을 보장한 후 토큰을 반환한다. 기존 reserve_upload의307,200바이트 반환 계약은 유지하며 서비스 단계에서 차이를 잠금 아래 보정한다. 검증 후에는 실제 바이트만 stored로 전환한다. 원본/썸네일 출력 한도는220KiB/80KiB 그대로다.
+
+cleanup_manifest는 보호 기한 전에 정리 대기를 반환하고 finish_cleanup는 기한 또는 실제 파일 잔존 시 반환을 거절한다. expired_uploads는 기한이 지난 항목만 배치한다. 상세 실패/응답 유실 복구와 원본 비교는 [사진 편집 기록](12-animal-photo-edit.md)에 있다.
