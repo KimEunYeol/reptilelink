@@ -1,3 +1,4 @@
+import { collectionSchema, moveCollection } from '../src/lib/domain';
 import { describe, expect, it } from 'vitest';
 import { animalEditSchema, animalSchema, profileSchema, seoulDate, userMessage } from '../src/lib/domain';
 import { inspectWebp } from '../worker/images';
@@ -46,5 +47,22 @@ describe('untrusted uploaded image headers', () => {
   it('rejects truncated RIFF files', () => {
     const bytes = new Uint8Array(30); bytes.set(new TextEncoder().encode('RIFF')); bytes.set(new TextEncoder().encode('WEBP'), 8);
     expect(() => inspectWebp(bytes)).toThrow('INVALID_IMAGE');
+  });
+});
+
+describe('collection draft boundaries', () => {
+  const items = Array.from({length:20},(_,i)=>({id:`00000000-0000-4000-8000-${String(i).padStart(12,'0')}`,is_public:false}));
+  it('accepts empty and capped lists but rejects duplicates, unknown fields and invalid visibility', () => {
+    for (const count of [0,1,10,11,20]) expect(collectionSchema.safeParse(items.slice(0,count)).success).toBe(true);
+    for (const list of [[...items,items[0]],[items[0],items[0]],[{...items[0],is_public:'true'}],[{...items[0],sort_order:0}]]) expect(collectionSchema.safeParse(list).success).toBe(false);
+  });
+  it('moves across the display page boundary without losing hidden entries or mutating the baseline', () => {
+    const moved=moveCollection(items,10,9);
+    expect(moved[9].id).toBe(items[10].id); expect(moved[10].id).toBe(items[9].id);
+    expect(new Set(moved.map(i=>i.id)).size).toBe(20); expect(items[9].id).toBe('00000000-0000-4000-8000-000000000009');
+  });
+  it('keeps edge moves within the complete collection', () => {
+    expect(moveCollection(items,0,-1)).toBe(items); expect(moveCollection(items,19,20)).toBe(items);
+    expect(moveCollection([],0,1)).toEqual([]);
   });
 });
