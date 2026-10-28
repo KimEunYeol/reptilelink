@@ -4,37 +4,38 @@ import { collectionItems, collectionSchema, moveCollection, sexLabels, userMessa
 import { rpc } from '../lib/supabase';
 import { useUnsavedChanges } from '../lib/useUnsavedChanges';
 
-function NavigationGuard({ dirty, busy, onDiscard }: { dirty: boolean; busy: boolean; onDiscard: () => void }) {
+function NavigationGuard({ dirty, busy, onDiscard }: { dirty: boolean; busy: boolean; onDiscard: () => Promise<boolean> }) {
   const nav = useUnsavedChanges(dirty, busy);
   return nav.blocked && <div className="collection-feedback" data-navigation-prompt>
-    <p className="notice" role="alert">{busy ? '적용 중입니다. 완료될 때까지 기다려주세요.' : '적용하지 않은 목록 변경이 있습니다. 이동하면 변경 내용이 사라집니다.'}</p>
+    <p className="notice" role="alert">{busy ? '처리 중입니다. 완료될 때까지 기다려주세요.' : '적용하지 않은 목록 변경이 있습니다. 이동하면 변경 내용이 사라집니다.'}</p>
     <button ref={nav.stayButton} type="button" className="text-button" onClick={nav.stay}>계속 수정</button>
-    <button type="button" className="text-button" disabled={busy} onClick={() => { if (!busy) { onDiscard(); nav.leave(); } }}>변경 버리고 이동</button>
+    <button type="button" className="text-button" disabled={busy} onClick={async () => { if (!busy && await onDiscard()) nav.leave(); }}>변경 버리고 이동</button>
   </div>;
 }
 
 export function AnimalCollection({ animals, revision, active, onCreate, onEdit, refresh, onLocked, photo }: {
   animals: Animal[]; revision: number; active: boolean; onCreate: () => void; onEdit: (animal: Animal) => void;
-  refresh: () => Promise<void>; onLocked: (locked: boolean) => void; photo: (animal: Animal) => ReactNode;
+  refresh: () => Promise<Dashboard>; onLocked: (locked: boolean) => void; photo: (animal: Animal) => ReactNode;
 }) {
   const initial = useRef(collectionItems(animals));
   const [draft, setDraft] = useState(initial.current), [catalog, setCatalog] = useState(animals);
   const [expected, setExpected] = useState(revision), [page, setPage] = useState(0);
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [saved, setSaved] = useState(false);
   const [conflict, setConflict] = useState(false), [latest, setLatest] = useState<Dashboard | null>(null);
+  const [unresolved, setUnresolved] = useState(false), [reconciling, setReconciling] = useState(false);
   const submitting = useRef(false), request = useRef<{ body: string; id: string } | null>(null);
   const drag = useRef<string | null>(null);
   const dirty = JSON.stringify(draft) !== JSON.stringify(initial.current);
-  const locked = dirty || busy || conflict;
+  const locked = dirty || busy || conflict || unresolved;
 
   useEffect(() => { onLocked(locked); return () => onLocked(false); }, [locked, onLocked]);
   useEffect(() => {
     // Keep an unsaved draft across refreshes; only explicit conflict review changes its baseline.
-    if (!dirty && !busy && revision >= expected) {
+    if (!dirty && !busy && !unresolved && revision >= expected) {
       if (animals.length > catalog.length) setPage(Math.floor((animals.length - 1) / 10));
       initial.current = collectionItems(animals); setDraft(initial.current); setCatalog(animals); setExpected(revision);
     }
-  }, [animals, revision, busy]); // A draft is only replaced when clean, idle and not newer than props.
+  }, [animals, revision, busy, unresolved]); // Only replace a clean, resolved draft with current props.
 
   function change(next: CollectionItem[]) { setDraft(next); setSaved(false); setError(''); }
   function move(from: number, to: number) {
@@ -43,10 +44,23 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
     change(moveCollection(draft, from, to)); setPage(Math.floor(to / 10));
     requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-collection-id="${id}"]`)?.focus());
   }
-  function cancel() {
-    if (busy) return;
-    initial.current = collectionItems(animals); setCatalog(animals); setExpected(revision);
-    setDraft(initial.current); setConflict(false); setLatest(null); setSaved(false); setError(''); request.current = null;
+  async function cancel(): Promise<boolean> {
+    if (submitting.current) return false;
+    let currentAnimals = animals, currentRevision = revision;
+    if (unresolved) {
+      submitting.current = true; setBusy(true); setReconciling(true);
+      try {
+        const authoritative = await refresh();
+        if (authoritative.account_status !== 'active' || !authoritative.profile) throw new Error('NOT_FOUND');
+        currentAnimals = authoritative.animals; currentRevision = authoritative.profile.revision;
+      } catch (reason) {
+        setError(`실제 저장 상태를 확인하지 못했습니다. ${userMessage(reason)}`);
+        return false; // Keep the draft, receipt, warning and interlocks until reconciliation succeeds.
+      } finally { submitting.current = false; setBusy(false); setReconciling(false); }
+    }
+    initial.current = collectionItems(currentAnimals); setCatalog(currentAnimals); setExpected(currentRevision);
+    setDraft(initial.current); setConflict(false); setLatest(null); setSaved(false); setError(''); setUnresolved(false); request.current = null;
+    return true;
   }
   async function apply() {
     if (submitting.current || !dirty || conflict) return;
@@ -57,9 +71,12 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
     if (request.current?.body !== body) request.current = { body, id: crypto.randomUUID() };
     try {
       const result = await rpc<{ revision: number }>('apply_animal_collection', { p_items: parsed.data, p_expected: expected, p_request_id: request.current.id });
-      await refresh();
-      initial.current = parsed.data; setDraft(parsed.data); setExpected(result.revision); setSaved(true); request.current = null;
+      const authoritative = await refresh();
+      if (!authoritative.profile || authoritative.account_status !== 'active' || authoritative.profile.revision < result.revision) throw new Error('NOT_FOUND');
+      initial.current = collectionItems(authoritative.animals); setDraft(initial.current); setCatalog(authoritative.animals);
+      setExpected(authoritative.profile.revision); setSaved(true); setUnresolved(false); request.current = null;
     } catch (reason) {
+      setUnresolved(true);
       const message = String((reason as { message?: string })?.message ?? reason);
       if (/VERSION_CONFLICT|REQUEST_CONFLICT|REQUEST_EXPIRED|VALIDATION_FAILED/.test(message)) { setConflict(true); setLatest(null); }
       setError(/VALIDATION_FAILED/.test(message) ? '목록이 변경됐거나 입력값이 올바르지 않습니다. 최신 목록을 확인해주세요.' : userMessage(reason));
@@ -80,7 +97,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
     const baseline = collectionItems(latest.animals);
     initial.current = baseline; setExpected(latest.profile.revision); setCatalog(latest.animals);
     if (!keep) setDraft(baseline);
-    setPage(0); setConflict(false); setLatest(null); request.current = null;
+    setPage(0); setConflict(false); setLatest(null); setUnresolved(false); request.current = null;
     setError('최신 목록을 확인했습니다. 변경 내용을 검토한 뒤 적용해주세요.');
     // A failed parent refresh does not discard the already reviewed local draft.
     try { await refresh(); } catch (reason) { setError(userMessage(reason)); }
@@ -88,7 +105,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
   const sameIds = latest && draft.length === latest.animals.length && draft.every(item => latest.animals.some(a => a.id === item.id));
   const pages = Math.max(1, Math.ceil(draft.length / 10)), currentPage = Math.min(page, pages - 1);
   return <section className="animal-collection" aria-label="개체 목록 관리">
-    {!active ? null : <NavigationGuard dirty={dirty} busy={busy} onDiscard={cancel}/>}
+    {!active ? null : <NavigationGuard dirty={dirty || unresolved} busy={busy} onDiscard={cancel}/>}
     {locked && <p className="collection-hint">목록 변경을 적용하거나 취소한 뒤 개체를 등록·편집할 수 있어요.</p>}
     <button type="button" className="collection-add" aria-label="개체 등록" disabled={locked || draft.length >= 20} onClick={onCreate}><Plus size={40}/></button>
     {!draft.length && <p className="collection-empty">등록된 개체가 없습니다.</p>}
@@ -123,6 +140,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
       <button type="button" aria-label="다음 페이지" disabled={currentPage === pages-1} onClick={() => setPage(currentPage+1)}><ChevronRight size={16}/></button>
     </nav>
     {error && <p className="notice" role="alert">{error}</p>}
+    {unresolved && <p className="notice" role="status">실제 저장 상태를 아직 확인하지 못했습니다. 재시도하거나 변경 취소로 저장 상태를 확인해주세요.</p>}
     {saved && <p className="success" role="status">목록을 적용했어요.</p>}
     {conflict && <div className="collection-feedback">
       {!latest ? <button type="button" className="text-button" disabled={busy} onClick={inspectLatest}>최신 목록 확인</button> : <>
@@ -132,7 +150,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
         <button type="button" className="text-button" disabled={busy} onClick={() => acceptLatest(false)}>최신 목록으로 바꾸기</button>
       </>}
     </div>}
-    <div className="collection-apply"><button type="button" className="button" disabled={busy || !dirty || conflict} onClick={apply}>{busy ? '적용 중':'적용하기'}</button>
+    <div className="collection-apply"><button type="button" className="button" disabled={busy || !dirty || conflict} onClick={apply}>{busy ? (reconciling ? '저장 상태 확인 중':'적용 중'):'적용하기'}</button>
       {locked && <button type="button" className="text-button" disabled={busy} onClick={cancel}>변경 취소</button>}</div>
   </section>;
 }

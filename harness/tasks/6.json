@@ -9,14 +9,16 @@
     "최대20개 전체 집합 검증·10개 단위 표시·페이지 경계 이동/키보드/드래그",
     "소유권/활성/동의/쓰기 제한·revision·재전송·실패 원상 유지",
     "취소/이동/편집 진입/충돌 시 초안 유실·자동 저장/덮어쓰기 없음",
-    "7개 화면 폭 원본 비교·기존 등록/편집/사진/공개 회귀"
+    "7개 화면 폭 원본 비교·기존 등록/편집/사진/공개 회귀",
+    "실패한 적용 뒤 취소/이동은 실제 저장 상태 확인 후 완료; 확인 실패/dirty 해소에도 미확인 잠금·영수증 유지"
   ],
   "plan": [
     "원본 관리 목록 및 SNS 토글 패턴 대응 확정",
     "로컬 DB 일괄 명령·권한·동시성 검증 후 새 CLI 마이그레이션",
     "원본 단일 열 카드·페이지·적용과 초안/충돌/이동 보호 연결",
     "단위/DB/E2E·원본 캡처·전체 verify",
-    "정상 커밋/push·이슈 연결 PR·원격 확인·main 복귀"
+    "정상 커밋/push·이슈 연결 PR·원격 확인·main 복귀",
+    "PR #7 리뷰: 실패한 적용 뒤 취소/이동 전에 실제 저장 상태 재조회, 실패 시 미확인 잠금 유지"
   ],
   "status": "verified",
   "design": {
@@ -36,16 +38,18 @@
     "evidence": [
       "docs/10-animal-collection-apply.md (원본별 대응·한계·재현)",
       "artifacts/collection-6/list-{320,360,390,450,768,1440,1920}.png (actual captures inspected)",
-      "artifacts/collection-6/with-photo-{390,1440}.png 및 apply-bottom-390.png (actual uploaded photo, pages/actions)"
+      "artifacts/collection-6/with-photo-{390,1440}.png 및 apply-bottom-390.png (actual uploaded photo, pages/actions)",
+      "artifacts/collection-6/cancel-reconcile-390.png (unresolved state, existing notice/text-button pattern inspected)"
     ]
   },
   "verification": {
     "status": "passed",
     "unit": "11 total including 3 collection boundaries",
     "database": "20 existing +55 edit +46 collection; sequential QA",
-    "browser": "18 total including 7 collection flows; 7 viewport widths; real uploaded photo",
-    "fullSuite": "build +170 checks (12 harness,11 unit,121 DB,8 media,18 E2E)",
+    "browser": "20 total including 9 collection flows and failed-apply cancellation reconciliation",
+    "fullSuite": "build +172 checks (12 harness,11 unit,121 DB,8 media,20 E2E)",
     "migration": "CLI local db pull 20261028170427; security advisors no warning; pre-existing row digest unchanged; no reset",
-    "environment": "A concurrent QA trial conflicted; excluded and rerun sequentially. Drag viewport and TS test reverse compatibility corrected. First-flow removes only this execution newly-created animal/media."
+    "environment": "A concurrent QA trial conflicted; excluded and rerun sequentially. Drag viewport and TS test reverse compatibility corrected. First-flow removes only this execution newly-created animal/media.",
+    "reviewFix": "PR #7: authoritative dashboard reconciliation before cancelling uncertain apply; failed reconciliation retains draft/receipt/interlocks; targeted 2 regressions passed"
   }
 }
