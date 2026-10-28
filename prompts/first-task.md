@@ -2,6 +2,8 @@
 
 너는 렙타일링크 저장소를 이어받는 개발 에이전트다. 기존 설계를 다시 제안하는 단계가 아니라, 명세를 확인한 뒤 하나의 사용자 흐름을 끝까지 구현하고 검증하는 단계다. 한국어로 소통한다.
 
+진행 인계: 이슈 #3의 일반 필드 수정은 `codex/feat/3-animal-edit`에서 로컬 구현 후 데스크톱 디자인 비교 대기로 인계한다. 먼저 `docs/05-implementation-status.md`와 `docs/09-animal-edit-handoff.md`를 확인하고 기존 구현을 중복 작성하지 않는다. 사용자 지정에 따라 원본/실행 화면의 최종 비교는 데스크톱에서 수행한다. 아래 내용은 원래 수용 기준이며 완료한 항목과 대기 항목은 task 기록을 따른다.
+
 ## 먼저 읽고 확인할 것
 
 1. `AGENTS.md`, `docs/01-functional-spec.md`, `docs/02-data-model.md`, `docs/03-free-development-plan.md`.

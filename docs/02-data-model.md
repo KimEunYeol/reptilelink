@@ -129,6 +129,12 @@ slug 정규식은 `^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$`. 저장 전 소문자�
 
 UNIQUE `(id, profile_id)`, UNIQUE `(profile_id, sort_order)`(정렬 교체를 고려해 지연 검사 가능하게 구현). 종류·모프는 초기에는 사용자 텍스트다. 별도의 공식 종 분류 DB를 임의로 만들지 않는다.
 
+이슈 #3의 일반 수정 명령은 `api.update_animal(p_animal_id, p_data, p_expected, p_request_id)`다. `p_data`에는 이름·종류·모프·성별·birth_date·설명·분양 상태 7개 필드를 모두 보내며 다른 필드는 거절한다. 공개 여부·소유자·사진·성장 공개·정렬은 변경하지 않는다. 생일은 `YYYY-MM-DD` 또는 NULL이며 실제 달력 날짜·서기 0001-01-01 이후·Asia/Seoul 오늘까지 허용한다. 트리거도 미래/무한 날짜를 거절한다. 이름/종류 필수·문자 길이·enum·JSON 자료형을 DB에서도 검사한다. 일반 수정의 Unicode 길이는 PostgreSQL과 같은 코드 포인트 기준이다.
+
+활성 계정·현재 필수 동의·쓰기 허용·소유권을 확인하고 프로필 잠금 아래 요청 영수증 → 버전 검사 → 필드 갱신·revision 증가·영수증 저장을 처리한다. 요청 해시에는 대상 개체 ID와 본문을 함께 넣는다. 같은 요청 ID의 본문/대상/명령 변경은 `REQUEST_CONFLICT`, 만료된 영수증 재사용은 `REQUEST_EXPIRED`로 거절한다. 현재 동의 버전은 기존 로컬 구현과 같은 `local-preview-v1`이며 운영 정책 완료를 뜻하지 않는다. 직접 테이블 UPDATE는 계속 금지한다.
+
+관리 DTO는 nullable 생일을 포함하며 공개 `public_page`는 명시적 허용 필드 목록에만 생일을 추가한다. 생일은 공개 개체 정보이며 비공개 관리 메모와 분리한다. Worker의 기존 bootstrap이 이 허용 DTO를 사용하므로 별도 특권 조회나 사진 경로를 추가하지 않는다.
+
 ### 4.5 `private.animal_notes`
 
 `animal_id uuid PK`, `profile_id uuid`, `body text ≤ 2,000자`, `updated_at timestamptz`.

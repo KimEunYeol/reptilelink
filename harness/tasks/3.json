@@ -1,0 +1,49 @@
+{
+  "issue": 3,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/3",
+  "branch": "codex/feat/3-animal-edit",
+  "baseSha": "bbd95497b6ca01f146a11585a625f13abd205dc3",
+  "scope": "F-03 개체 일반 필드 수정·저장·취소·권한·충돌·공개 반영",
+  "acceptance": [
+    "현재 값 편집/취소/저장 후 새로고침·재로그인 유지",
+    "익명·타인·비활성·금지 필드 및 잘못된 날짜 거절",
+    "충돌/연결 실패 입력 보존과 중복 요청 방지",
+    "기존 등록·사진·비공개 조건·공개 DTO 회귀 없음"
+  ],
+  "plan": [
+    "새 nullable birth_date 마이그레이션과 수정 전용 RPC",
+    "원본 기반 개체 수정 폼과 저장/충돌 복구",
+    "단위·DB·E2E 및 기존 전체 로컬 회귀",
+    "데스크톱 디자인 검토 대기로 인계 후 검토 결과 반영·PR"
+  ],
+  "status": "awaiting_design_review",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png"
+    ],
+    "notes": "전체 보드 개체 관리 열 x5200~7200,y1250~6000: 카드 목록의 적용하기와 개체 수정 팝업의 저장/취소가 분리됨. 팝업은 대표 사진·성별·행별 이름/종류/모프/해칭일·설명·저장/취소 구성. PC 안내 y8400 부근: 상세 팝업은 모바일 내용을 따름. 이번 범위는 일반 필드뿐으로 사진/부모/입양일/체중/그래프는 미구현 표시 없이 기능을 새로 추가하지 않는다. birth_date는 해칭일(생일)로 대응하며 최종 시각 비교는 데스크톱에서 수행.",
+    "review": {
+      "status": "pending",
+      "summary": "사용자 지정 데스크톱 원본/실행 화면 비교 대기"
+    },
+    "evidence": [
+      "artifacts/animal-edit-390.png (functional capture only; desktop visual comparison pending)",
+      "artifacts/animal-edit-1440.png (functional capture only; desktop visual comparison pending)"
+    ]
+  },
+  "verification": {
+    "status": "passed",
+    "unit": "8 passed",
+    "database": "20 existing + 55 animal edit passed",
+    "browser": "8 Playwright flows passed (5 new + 3 existing); 390/1440px functional checks",
+    "migration": "Two additive local migrations: birth date/update RPC and Unicode whitespace normalization; original animal-row digest preserved; security advisors checked",
+    "desktop": "Final design comparison pending; no remote push/PR/merge",
+    "handoff": "docs/09-animal-edit-handoff.md",
+    "fullSuite": "build + 111 checks: harness 12, unit 8, DB 20+55, media 8, E2E 8",
+    "environment": "Initial full run stopped because Worker was not running; started local dev:all and reran; desktop visual comparison remains pending"
+  }
+}

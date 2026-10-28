@@ -15,8 +15,26 @@ export const animalSchema = z.object({
   is_public: z.boolean(),
 });
 export type AnimalInput = z.infer<typeof animalSchema>;
+export function seoulDate(now = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+  const value = (type: string) => parts.find(part => part.type === type)!.value;
+  return `${value('year')}-${value('month')}-${value('day')}`;
+}
+const editText = (max: number, required = false) => z.string().trim().refine(value =>
+  (!required || value.length > 0) && [...value].length <= max, `1~${max}자 이내로 입력해주세요.`);
+export const animalEditSchema = z.object({
+  name: editText(40, true), species: editText(80, true), morph: editText(120),
+  sex: z.enum(['unknown', 'male', 'female']),
+  birth_date: z.string().refine(value => {
+    if (!/^(?!0000)\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const date = new Date(`${value}T00:00:00Z`);
+    return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value && value <= seoulDate();
+  }, '생일은 오늘까지의 올바른 날짜로 입력해주세요.').nullable(),
+  description: editText(500), listing_status: z.enum(['not_listed', 'available', 'reserved', 'rehomed']),
+}).strict();
+export type AnimalEditInput = z.infer<typeof animalEditSchema>;
 export type Photo = { asset_id: string; sort_order: number };
-export type Animal = AnimalInput & { id: string; sort_order: number; photos: Photo[] };
+export type Animal = AnimalInput & { id: string; birth_date: string | null; sort_order: number; photos: Photo[] };
 export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string };
 export type Dashboard = { account_status: string; profile: Profile | null; animals: Animal[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
 export type PublicPage = { profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token'>; animals: Animal[] };
@@ -35,6 +53,9 @@ export function userMessage(error: unknown): string {
     CONSENT_REQUIRED: '이용 안내에 동의해주세요.',
     SERVICE_UNAVAILABLE: '지금은 저장을 잠시 사용할 수 없습니다.',
     UPLOAD_EXPIRED: '사진 업로드 시간이 만료됐습니다. 다시 시도해주세요.',
+    VALIDATION_FAILED: '입력값을 확인해주세요. 생일은 오늘까지의 날짜만 저장할 수 있습니다.',
+    REQUEST_CONFLICT: '저장 요청 내용이 달라졌습니다. 입력값을 확인하고 다시 저장해주세요.',
+    REQUEST_EXPIRED: '저장 요청이 만료됐습니다. 최신 내용을 불러온 뒤 다시 저장해주세요.',
   };
   for (const [code, translation] of Object.entries(translations)) if (message.includes(code)) return translation;
   if (message.includes('duplicate key') || message.includes('23505')) return '이미 사용 중인 주소입니다. 다른 주소를 입력해주세요.';
