@@ -83,7 +83,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
     try { await rpc(pendingCommand.current.method, pendingCommand.current.args); }
     catch (reason) {
       // These are definitive rollbacks. A network failure remains unresolved.
-      if (!/VERSION_CONFLICT|REQUEST_EXPIRED|REQUEST_CONFLICT|NOT_FOUND|VALIDATION_FAILED/.test(String((reason as { message?: string })?.message ?? reason))) throw reason;
+      if (!/VERSION_CONFLICT|REQUEST_EXPIRED|REQUEST_CONFLICT|NOT_FOUND|VALIDATION_FAILED|SERVICE_UNAVAILABLE|QUOTA_EXCEEDED|CONSENT_REQUIRED/.test(String((reason as { message?: string })?.message ?? reason))) throw reason;
     }
   }
   async function inspectLatest() {

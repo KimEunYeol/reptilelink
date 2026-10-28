@@ -89,4 +89,34 @@ test.describe('photo editing with real local QA Storage',()=>{
   test('SPA Back retains a local photo until explicit discard, without reserving storage',async({page})=>{
     await page.getByRole('link',{name:'기본 정보',exact:true}).click();await page.getByRole('link',{name:'개체 관리',exact:true}).click();const d=await open(page);await choose(page,d);await page.evaluate(()=>history.back());await expect(d.getByRole('alert')).toContainText('저장하지 않은');await d.getByRole('button',{name:'계속 편집',exact:true}).click();await expect(d.getByAltText('선택한 사진 미리보기')).toBeVisible();await page.evaluate(()=>history.back());await d.getByRole('button',{name:'변경 버리고 이동',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/design$/);expect(assetIds()).toEqual(beforeAssets);
   });
+  test('obsolete cached uploads are released before saving replacement drafts after a partial preparation failure',async({page})=>{
+    const d=await open(page);await choose(page,d);await choose(page,d,'사진 추가','#63ad26');
+    const chooser=page.waitForEvent('filechooser');await d.getByRole('button',{name:'사진 추가',exact:true}).click();await (await chooser).setFiles({name:'broken.png',mimeType:'image/png',buffer:Buffer.from('not a decodable image')});
+    await d.getByRole('button',{name:'저장',exact:true}).click();await expect(d.getByRole('alert')).toBeVisible();
+    const obsolete=[...assetIds()].filter(id=>!beforeAssets.has(id));expect(obsolete).toHaveLength(2);expect((await current()).photos).toHaveLength(0);
+    await choose(page,d,'사진 교체','#8251af');
+    await d.getByRole('button',{name:'1번 사진 (대표)',exact:true}).click();await choose(page,d,'사진 교체','#3847c9');
+    await d.getByRole('button',{name:'2번 사진',exact:true}).click();await choose(page,d,'사진 교체','#df7415');
+    const applied=page.waitForResponse(r=>r.url().endsWith('/rpc/save_animal_edit'),{timeout:8000});await d.getByRole('button',{name:'저장',exact:true}).click();expect((await applied).ok()).toBe(true);await expect(d).not.toBeVisible();expect((await current()).photos).toHaveLength(3);
+    for(const id of obsolete)expect(h.localQuery(`select state from private.media_assets where id='${id}'`).trim()).toBe('delete_pending');
+  });
+
+  test('a service-policy rejection allows cancellation and latest-value review while writes remain disabled',async({page})=>{
+    const previous=h.localQuery('select writes_enabled from private.project_budget where id=1').trim();
+    try {
+      for(const mode of ['cancel','latest']){
+        const d=await open(page);await d.getByRole('textbox',{name:'개체 이름',exact:true}).fill('쓰기 중지 중 거절된 변경');
+        h.localQuery('update private.project_budget set writes_enabled=false where id=1');
+        await d.getByRole('button',{name:'저장',exact:true}).click();await expect(d.getByRole('alert')).toContainText('지금은 저장');
+        if(mode==='latest'){
+          await d.getByRole('button',{name:'최신 값 검토',exact:true}).click();await d.getByRole('button',{name:'최신 값 확인',exact:true}).click();
+          await expect(d.getByRole('group',{name:'최신 사진',exact:true})).toBeVisible();await d.getByRole('button',{name:'최신값으로 바꾸기',exact:true}).click();
+        }
+        await d.getByRole('button',{name:'취소',exact:true}).click();await expect(d).not.toBeVisible();expect((await current()).name).toBe(original.name);
+      }
+      await page.getByRole('link',{name:'기본 정보',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/design$/);
+      expect(h.localQuery('select writes_enabled from private.project_budget where id=1').trim()).toBe('f');
+    } finally {h.localQuery(`update private.project_budget set writes_enabled=${previous==='t'?'true':'false'} where id=1`);}
+  });
+
 });
