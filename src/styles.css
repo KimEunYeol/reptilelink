@@ -363,3 +363,29 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none!important; transition: none!important; scroll-behavior: auto!important; } }
 .page-heading p, .card-content > p, .card-bottom, .collection-summary > div, .public-intro > p, .collection-tip, .form-section-title p, label small { color: #6b7d60; }
+
+/* Animal edit: design board's narrow dialog, divided rows and save/cancel pair. */
+.animal-edit { width: min(340px, calc(100% - 32px)); margin: auto; padding: 0; border: 0; border-radius: 20px; max-height: 90dvh; color: #374151; font-synthesis: weight; box-shadow: 0 20px 60px #1f293722; }
+.animal-edit::backdrop { background: #182b2438; }
+.animal-edit-heading { display: flex; justify-content: space-between; align-items: center; min-height: 100px; padding: 28px 32px; border-bottom: 1px solid #e5e7eb; }
+.animal-edit-heading h2 { font-size: 24px; font-weight: 700; margin: 0; }
+.animal-edit-body { padding: 28px 20px 24px; max-height: calc(90dvh - 100px); overflow-y: auto; }
+.edit-photo { aspect-ratio: 1.6; border-radius: 18px; overflow: hidden; margin-bottom: 18px; }
+.edit-sex { border: 0; padding: 0 0 18px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.edit-sex legend { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
+.edit-sex label { display: flex; flex-direction: row; align-items: center; gap: 12px; margin: 0; font-size: 14px; white-space: nowrap; }
+/* Outrank the shared text-input selector: radios must not become full-width fields. */
+.animal-edit .edit-sex input[type=radio] { appearance: none; width: 24px; height: 24px; min-height: 0; flex: 0 0 24px; padding: 0; margin: 0; border: 1px solid #dce3ec; border-radius: 50%; background: #fff; }
+.animal-edit .edit-sex input[type=radio]:checked { border-color: #2cbb50; background: radial-gradient(circle, #fff 0 4px, #2cbb50 5px); }
+.edit-fields { padding: 0; border: 0; margin: 0; min-width: 0; }
+.edit-fields > label { display: grid; grid-template-columns: 90px minmax(0, 1fr); align-items: center; margin: 0; border-top: 1px solid #e5e7eb; padding: 12px 0; }
+.edit-fields > label > span { font-size: 12px; color: #718096; padding: 0 8px 0 12px; }
+.animal-edit .edit-fields input:not([type=checkbox]):not([type=file]), .animal-edit .edit-fields select, .animal-edit .edit-fields textarea { min-width: 0; min-height: 29px; margin: 0; width: 100%; border: 0; border-radius: 0; background: #fff; color: #374151; padding: 4px 3px; font-size: 14px; }
+.edit-fields textarea { resize: vertical; }
+.edit-field-error { grid-column: 1 / -1; color: #ae3535; font-size: 11px; }
+.edit-actions { border-top: 1px solid #e5e7eb; display: flex; justify-content: center; gap: 36px; padding: 24px 0 4px; }
+.edit-actions .button { border-radius: 12px; min-height: 40px; padding: 8px 24px; font-size: 14px; }
+.edit-conflict { margin-top: 12px; }
+.edit-conflict dd { overflow-wrap: anywhere; max-width: 180px; white-space: pre-wrap; }
+.edit-conflict .text-button { display: block; margin: 12px 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
