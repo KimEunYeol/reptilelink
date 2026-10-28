@@ -61,12 +61,34 @@ test.describe('animal general field edit with real local QA identity', () => {
     await owner.schema('api').rpc('set_profile_public', { p_public: originalPublic, p_expected: d.profile!.revision });
   });
 
-  test('prefills current values, cancels without writes and returns keyboard focus at 390/1440px', async ({ page }) => {
-    for (const width of [390, 1440]) {
+  test('keeps the source dialog centered, usable and cancellable at every specified width', async ({ page }) => {
+    await mkdir('artifacts/design-review-3', { recursive: true });
+    for (const width of [320, 360, 390, 450, 768, 1440, 1920]) {
       await page.setViewportSize({ width, height: 900 });
       const d = await open(page);
+      const bounds = (await d.boundingBox())!;
+      expect(Math.abs(bounds.x - (width - bounds.width) / 2)).toBeLessThanOrEqual(1);
+      expect(bounds.y).toBeGreaterThan(0);
+      expect(bounds.width).toBeLessThanOrEqual(width - 32);
+      for (const radio of await d.getByRole('radio').all()) {
+        const box = (await radio.boundingBox())!;
+        expect(box.width).toBeLessThanOrEqual(28);
+        expect(box.height).toBeLessThanOrEqual(28);
+      }
+      expect(await d.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+      await page.screenshot({ path: `artifacts/design-review-3/edit-${width}.png` });
       await expect(d.getByRole('textbox', { name: '개체 이름', exact: true })).toHaveValue(original.name);
       await d.getByRole('textbox', { name: '개체 이름', exact: true }).fill('저장하지 않은 입력');
+      // The body scrolls independently so lower fields and actions remain reachable.
+      await d.getByRole('textbox', { name: '개체 설명', exact: true }).fill('스크롤 조작 확인');
+      await d.getByRole('button', { name: '저장', exact: true }).scrollIntoViewIfNeeded();
+      await expect(d.getByRole('button', { name: '저장', exact: true })).toBeInViewport();
+      await page.screenshot({ path: `artifacts/design-review-3/edit-bottom-${width}.png` });
+      await d.getByRole('button', { name: '편집 닫기', exact: true }).focus();
+      await page.keyboard.press('Tab');
+      await expect(d.locator('input[type=radio]:checked')).toBeFocused();
+      await page.keyboard.press('Shift+Tab');
+      await expect(d.getByRole('button', { name: '편집 닫기', exact: true })).toBeFocused();
       const before = (await dashboard()).profile!.revision;
       await d.getByRole('button', { name: '취소', exact: true }).click();
       await expect(d).not.toBeVisible();
@@ -82,7 +104,7 @@ test.describe('animal general field edit with real local QA identity', () => {
     const d = await open(page);
     const name = `편집 확인 ${Date.now()}`;
     await d.getByRole('textbox', { name: '개체 이름', exact: true }).fill(name);
-    await d.getByRole('textbox', { name: '종류', exact: true }).fill('레오파드 게코');
+    await d.getByRole('combobox', { name: '종류', exact: true }).fill('레오파드 게코');
     await d.getByRole('textbox', { name: '모프', exact: true }).fill('수정 모프');
     await d.getByRole('radio', { name: '암컷', exact: true }).check();
     await d.getByLabel('생일', { exact: true }).fill('2024-02-29');

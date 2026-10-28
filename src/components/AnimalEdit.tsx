@@ -97,9 +97,9 @@ export function AnimalEdit({ animal, revision, preview, onClose, onSaved }: {
       </fieldset>
       <fieldset disabled={busy} className="edit-fields"><legend className="sr-only">개체 일반 정보</legend>
         <label><span>이름</span><input aria-label="개체 이름" value={values.name} onChange={e => field('name', e.target.value)} {...inputProps('name')}/>{problem('name')}</label>
-        <label><span>종류</span><input aria-label="종류" value={values.species} onChange={e => field('species', e.target.value)} {...inputProps('species')}/>{problem('species')}</label>
+        <label><span>종류</span><input aria-label="종류" list="edit-species" value={values.species} onChange={e => field('species', e.target.value)} {...inputProps('species')}/>{problem('species')}</label>
         <label><span>모프</span><input aria-label="모프" value={values.morph} onChange={e => field('morph', e.target.value)} {...inputProps('morph')}/>{problem('morph')}</label>
-        <label><span>해칭일(생일)</span><input aria-label="생일" type="date" max={seoulDate()} value={values.birth_date ?? ''}
+        <label><span>해칭일</span><input aria-label="생일" type="date" max={seoulDate()} value={values.birth_date ?? ''}
           onChange={e => field('birth_date', e.target.value || null)} {...inputProps('birth_date')}/>{problem('birth_date')}</label>
         <label><span>분양 상태</span><select aria-label="분양 상태" value={values.listing_status}
           onChange={e => field('listing_status', e.target.value as AnimalEditInput['listing_status'])}>
@@ -107,6 +107,7 @@ export function AnimalEdit({ animal, revision, preview, onClose, onSaved }: {
         <label className="edit-description"><span>설명</span><textarea aria-label="개체 설명" rows={4} value={values.description}
           onChange={e => field('description', e.target.value)} {...inputProps('description')}/>{problem('description')}</label>
       </fieldset>
+      <datalist id="edit-species"><option value="크레스티드 게코"/><option value="볼파이톤"/><option value="레오파드 게코"/></datalist>
       {error && <p className="notice" role="alert">{error}</p>}
       {conflict && <div className="edit-conflict">
         {!latest ? <button type="button" className="button ghost" disabled={busy} onClick={inspectLatest}>최신 값 확인</button> : <>

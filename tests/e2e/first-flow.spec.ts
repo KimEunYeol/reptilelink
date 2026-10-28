@@ -38,6 +38,21 @@ test('real local first flow: login, profile, photo, publication and private acce
   await page.reload();
   await expect(page.getByRole('button', { name: '도리 상세 보기' }).last()).toBeVisible();
   await expect(page.locator('.animal-photo').last()).toBeVisible();
+  // Compare the scoped editor with an actual uploaded photo as well as the QA no-photo case.
+  await mkdir('artifacts/design-review-3', { recursive: true });
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.getByRole('button', { name: '도리 상세 보기' }).last().click();
+    const edit = page.getByRole('dialog', { name: '개체 수정' });
+    const photo = edit.locator('.edit-photo img');
+    await expect(photo).toBeVisible();
+    await expect.poll(() => photo.evaluate(img => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    await page.screenshot({ path: `artifacts/design-review-3/photo-${width}.png` });
+    await edit.getByRole('button', { name: '저장', exact: true }).scrollIntoViewIfNeeded();
+    await expect(edit.getByRole('button', { name: '저장', exact: true })).toBeInViewport();
+    await page.screenshot({ path: `artifacts/design-review-3/photo-bottom-${width}.png` });
+    await edit.getByRole('button', { name: '취소', exact: true }).click();
+  }
   if (await page.getByRole('button', { name: '페이지 공개하기', exact: true }).isVisible()) await page.getByRole('button', { name: '페이지 공개하기', exact: true }).click();
   await expect(page.getByText('공개 중', { exact: true })).toBeVisible();
   await mkdir('artifacts', { recursive: true });
