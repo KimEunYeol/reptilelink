@@ -202,7 +202,7 @@ test.describe('animal general field edit with real local QA identity', () => {
   });
 
   test('SPA Back preserves unsaved input until the user explicitly chooses to leave', async ({ page }) => {
-    await page.getByRole('link', { name: '프로필 설정', exact: true }).click();
+    await page.getByRole('link', { name: '기본 정보', exact: true }).click();
     await page.getByRole('link', { name: /개체 관리/ }).click();
     const d = await open(page);
     await d.getByRole('textbox', { name: '개체 이름', exact: true }).fill('뒤로가기 보존');
@@ -225,7 +225,7 @@ test.describe('animal general field edit with real local QA identity', () => {
   });
 
   test('SPA Forward and in-app links preserve the draft; clean and cancelled editors do not block', async ({ page }) => {
-    await page.getByRole('link', { name: '프로필 설정', exact: true }).click();
+    await page.getByRole('link', { name: '기본 정보', exact: true }).click();
     await page.evaluate(() => history.back());
     await expect(page).toHaveURL(/\/dashboard\/animals$/);
     let d = await open(page);
@@ -250,7 +250,7 @@ test.describe('animal general field edit with real local QA identity', () => {
   });
 
   test('reload warns about dirty input, and navigation cannot discard an in-flight save', async ({ page }) => {
-    await page.getByRole('link', { name: '프로필 설정', exact: true }).click();
+    await page.getByRole('link', { name: '기본 정보', exact: true }).click();
     await page.getByRole('link', { name: /개체 관리/ }).click();
     const d = await open(page);
     await d.getByRole('textbox', { name: '개체 이름', exact: true }).fill('이동 보호 저장');

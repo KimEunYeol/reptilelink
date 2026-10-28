@@ -1,0 +1,53 @@
+{
+  "issue": 8,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/8",
+  "branch": "codex/design/8-management-shell",
+  "baseSha": "beba9ed76cc93c18e53853caf46ff4bfe23e02ff",
+  "scope": "F-02/F-03 관리 상단 메뉴·로고·주소/공개 조작·회색 푸터 정비",
+  "acceptance": [
+    "원본 메뉴 순서/중앙378px 콘텐츠/제한된 메뉴 가로 이동",
+    "제공 원본 로고 추출 및 출처 기록, 관리 화면 수제 장식 제거",
+    "주소 복사/공개 열기/공개 전환/로그아웃·사용량 보존",
+    "목록/편집 미저장 이동 보호와 기본 정보 메뉴 활성화",
+    "7개 폭 원본 직접 비교·전체 verify·PR 원격 확인"
+  ],
+  "plan": [
+    "원본·전체 보드/현 화면 비교 및 출처 기록",
+    "관리 셸만 정비, 원본 버튼/텍스트 패턴으로 기존 동작 재배치",
+    "실제 브라우저 메뉴/공유/잠금 회귀·화면 비교",
+    "전체 verify·정상 훅·PR 및 main 복귀"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png",
+      "design/마이페이지-기본정보.png",
+      "design/마이페이지-기본정보-m.png",
+      "design/최하단.png"
+    ],
+    "notes": "보드 관리 상단 x5440~5890,y1415~1750과 PC 설명 x0~3900,y8270~9270 실제 확인: 메인 제외 PC/모바일 동일 콘텐츠 크기/배치, 상하단만 PC 대응. 관리 export PC는 중앙378px 열·6개 상단 메뉴, 모바일은 메뉴 내부 가로 이동, 복사 pill 및 회색 푸터. 로고는 제공 PNG의 로고만 추출하고 예시 회사/연락처/SNS 미복사. 공개 상태/동작은 기존 버튼/알림 패턴 최소 조합. /dashboard/design 경로는 유지하되 기본 정보 탭에 연결; 다른 메뉴 disabled.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 전체 보드 PC 설명·관리 PC/모바일/수정·기본 정보·푸터와 실제 캡처를 열어 상단6개 메뉴/중앙378px/제공 로고/회색 복사·푸터 패턴을 대조했다. 320/360/390/450/768/1440/1920px에서 상하단 및 기본 정보/빈 목록·긴 주소를 확인했다. 기존 공개 조작은 원본 텍스트 버튼 패턴으로 최소 재배치한다. 미구현 메뉴/실제 운영자 정보/폼 내부/폰트/다른 화면 차이는 docs/11과 #2에 남긴다. 전체 픽셀 동일이나 사용자 PR 승인으로 표시하지 않는다."
+    },
+    "evidence": [
+      "docs/11-management-shell.md (원본별 비교/남은 차이/재현)",
+      "public/brand/README.md (추출 좌표/바이트 해시)",
+      "artifacts/shell-8/before-{390,1440}.png 및 top-{320,360,390,450,768,1440,1920}.png (직접 열어 비교)",
+      "artifacts/shell-8/footer-{동일7폭}.png, top-overview.png, footer-overview.png (직접 검토)",
+      "artifacts/shell-8/basic-320.png, empty-long-320.png (기본 정보/응답-only 빈 목록 fixture)"
+    ]
+  },
+  "verification": {
+    "status": "passed",
+    "fullSuite": "npm run verify: production build +175 checks (12 harness,11 unit,121 DB,8 media,23 E2E), sequential local QA",
+    "browser": "23 total including 3 management-shell cases; existing edit/collection/registration/photo/privacy flows passed",
+    "design": "7 viewport widths, header/footer, keyboard, active-tab scroll, empty/long display fixture, Worker logo bytes, real clipboard/public tab/logout, unsaved interlocks",
+    "reviewFixes": "Empty copy status conflicted with existing saved status: use separate polite live region; corrected tab offset calculation; restored shared contrast selectors while removing unused shell styles. Targeted 11 passed, then full175 passed.",
+    "limits": "Existing >500kB bundle warning; no DB/migration/dependency changes or remote console/deployment/paid work. Final recorded file state must pass verify before push."
+  }
+}

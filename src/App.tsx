@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, CheckCircle2, Copy, ExternalLink, Eye, EyeOff, Leaf, Link2, LoaderCircle, LogOut, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, CheckCircle2, ExternalLink, Eye, EyeOff, Leaf, LoaderCircle, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
 import { Gecko } from './components/Gecko';
 import { AnimalEdit } from './components/AnimalEdit';
 import { AnimalCollection } from './components/AnimalCollection';
+import { ManagementShell, ManagementShare } from './components/ManagementShell';
 import { animalSchema, formatBytes, profileSchema, sexLabels, statusLabels, userMessage, type Animal, type Dashboard, type Profile, type PublicPage } from './lib/domain';
 import { configured, googleAuth, localAuth, rpc, serverRequest, supabase } from './lib/supabase';
 import { preparePhoto } from './lib/images';
@@ -99,7 +100,29 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
   const [collectionLocked, setCollectionLocked] = useState(false);
   const profile = data.profile!;
   async function togglePage() { setBusy(true); setError(''); try { await rpc('set_profile_public', { p_public: !profile.is_published, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }
-  return <div className="dashboard"><header className="site-header"><Brand/><div className="header-actions"><span className="account-label"><span className="account-dot"/>{profile.display_name}</span><button className="icon-button" aria-label="로그아웃" disabled={collectionLocked} onClick={onSignOut}><LogOut size={18}/></button></div></header><div className="dashboard-layout"><aside className="sidebar"><span className="nav-caption">MY REPTILELINK</span><Link to="/dashboard/animals" className={`nav-link ${!design ? 'active' : ''}`}><Sprout size={19}/> 개체 관리 <span>{data.animals.length}</span></Link><Link to="/dashboard/design" className={`nav-link ${design ? 'active' : ''}`}><Leaf size={19}/> 프로필 설정</Link><div className="nav-future"><Link2 size={18}/><span>링크 · 일정 · 성장 기록<small>다음 개발 단계에서 만나요</small></span></div><div className="sidebar-note"><Gecko/><b>오늘도 잘 자라고 있나요?</b><p>작은 순간도 기록하면<br/>특별한 이야기가 돼요.</p></div><div className="storage-caption"><span>사진 저장 공간</span><b>{formatBytes(data.usage?.stored_bytes || 0)} / 20 MB</b><div className="storage-track"><i style={{ width: `${((data.usage?.stored_bytes || 0) + (data.usage?.reserved_bytes || 0)) / (20 * 1024 * 1024) * 100}%` }}/></div><small>정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</small></div></aside><main className="workspace"><div className="page-topline"><span className="eyebrow">MY LITTLE WORLD</span><span className="plan-badge"><Leaf size={12}/> FREE</span></div><div className="page-heading"><div><h1>{design ? '나를 소개하는 작은 공간' : '함께 자라는 우리 아이들'}<span className="heading-dot">.</span></h1><p>{design ? '브리더의 이야기를 나만의 링크에 담아보세요.' : '한 마리, 한 마리. 소중한 기록을 차곡차곡 모아보세요.'}</p></div></div><section className="page-link-banner"><div className="page-link-icon"><Link2 size={22}/></div><div className="page-link-text"><span>나의 렙타일링크</span><b>{window.location.host}/u/{profile.slug}</b></div><span className={`publication-status ${profile.is_published ? 'published' : ''}`}><i/>{profile.is_published ? '공개 중' : '비공개'}</span><button className="icon-button" aria-label="공개 주소 복사" onClick={async () => { try { await navigator.clipboard.writeText(`${window.location.origin}/u/${profile.slug}`); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { setError('주소를 직접 복사해주세요.'); } }}>{copied ? <Check size={17}/> : <Copy size={17}/>}</button>{profile.is_published && <Link className="icon-button" to={`/u/${profile.slug}`} target="_blank" aria-label="공개 페이지 열기"><ExternalLink size={17}/></Link>}<button className={`button small ${profile.is_published ? 'ghost' : ''}`} disabled={busy || collectionLocked} onClick={togglePage}>{profile.is_published ? '비공개로 전환' : '페이지 공개하기'}</button></section>{error && <Notice>{error}</Notice>}{saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}{design ? <section className="editor-panel"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/></section> : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}<footer className="workspace-footer"><span>© {new Date().getFullYear()} ReptileLink</span><span>Made for your little companions <Leaf size={12}/></span></footer></main></div>{creating && <AnimalForm profile={profile} refresh={refresh} onClose={() => setCreating(false)}/ >}{editing && <AnimalEdit animal={editing} revision={profile.revision} preview={editing.photos.length ? <Photo animal={editing} full/> : null} onClose={() => setEditing(null)} onSaved={async () => { await refresh(); setEditing(null); setSaved(true); }}/>}</div>;
+  const publicUrl = `${window.location.origin}/u/${profile.slug}`;
+  async function copyAddress() {
+    if (!profile.is_published) { setError('페이지를 공개한 뒤 링크를 복사해주세요.'); return; }
+    try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }
+    catch { setError('주소를 직접 복사해주세요.'); }
+  }
+  return <ManagementShell basic={design} locked={collectionLocked} onSignOut={onSignOut}>
+    <main className="management-content">
+      <h1 className="sr-only">{design ? '기본 정보' : '개체 관리'}</h1>
+      <ManagementShare url={publicUrl} copied={copied} onCopy={copyAddress}/>
+      <section className="management-publication" aria-label="페이지 공개 설정">
+        <span>{profile.is_published ? '공개 중' : '비공개'}</span>
+        {profile.is_published && <Link to={`/u/${profile.slug}`} target="_blank" rel="noopener noreferrer" aria-label="공개 페이지 열기">내 페이지 보기 <ExternalLink size={12}/></Link>}
+        <button className="text-button" disabled={busy || collectionLocked} onClick={togglePage}>{profile.is_published ? '비공개로 전환' : '페이지 공개하기'}</button>
+      </section>
+      {error && <Notice>{error}</Notice>}
+      {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
+      {design ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p></section>
+        : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
+    </main>
+    {creating && <AnimalForm profile={profile} refresh={refresh} onClose={() => setCreating(false)}/>}
+    {editing && <AnimalEdit animal={editing} revision={profile.revision} preview={editing.photos.length ? <Photo animal={editing} full/> : null} onClose={() => setEditing(null)} onSaved={async () => { await refresh(); setEditing(null); setSaved(true); }}/>}
+  </ManagementShell>;
 }
 
 function PublicView() {

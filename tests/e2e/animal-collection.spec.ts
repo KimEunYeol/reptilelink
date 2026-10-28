@@ -121,11 +121,11 @@ test.describe('collection apply using real local QA identities',()=>{
     await expect(list(page).locator('article').first()).toHaveAttribute('data-collection-id',original[1].id);
     await card(page,original[1]).dragTo(card(page,original[2]));
     await expect(list(page).locator('article').nth(2)).toHaveAttribute('data-collection-id',original[1].id);
-    await page.getByRole('link',{name:'프로필 설정',exact:true}).click();
+    await page.getByRole('link',{name:'기본 정보',exact:true}).click();
     await expect(list(page).getByRole('alert')).toContainText('적용하지 않은');
     await list(page).getByRole('button',{name:'계속 수정',exact:true}).click();
     expect((await dash()).animals.map(a=>a.id)).toEqual(original.map(a=>a.id));
-    await page.getByRole('link',{name:'프로필 설정',exact:true}).click();
+    await page.getByRole('link',{name:'기본 정보',exact:true}).click();
     await list(page).getByRole('button',{name:'변경 버리고 이동',exact:true}).click();
     await expect(page).toHaveURL(/\/dashboard\/design$/);
     await page.getByRole('link',{name:/개체 관리/}).click();
@@ -199,7 +199,7 @@ test.describe('collection apply using real local QA identities',()=>{
     await card(page,target).getByRole('switch').click(); // Now locally equals stale props, while the DB is public.
     await expect(list(page).getByRole('status')).toContainText('실제 저장 상태를 아직 확인하지 못했습니다');
     await expect(card(page,target).getByRole('button',{name:`${target.name} 상세 보기`,exact:true})).toBeDisabled();
-    await page.getByRole('link',{name:'프로필 설정',exact:true}).click();
+    await page.getByRole('link',{name:'기본 정보',exact:true}).click();
     await list(page).getByRole('button',{name:'변경 버리고 이동',exact:true}).click();
     await expect(page).toHaveURL(/\/dashboard\/animals$/); // Failed reconciliation cannot silently unlock navigation.
     await list(page).getByRole('button',{name:'계속 수정',exact:true}).click();
