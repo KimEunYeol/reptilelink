@@ -396,3 +396,12 @@ PK `(actor_id, action, window_started_at, window_seconds)`. 댓글·좋아요·�
 - [PostgreSQL 제약](https://www.postgresql.org/docs/current/ddl-constraints.html): 외래 키·고유성·CHECK의 설계 기준.
 - 구현 시 [Supabase 변경 이력](https://supabase.com/changelog)을 다시 확인하고 로컬 버전에 맞춰 검증한다.
 - [Auth Hooks 무료 플랜 지원](https://supabase.com/docs/guides/auth/auth-hooks), [가입 전 훅](https://supabase.com/docs/guides/auth/auth-hooks/before-user-created-hook): 신규 가입 허용 목록의 근거.
+
+
+## 2026-10-29 목록 일괄 적용 물리 계약
+
+`api.apply_animal_collection(p_items jsonb,p_expected bigint,p_request_id uuid)`는 [{id,is_public}] 배열 순서를 sort_order 0..n-1로 해석한다. 최대 20개이며 모든 현재 소유 개체 ID가 정확히 한 번씩 있어야 한다. 10개 단위 표시는 UI에만 적용하고 RPC는 모든 페이지의 전체 집합을 받는다. ID/boolean 외 필드·누락·중복·타인·잘못된 타입을 거절한다.
+
+프로필 행 잠금으로 기존 등록/편집/공개 명령과 직렬화한다. 활성 계정·필수 동의를 확인하고 영수증의 명령/본문 hash와 만료를 검사한 뒤 expected revision을 검사한다. 순서와 개체 공개만 한 트랜잭션으로 변경하고 실제 변경이 있으면 revision을 한 번 올린다. 동일 목록/빈 목록은 revision을 올리지 않으며 재전송 영수증은 남긴다. 같은 request_id/같은 배열은 기존 결과, 다른 배열/명령은 REQUEST_CONFLICT다.
+
+기존 정책에 따라 writes_enabled=false이면 순서 변경과 새 공개는 차단하되 동일 순서에서 숨기기는 허용한다. 일반 필드·소유자·프로필 공개·사진·성장 공개는 건드리지 않는다. 신규 테이블/DTO 공개 필드는 없다. 보안 advisors 경고 이상 없음, 기존 개체 행 해시 보존을 확인한 뒤 CLI db pull --local로 `20261028170427_animal_collection_apply.sql`을 생성하고 로컬 이력을 확인했다. 초기/기존 마이그레이션과 개발 DB를 다시 적용하거나 초기화하지 않았다.

@@ -4,6 +4,31 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { mkdir } from 'node:fs/promises';
 import { Gecko } from '../../src/components/Gecko';
 
+const helpersPath = '../../scripts/local-utils.mjs';
+const helpers = await import(helpersPath) as {
+  localQuery(sql: string): string;
+  localAdmin(): import('@supabase/supabase-js').SupabaseClient;
+};
+let createdFixture: string | null = null;
+test.afterEach(async () => {
+  if (!createdFixture) return;
+  const id = createdFixture; createdFixture = null;
+  expect(id).toMatch(/^[0-9a-f-]{36}$/);
+  const actor = helpers.localQuery("select id from auth.users where email='breeder-a@reptilelink.test'").trim();
+  expect(actor).toMatch(/^[0-9a-f-]{36}$/);
+  // Only the ID returned by this execution's create RPC may be removed; retain all old fixture/user rows.
+  const assets: string[] = JSON.parse(helpers.localQuery(`select coalesce(jsonb_agg(id),'[]') from private.media_assets where animal_id='${id}' and profile_id='${actor}'`).trim());
+  helpers.localQuery(`delete from public.animal_photos where animal_id='${id}' and profile_id='${actor}'`);
+  const admin = helpers.localAdmin();
+  for (const asset of assets) {
+    const manifest = await admin.schema('api').rpc('cleanup_manifest', { p_asset_id:asset,p_actor:actor });
+    expect(manifest.error).toBeNull();
+    if (manifest.data?.length) expect((await admin.storage.from('animal-media').remove(manifest.data)).error).toBeNull();
+    expect((await admin.schema('api').rpc('finish_cleanup',{p_asset_id:asset})).error).toBeNull();
+  }
+  helpers.localQuery(`delete from public.animals where id='${id}' and profile_id='${actor}'`);
+});
+
 test('real local first flow: login, profile, photo, publication and private access', async ({ page, browser, request }) => {
   await expect.poll(async () => (await request.get('http://localhost:8787/api/health')).status(), { timeout: 30000 }).toBe(200);
   await page.goto('/auth/login');
@@ -32,10 +57,20 @@ test('real local first flow: login, profile, photo, publication and private acce
   await dialog.getByRole('combobox', { name: '성별', exact: true }).selectOption('male');
   await dialog.getByRole('textbox', { name: '개체 소개', exact: true }).fill('호기심이 많고 손 위에서 쉬는 걸 좋아하는 아이예요.');
   await dialog.getByLabel('개체 사진', { exact: true }).setInputFiles({ name: 'dori.png', mimeType: 'image/png', buffer: Buffer.from(png,'base64') });
+  const created = page.waitForResponse(response => response.url().endsWith('/rpc/create_animal') && response.request().method() === 'POST');
   await dialog.getByRole('button', { name: '개체 등록하기', exact: true }).click();
+  createdFixture = (await (await created).json()).id;
   await expect(dialog).not.toBeVisible({ timeout: 45000 });
+  async function revealCreated() {
+    const registered = page.locator(`[data-collection-id="${createdFixture}"]`);
+    if (await registered.count() === 0) await page.getByRole('button', { name:'다음 페이지',exact:true }).click();
+    await expect(registered).toBeVisible();
+    await expect(registered.locator('.animal-photo')).toBeVisible();
+  }
+  await revealCreated();
   await expect(page.getByRole('button', { name: '도리 상세 보기' }).last()).toBeVisible();
   await page.reload();
+  await revealCreated();
   await expect(page.getByRole('button', { name: '도리 상세 보기' }).last()).toBeVisible();
   await expect(page.locator('.animal-photo').last()).toBeVisible();
   // Compare the scoped editor with an actual uploaded photo as well as the QA no-photo case.

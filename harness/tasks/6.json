@@ -1,0 +1,55 @@
+{
+  "issue": 6,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/6",
+  "branch": "codex/feat/6-animal-collection-apply",
+  "baseSha": "f90d872fb811ff00f54ee955b442e310af8bcc96",
+  "scope": "F-03 원본 기반 관리 목록 순서·공개 초안 및 원자적 일괄 적용",
+  "acceptance": [
+    "적용 전 DB/공개 응답 불변, 적용 후 전체 순서·공개 상태 동시 반영",
+    "최대20개 전체 집합 검증·10개 단위 표시·페이지 경계 이동/키보드/드래그",
+    "소유권/활성/동의/쓰기 제한·revision·재전송·실패 원상 유지",
+    "취소/이동/편집 진입/충돌 시 초안 유실·자동 저장/덮어쓰기 없음",
+    "7개 화면 폭 원본 비교·기존 등록/편집/사진/공개 회귀",
+    "실패한 적용 뒤 취소/이동은 실제 저장 상태 확인 후 완료; 확인 실패/dirty 해소에도 미확인 잠금·영수증 유지"
+  ],
+  "plan": [
+    "원본 관리 목록 및 SNS 토글 패턴 대응 확정",
+    "로컬 DB 일괄 명령·권한·동시성 검증 후 새 CLI 마이그레이션",
+    "원본 단일 열 카드·페이지·적용과 초안/충돌/이동 보호 연결",
+    "단위/DB/E2E·원본 캡처·전체 verify",
+    "정상 커밋/push·이슈 연결 PR·원격 확인·main 복귀",
+    "PR #7 리뷰: 실패한 적용 뒤 취소/이동 전에 실제 저장 상태 재조회, 실패 시 미확인 잠금 유지"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png",
+      "design/마이페이지-디자인수정-m.png"
+    ],
+    "notes": "보드 개체관리 x5200~7200,y1250~6600: 좁은 단일 열 사진 카드, 우측 위/아래, 페이지 버튼, 하단 적용하기. PC 설명 y8380 부근은 모바일과 콘텐츠 크기 동일. 공개 토글의 관리 export 위치는 없으므로 디자인수정-m SNS의 초록/회색 스위치를 관리 카드의 반응 미구현 영역에 최소 조합한다. 가짜 댓글 수나 새 장식/브랜드는 추가하지 않는다. 공통 셸/로고/미구현 성장·사진은 #2의 별도 범위.",
+    "review": {
+      "status": "passed",
+      "summary": "design/ 관리 PC/모바일·전체 보드 설명과 디자인수정-m SNS 스위치를 열어, 목록의 단일 열·카드/그라데이션·화살표·페이지·하단 적용 및 기존 토글 패턴 조합을 직접 대조했다. 320/360/390/450/768/1440/1920px 캡처, 실제 사진과 하단 액션을 검토했다. 공통 셸/로고/폰트 및 전체 화면 차이는 #2에 남기며 전체 픽셀 일치나 사용자 PR 승인으로 표시하지 않는다."
+    },
+    "evidence": [
+      "docs/10-animal-collection-apply.md (원본별 대응·한계·재현)",
+      "artifacts/collection-6/list-{320,360,390,450,768,1440,1920}.png (actual captures inspected)",
+      "artifacts/collection-6/with-photo-{390,1440}.png 및 apply-bottom-390.png (actual uploaded photo, pages/actions)",
+      "artifacts/collection-6/cancel-reconcile-390.png (unresolved state, existing notice/text-button pattern inspected)"
+    ]
+  },
+  "verification": {
+    "status": "passed",
+    "unit": "11 total including 3 collection boundaries",
+    "database": "20 existing +55 edit +46 collection; sequential QA",
+    "browser": "20 total including 9 collection flows and failed-apply cancellation reconciliation",
+    "fullSuite": "build +172 checks (12 harness,11 unit,121 DB,8 media,20 E2E)",
+    "migration": "CLI local db pull 20261028170427; security advisors no warning; pre-existing row digest unchanged; no reset",
+    "environment": "A concurrent QA trial conflicted; excluded and rerun sequentially. Drag viewport and TS test reverse compatibility corrected. First-flow removes only this execution newly-created animal/media.",
+    "reviewFix": "PR #7: authoritative dashboard reconciliation before cancelling uncertain apply; failed reconciliation retains draft/receipt/interlocks; targeted 2 regressions passed"
+  }
+}

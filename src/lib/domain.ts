@@ -33,6 +33,14 @@ export const animalEditSchema = z.object({
   description: editText(500), listing_status: z.enum(['not_listed', 'available', 'reserved', 'rehomed']),
 }).strict();
 export type AnimalEditInput = z.infer<typeof animalEditSchema>;
+export const collectionSchema = z.array(z.object({ id: z.uuid(), is_public: z.boolean() }).strict()).max(20)
+  .refine(items => new Set(items.map(item => item.id)).size === items.length, '중복된 개체가 있습니다.');
+export type CollectionItem = z.infer<typeof collectionSchema>[number];
+export const collectionItems = (animals: Pick<Animal, 'id' | 'is_public'>[]): CollectionItem[] => animals.map(({ id, is_public }) => ({ id, is_public }));
+export function moveCollection(items: CollectionItem[], from: number, to: number): CollectionItem[] {
+  if (from < 0 || to < 0 || from >= items.length || to >= items.length) return items;
+  const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next;
+}
 export type Photo = { asset_id: string; sort_order: number };
 export type Animal = AnimalInput & { id: string; birth_date: string | null; sort_order: number; photos: Photo[] };
 export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string };
