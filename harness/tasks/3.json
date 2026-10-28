@@ -8,13 +8,15 @@
     "현재 값 편집/취소/저장 후 새로고침·재로그인 유지",
     "익명·타인·비활성·금지 필드 및 잘못된 날짜 거절",
     "충돌/연결 실패 입력 보존과 중복 요청 방지",
-    "기존 등록·사진·비공개 조건·공개 DTO 회귀 없음"
+    "기존 등록·사진·비공개 조건·공개 DTO 회귀 없음",
+    "SPA Back/Forward/Link 및 새로고침 이탈 안내·입력/초점 보존·저장 중 이동 차단"
   ],
   "plan": [
     "새 nullable birth_date 마이그레이션과 수정 전용 RPC",
     "원본 기반 개체 수정 폼과 저장/충돌 복구",
     "단위·DB·E2E 및 기존 전체 로컬 회귀",
-    "저장소 design/ 원본과 현 환경 실행 화면 직접 비교·보완·전체 검증 후 기존 PR 갱신"
+    "저장소 design/ 원본과 현 환경 실행 화면 직접 비교·보완·전체 검증 후 기존 PR 갱신",
+    "PR 리뷰: dirty SPA Back/Forward/Link 이동 차단 및 회귀 검사"
   ],
   "status": "verified",
   "design": {
@@ -28,26 +30,28 @@
     "notes": "전체 보드 개체 관리 열 x5200~7200,y1250~6600 및 독립 편집 시안 x6115~6465,y4280 부근을 확인했다. 목록의 적용하기와 팝업의 저장/취소는 분리되어 있다. 보드 PC 안내 x0~3700,y8380 부근은 메인을 제외한 콘텐츠 크기/레이아웃을 모바일과 같게 하고 상세 팝업도 모바일 내용을 그대로 사용하도록 설명한다. PC·모바일 export와 대조해 약 340px 팝업, 100px 헤더, 대표 사진·2열 성별·구분선 입력 행·저장/취소 패턴을 재사용했다. 원본 종류 선택의 직접입력을 datalist로 지원한다. 일반 필드 범위와 기존 F-03 명세에 따라 성별 3개, 분양 표시 행을 사용하며 부모/입양일/체중/성장/댓글/사진 수정은 제외한다. 전체 화면 및 누락 자산 차이는 #2에 남긴다.",
     "review": {
       "status": "passed",
-      "summary": "사용자 정정에 따라 현 개발환경에서 design/ 실제 원본과 실행 캡처를 직접 대조했다. #3 일반 정보 편집 범위에서 중앙 배치, 공통 입력 CSS에 눌린 성별/입력 행, 타이포, 해칭일 라벨, 종류 선택 패턴을 보완했다. 320/360/390/450/768/1440/1920px와 사진 유/무, 하단 스크롤·저장/취소·키보드 초점/복귀를 검토했다. 이는 범위 내 패턴 비교 통과이며 전체 화면/픽셀 동일 승인이나 사용자 PR 승인이 아니다. 네이티브 날짜·목록 및 원본 폰트 미제공 차이와 후속 #2를 docs/09에 명시했다."
+      "summary": "사용자 정정에 따라 현 개발환경에서 design/ 실제 원본과 실행 캡처를 직접 대조했다. #3 일반 정보 편집 범위에서 중앙 배치, 공통 입력 CSS에 눌린 성별/입력 행, 타이포, 해칭일 라벨, 종류 선택 패턴을 보완했다. 320/360/390/450/768/1440/1920px와 사진 유/무, 하단 스크롤·저장/취소·키보드 초점/복귀를 검토했다. 이는 범위 내 패턴 비교 통과이며 전체 화면/픽셀 동일 승인이나 사용자 PR 승인이 아니다. 네이티브 날짜·목록 및 원본 폰트 미제공 차이와 후속 #2를 docs/09에 명시했다. SPA 이동 안내는 기존 notice/text-button 패턴을 재사용하며 390/1440px 실제 캡처를 열어 검토했다."
     },
     "evidence": [
       "docs/09-animal-edit-handoff.md (원본 설명·화면 대조표, 수정과 남은 차이)",
       "artifacts/design-review-3/comparison.png (원본/수정 전/수정 후 직접 비교)",
       "artifacts/design-review-3/responsive-overview.png (7개 화면 폭 실제 캡처 검토)",
       "artifacts/design-review-3/edit-{320,360,390,450,768,1440,1920}.png 및 edit-bottom-*.png (사진 없는 상태·조작)",
-      "artifacts/design-review-3/photo-{390,1440}.png 및 photo-bottom-*.png (실제 업로드 사진·하단 액션)"
+      "artifacts/design-review-3/photo-{390,1440}.png 및 photo-bottom-*.png (실제 업로드 사진·하단 액션)",
+      "artifacts/design-review-3/navigation-{390,1440}.png (existing dialog alert/button pattern; unsaved navigation)"
     ]
   },
   "verification": {
     "status": "passed",
     "unit": "8 passed",
     "database": "20 existing + 55 animal edit passed",
-    "browser": "8 Playwright flows; responsive edit scenario covers 320/360/390/450/768/1440/1920px; actual photo at 390/1440px",
+    "browser": "11 Playwright flows including 3 new SPA navigation/reload/in-flight-save regressions",
     "migration": "Two additive local migrations: birth date/update RPC and Unicode whitespace normalization; original animal-row digest preserved; security advisors checked",
     "handoff": "docs/09-animal-edit-handoff.md",
-    "fullSuite": "build + 111 checks: harness 12, unit 8, DB 20+55, media 8, E2E 8",
+    "fullSuite": "build + 114 checks: harness 12, unit 8, DB 20+55, media 8, E2E 11",
     "environment": "Existing local services reused; no DB reset or cloud changes. Native browser Shift+Tab-to-toolbar was initially mistaken for a wrap expectation; corrected to test actual in-dialog Tab/reverse Tab and opener focus restoration.",
     "design": "Local source comparison completed; scoped review passed; full page differences remain tracked by #2",
-    "github": "Existing main-targeted PR #5 closes #3; final merge and issue closure not performed"
+    "github": "Existing main-targeted PR #5 closes #3; final merge and issue closure not performed",
+    "reviewFix": "PR #5 navigation loss reproduced before fix. Data Router + reusable useUnsavedChanges guard; bounded reload cancellation; targeted 3 regressions passed."
   }
 }

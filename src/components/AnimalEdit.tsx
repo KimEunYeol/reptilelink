@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'rea
 import { X } from 'lucide-react';
 import { animalEditSchema, seoulDate, sexLabels, statusLabels, userMessage, type Animal, type AnimalEditInput, type Dashboard } from '../lib/domain';
 import { rpc } from '../lib/supabase';
+import { useUnsavedChanges } from '../lib/useUnsavedChanges';
 
 function fields(animal: Animal): AnimalEditInput {
   return { name: animal.name, species: animal.species, morph: animal.morph, sex: animal.sex,
@@ -22,6 +23,7 @@ export function AnimalEdit({ animal, revision, preview, onClose, onSaved }: {
   const request = useRef<{ body: string; id: string } | null>(null);
   const submitting = useRef(false);
   const dirty = JSON.stringify(values) !== JSON.stringify(initial.current);
+  const navigation = useUnsavedChanges(dirty, busy);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -29,12 +31,6 @@ export function AnimalEdit({ animal, revision, preview, onClose, onSaved }: {
     element?.showModal();
     return () => { element?.close(); previous?.focus(); };
   }, []);
-  useEffect(() => {
-    if (!dirty) return;
-    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [dirty]);
 
   function field<K extends keyof AnimalEditInput>(key: K, value: AnimalEditInput[K]) {
     setValues(current => ({ ...current, [key]: value }));
@@ -108,6 +104,11 @@ export function AnimalEdit({ animal, revision, preview, onClose, onSaved }: {
           onChange={e => field('description', e.target.value)} {...inputProps('description')}/>{problem('description')}</label>
       </fieldset>
       <datalist id="edit-species"><option value="크레스티드 게코"/><option value="볼파이톤"/><option value="레오파드 게코"/></datalist>
+      {navigation.blocked && <div className="edit-conflict" data-navigation-prompt>
+        <p className="notice" role="alert">{busy ? '저장 중입니다. 완료될 때까지 기다려주세요.' : '저장하지 않은 변경이 있습니다. 이동하면 입력 내용이 사라집니다.'}</p>
+        <button ref={navigation.stayButton} type="button" className="text-button" onClick={navigation.stay}>계속 편집</button>
+        <button type="button" className="text-button" disabled={busy} onClick={navigation.leave}>변경 버리고 이동</button>
+      </div>}
       {error && <p className="notice" role="alert">{error}</p>}
       {conflict && <div className="edit-conflict">
         {!latest ? <button type="button" className="button ghost" disabled={busy} onClick={inspectLatest}>최신 값 확인</button> : <>

@@ -200,4 +200,78 @@ test.describe('animal general field edit with real local QA identity', () => {
     expect(saves).toBe(0);
     await d.getByRole('button', { name: '취소', exact: true }).click();
   });
+
+  test('SPA Back preserves unsaved input until the user explicitly chooses to leave', async ({ page }) => {
+    await page.getByRole('link', { name: '프로필 설정', exact: true }).click();
+    await page.getByRole('link', { name: /개체 관리/ }).click();
+    const d = await open(page);
+    await d.getByRole('textbox', { name: '개체 이름', exact: true }).fill('뒤로가기 보존');
+    const before = (await dashboard()).profile!.revision;
+    await page.evaluate(() => history.back());
+    await expect(d.getByRole('alert')).toContainText('저장하지 않은');
+    await expect(page).toHaveURL(/\/dashboard\/animals$/);
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.screenshot({ path: `artifacts/design-review-3/navigation-${width}.png` });
+    }
+    await d.getByRole('button', { name: '계속 편집', exact: true }).click();
+    await expect(d.getByRole('textbox', { name: '개체 이름', exact: true })).toHaveValue('뒤로가기 보존');
+    await expect(d.getByRole('textbox', { name: '개체 이름', exact: true })).toBeFocused();
+    await page.evaluate(() => history.back());
+    await d.getByRole('button', { name: '변경 버리고 이동', exact: true }).click();
+    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await expect(d).not.toBeVisible();
+    expect((await dashboard()).profile!.revision).toBe(before);
+  });
+
+  test('SPA Forward and in-app links preserve the draft; clean and cancelled editors do not block', async ({ page }) => {
+    await page.getByRole('link', { name: '프로필 설정', exact: true }).click();
+    await page.evaluate(() => history.back());
+    await expect(page).toHaveURL(/\/dashboard\/animals$/);
+    let d = await open(page);
+    await d.getByRole('textbox', { name: '개체 설명', exact: true }).fill('앞으로가기 보존');
+    await page.evaluate(() => history.forward());
+    await expect(d.getByRole('alert')).toContainText('저장하지 않은');
+    await d.getByRole('button', { name: '계속 편집', exact: true }).click();
+    // Dispatch a real Link handler while the modal makes underlying user clicks inert.
+    await page.locator('a[href="/dashboard/design"]').evaluate(el => (el as HTMLAnchorElement).click());
+    await expect(d.getByRole('alert')).toContainText('저장하지 않은');
+    await d.getByRole('button', { name: '계속 편집', exact: true }).click();
+    await expect(d.getByRole('textbox', { name: '개체 설명', exact: true })).toHaveValue('앞으로가기 보존');
+    await d.getByRole('button', { name: '취소', exact: true }).click();
+    await page.evaluate(() => history.forward());
+    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await page.getByRole('link', { name: /개체 관리/ }).click();
+    d = await open(page); // Unchanged editor: no confirmation on the same SPA transition.
+    await page.locator('a[href="/dashboard/design"]').evaluate(el => (el as HTMLAnchorElement).click());
+    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await expect(d.getByRole('alert')).toHaveCount(0);
+    await expect(d).not.toBeVisible();
+  });
+
+  test('reload warns about dirty input, and navigation cannot discard an in-flight save', async ({ page }) => {
+    await page.getByRole('link', { name: '프로필 설정', exact: true }).click();
+    await page.getByRole('link', { name: /개체 관리/ }).click();
+    const d = await open(page);
+    await d.getByRole('textbox', { name: '개체 이름', exact: true }).fill('이동 보호 저장');
+    let unloadWarning = false;
+    page.once('dialog', async warning => { unloadWarning = warning.type() === 'beforeunload'; await warning.dismiss(); });
+    await page.reload({ timeout: 5000 }).catch(() => {});
+    expect(unloadWarning).toBe(true);
+    await expect(d.getByRole('textbox', { name: '개체 이름', exact: true })).toHaveValue('이동 보호 저장');
+    let release!: () => void;
+    const gate = new Promise<void>(resolve => { release = resolve; });
+    await page.route('**/rest/v1/rpc/update_animal', async route => { await gate; await route.continue(); });
+    try {
+      await d.getByRole('button', { name: '저장', exact: true }).click();
+      await expect(d.getByRole('button', { name: '저장 중', exact: true })).toBeDisabled();
+      await page.evaluate(() => history.back());
+      await expect(d.getByRole('alert')).toContainText('저장 중');
+      await expect(d.getByRole('button', { name: '변경 버리고 이동', exact: true })).toBeDisabled();
+    } finally { release(); }
+    await expect(d).not.toBeVisible();
+    await expect(page).toHaveURL(/\/dashboard\/animals$/);
+    await page.evaluate(() => history.back());
+    await expect(page).toHaveURL(/\/dashboard\/design$/);
+  });
 });

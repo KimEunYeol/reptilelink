@@ -94,6 +94,7 @@ function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: 
 function DashboardPage({ data, refresh, onSignOut }: { data: Dashboard; refresh: () => Promise<void>; onSignOut: () => void }) {
   const location = useLocation(); const design = location.pathname.includes('/design');
   const [creating, setCreating] = useState(false), [editing, setEditing] = useState<Animal | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false), [saved, setSaved] = useState(false);
+  useEffect(() => { setEditing(null); }, [location.pathname]);
   const profile = data.profile!; const publicCount = data.animals.filter(a => a.is_public).length;
   async function togglePage() { setBusy(true); setError(''); try { await rpc('set_profile_public', { p_public: !profile.is_published, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }
   async function toggleAnimal(animal: Animal) { setError(''); setBusy(true); try { await rpc('set_animal_public', { p_animal_id: animal.id, p_public: !animal.is_public, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }

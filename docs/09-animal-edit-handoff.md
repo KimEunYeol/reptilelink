@@ -58,7 +58,7 @@ npm run verify
 
 앱 `http://localhost:5173/dashboard/animals`, 빌드 앱·공개 HTML `http://localhost:8787`. `verify`는 QA 자료를 준비하며 기존 개발 DB를 초기화하지 않는다. 실제 자료를 QA 계정에 넣지 않는다. 검사 전용 암호·키·토큰은 캡처/문서에 노출하지 않는다.
 
-전체 검사 구성: 하네스 12·단위 8·기존 DB 20·개체 수정 DB 55·미디어 8·Playwright 8, 총 111개와 build. 시각 일치는 이 숫자로 자동 판정하지 않고 위 원본 대조로 판단했다. 기존 500kB 번들 경고는 남는다.
+전체 검사 구성: 하네스 12·단위 8·기존 DB 20·개체 수정 DB 55·미디어 8·Playwright 11, 총 114개와 build. 시각 일치는 이 숫자로 자동 판정하지 않고 위 원본 대조로 판단했다. 기존 500kB 번들 경고는 남는다.
 
 ## 남은 차이와 범위
 
@@ -68,3 +68,10 @@ npm run verify
 - 이번에는 새 DB 변경·원격 DB/OAuth/Cloudflare 설정·배포를 수행하지 않았다. 최종 main 병합과 이슈 종료는 별도다.
 
 작업 기록과 최종 파일 상태를 갱신한 뒤 전체 `verify`와 정상 pre-push 훅을 통과해 같은 PR에 반영한다. 별도 디자인 앱의 실행 여부를 완료 조건으로 사용하지 않는다.
+
+
+## SPA 이동 보호 보완 — 2026-10-29
+
+[리뷰 지적](https://github.com/KimEunYeol/reptilelink/pull/5#discussion_r4401530184)을 수정 전 Back 회귀로 재현했다. Data Router와 useUnsavedChanges로 SPA 이동을 차단하고 계속 편집/변경 버리고 이동을 명시적으로 선택한다. 새 창을 만들지 않고 기존 편집창의 notice/text-button 패턴을 재사용했다. `navigation-390.png`, `navigation-1440.png`를 열어 줄바꿈·하단 액션·스크롤을 비교했다.
+
+Back/Forward/Link 및 리로드 취소·저장 중 이동의 추가 E2E 3개가 통과했다. 계속 편집은 입력/URL/초점을 유지하며, 버리기를 선택하거나 clean 상태로 경로를 바꾸면 편집창이 닫힌다. 저장 완료·취소 후에는 차단하지 않는다. 최초 리로드 취소 검사의 긴 대기는 5초 상한으로 보정했다. 공식 동작 근거: [React Router useBlocker](https://reactrouter.com/api/hooks/useBlocker). 완전한 문서 이탈은 이 훅 범위 밖이므로 beforeunload를 유지한다.
