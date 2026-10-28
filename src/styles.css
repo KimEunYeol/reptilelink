@@ -136,46 +136,7 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .legal-page h1 { font-size: 26px; margin: 35px 0 15px; }
 .legal-page p { font-size: 13px; line-height: 2; color: #7e8e7d; margin: 25px 0; }
 
-/* Breeder workspace */
-.dashboard { background: #fcfdfb; min-height: 100vh; }
-.dashboard > .site-header { background: #fff; max-width: none; height: 76px; border-bottom: 1px solid #edf1e9; padding: 0 38px; }
-.account-label { display: flex; align-items: center; gap: 8px; color: #7f8c7b; font-size: 11px; }
-.account-dot { width: 7px; height: 7px; border-radius: 50%; background: #75bf7d; }
-.dashboard-layout { display: grid; grid-template-columns: 228px minmax(0,1fr); min-height: calc(100vh - 76px); max-width: 1600px; margin: auto; }
-.sidebar { padding: 35px 21px 25px; border-right: 1px solid #edf1e9; display: flex; flex-direction: column; background: #fff; }
-.nav-caption { font-size: 8px; color: #b0bba9; letter-spacing: 1.9px; padding: 0 14px; margin-bottom: 23px; }
-.nav-link { padding: 14px; color: #8b9883; font-size: 12px; display: flex; align-items: center; gap: 10px; border-radius: 9px; margin-bottom: 7px; }
-.nav-link.active { background: #eef8ea; color: #3aa553; font-weight: 600; }
-.nav-link > span { margin-left: auto; font-size: 9px; background: white; padding: 2px 6px; border-radius: 4px; }
-.nav-future { display: flex; gap: 10px; margin: 18px 14px; color: #bdc6b8; font-size: 9px; line-height: 1.7; }
-.nav-future small { display: block; font-size: 8px; margin-top: 3px; }
-.sidebar-note { background: #f7f9f1; padding: 10px 16px 20px; border-radius: 12px; margin-top: 55px; text-align: center; }
-.sidebar-note svg { width: 120px; display: block; margin: 0 auto 4px; }
-.sidebar-note b { color: #698364; font-size: 11px; }
-.sidebar-note p { color: #9fae97; font-size: 9px; line-height: 1.9; margin-top: 8px; }
-.storage-caption { margin: auto 12px 0; padding-top: 65px; color: #9caa94; font-size: 9px; }
-.storage-caption b { display: block; font-size: 10px; color: #7d9174; margin: 10px 0; font-weight: 500; }
-.storage-track { height: 4px; background: #edf1e7; border-radius: 3px; overflow: hidden; }
-.storage-track i { display: block; height: 100%; background: #67b76f; }
-.storage-caption small { display: block; color: #b0bba8; font-size: 8px; margin-top: 8px; }
-.workspace { padding: 38px 50px 0; max-width: 1230px; width: 100%; margin: auto; align-self: stretch; }
-.page-topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.page-topline .eyebrow { font-size: 9px; letter-spacing: 2px; color: #a0b197; }
-.plan-badge { display: flex; align-items: center; gap: 4px; font-size: 8px; letter-spacing: 1px; color: #7ba270; border: 1px solid #e1ecd9; border-radius: 5px; padding: 5px 8px; }
-.page-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-.page-heading h1 { font-size: clamp(21px,2.1vw,29px); letter-spacing: -1.2px; line-height: 1.5; font-weight: 650; }
-.heading-dot { color: #2cbb50; }
-.page-heading p { font-size: 11px; color: #a0ad97; margin-top: 11px; }
-.page-heading > .button { font-size: 11px; padding: 10px 15px; min-height: 38px; }
-.page-link-banner { display: flex; align-items: center; gap: 12px; border: 1px solid #e6ecdf; border-radius: 13px; padding: 17px 20px; margin: 30px 0; background: #fff; }
-.page-link-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f0f7e9; color: #70ab62; border-radius: 11px; flex-shrink: 0; }
-.page-link-text { min-width: 0; }
-.page-link-text > span { display: block; color: #9aab8c; font-size: 9px; margin-bottom: 6px; }
-.page-link-text > b { font-size: 11px; font-weight: 500; color: #6a825c; overflow-wrap: anywhere; }
-.publication-status { display: flex; align-items: center; gap: 5px; color: #a6af9b; font-size: 9px; background: #f4f6f0; padding: 5px 7px; border-radius: 5px; margin-left: auto; white-space: nowrap; }
-.publication-status i { width: 4px; height: 4px; background: currentColor; border-radius: 50%; }
-.publication-status.published { color: #49a458; background: #f0f8ec; }
-.page-link-banner > .icon-button { width: 28px; height: 30px; color: #9aa78c; }
+/* Animal cards used on the public page. */
 .collection-summary { display: flex; gap: 30px; align-items: center; padding-bottom: 28px; margin-top: 33px; border-bottom: 1px solid #e9eee2; }
 .collection-summary > div { display: flex; gap: 10px; align-items: center; font-size: 11px; color: #91a082; }
 .summary-icon { background: #edf7e9; color: #5fb16b; display: flex; align-items: center; justify-content: center; height: 34px; width: 34px; border-radius: 9px; }
@@ -218,8 +179,6 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .empty-collection p { font-size: 11px; color: #a6b299; line-height: 1.9; margin-bottom: 20px; }
 .empty-collection .button { font-size: 11px; }
 .collection-tip { display: flex; align-items: center; gap: 8px; color: #9faf8e; background: #f4f8ed; border-radius: 9px; padding: 13px 15px; font-size: 9px; margin: 25px 0 50px; }
-.workspace-footer { border-top: 1px solid #e9eee2; padding: 19px 0 25px; display: flex; justify-content: space-between; color: #b1bda5; font-size: 8px; margin-top: 30px; }
-.workspace-footer > span:last-child { display: flex; gap: 5px; align-items: center; }
 .editor-panel { padding: 30px; border: 1px solid #e3ebdc; border-radius: 14px; max-width: 650px; background: #fff; margin-bottom: 60px; }
 
 /* Dialogs and public page */
@@ -272,17 +231,12 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .not-found h1 { font-size: 24px; color: #354d2b; }
 .not-found p { font-size: 12px; color: #99aa8c; }
 
-@media (min-width: 1500px) { .workspace { padding-right: 70px; padding-left: 70px; } }
 @media (max-width: 1100px) {
   .hero { margin: 8px 25px 0; padding: 40px; }
   .hero h1 { font-size: 37px; }
   .hero-art { transform: scale(.88); }
-  .dashboard-layout { grid-template-columns: 190px minmax(0,1fr); }
-  .sidebar { padding: 30px 12px; }
-  .workspace { padding: 30px 27px 0; }
   .animal-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .collection-summary > .summary-note { display: none; }
-  .page-link-banner { padding: 15px; gap: 8px; }
   .intro { margin: 55px 30px 0; gap: 20px; }
   .landing-bottom { margin-left: 50px; margin-right: 50px; }
 }
@@ -311,29 +265,6 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
   .footer > span { display: none; }
   .footer > small { width: 100%; margin-top: 3px; font-size: 8px; }
   .footer nav { font-size: 9px; }
-  .dashboard > .site-header { height: 68px; padding: 0 20px; }
-  .account-label { max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
-  .dashboard-layout { display: block; }
-  .sidebar { border-right: 0; border-bottom: 1px solid #edf1e9; flex-direction: row; gap: 5px; padding: 10px 15px; }
-  .sidebar .nav-caption, .sidebar-note, .nav-future, .storage-caption { display: none; }
-  .nav-link { margin: 0; font-size: 10px; padding: 11px 13px; gap: 7px; }
-  .nav-link svg { width: 15px; }
-  .nav-link > span { margin-left: 5px; }
-  .workspace { padding: 26px 20px 0; }
-  .page-topline { margin-bottom: 12px; }
-  .page-topline .eyebrow { font-size: 8px; }
-  .page-heading { display: block; }
-  .page-heading h1 { font-size: 24px; letter-spacing: -1px; }
-  .page-heading p { font-size: 10px; margin-top: 9px; line-height: 1.8; }
-  .page-heading > .button { margin-top: 20px; font-size: 10px; }
-  .page-link-banner { flex-wrap: wrap; margin: 24px 0; gap: 8px; padding: 14px; }
-  .page-link-icon { width: 33px; height: 33px; }
-  .page-link-icon svg { width: 18px; }
-  .page-link-text { flex: 1 1 calc(100% - 50px); min-width: 180px; }
-  .page-link-text > b { font-size: 10px; }
-  .page-link-text > span { font-size: 8px; }
-  .publication-status { font-size: 8px; margin-left: 45px; }
-  .page-link-banner > .button { margin-left: auto; font-size: 9px; margin-top: 3px; }
   .collection-summary { margin-top: 24px; padding-bottom: 22px; gap: 22px; }
   .collection-summary > div { font-size: 9px; gap: 8px; }
   .collection-summary b { font-size: 16px; margin-left: 4px; }
@@ -350,8 +281,6 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
   .add-card { min-height: 180px; }
   .collection-tip { align-items: flex-start; font-size: 9px; line-height: 1.9; margin-bottom: 35px; }
   .collection-tip svg { flex-shrink: 0; }
-  .workspace-footer { font-size: 7px; }
-  .workspace-footer > span:last-child { font-size: 7px; }
   .editor-panel { padding: 23px 19px; }
   .modal { padding: 24px 21px; border-radius: 17px; }
   .auth-card { margin-top: 30px; }
@@ -362,7 +291,8 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
   .onboarding main > h1 { font-size: 25px; margin-bottom: 30px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none!important; transition: none!important; scroll-behavior: auto!important; } }
-.page-heading p, .card-content > p, .card-bottom, .collection-summary > div, .public-intro > p, .collection-tip, .form-section-title p, label small { color: #6b7d60; }
+
+.card-content > p, .card-bottom, .collection-summary > div, .public-intro > p, .collection-tip, .form-section-title p, label small { color: #6b7d60; }
 
 /* Animal edit: design board's narrow dialog, divided rows and save/cancel pair. */
 .animal-edit { width: min(340px, calc(100% - 32px)); margin: auto; padding: 0; border: 0; border-radius: 20px; max-height: 90dvh; color: #374151; font-synthesis: weight; box-shadow: 0 20px 60px #1f293722; }
@@ -422,3 +352,52 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .collection-feedback { display: grid; gap: 14px; margin: 18px 0; font-size: 12px; }
 .collection-feedback .text-button { justify-self: start; }
 .collection-feedback ol { padding-left: 20px; overflow-wrap: anywhere; }
+
+/* design/ management exports: shared top tabs, narrow content and gray footer. */
+.management-shell { min-height: 100vh; display: flex; flex-direction: column; color: #222; background: #fff; }
+.management-header { max-width: 1180px; width: 100%; height: 108px; padding: 0 30px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.management-brand { display: inline-flex; flex-shrink: 0; }
+.management-brand img { width: 120px; height: 35px; object-fit: contain; mix-blend-mode: multiply; }
+.management-header-actions { display: flex; gap: 12px; align-items: center; }
+.management-header-actions .button { min-height: 48px; padding: 12px 24px; font-size: 14px; font-weight: 500; }
+.management-header-actions .ghost { background: #f5f5f5; color: #222; }
+.management-tabs { position: relative; display: flex; gap: 14px; flex-shrink: 0; max-width: 100%; width: max-content; overflow-x: auto; margin: 20px auto 0; padding: 0 4px 3px; scrollbar-width: thin; }
+.management-tabs > * { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; height: 42px; min-width: 82px; padding: 0 9px; border-bottom: 3px solid #f5f5f5; font-size: 15px; white-space: nowrap; }
+.management-tabs > [aria-current=page] { border-color: #2cbb50; color: #2cbb50; font-weight: 650; }
+.management-tabs > button:disabled { cursor: default; opacity: 1; color: #777; }
+.management-tabs > a:focus-visible { outline-offset: -3px; }
+.management-content { width: min(378px, calc(100% - 72px)); margin: 48px auto 0; flex: 1; }
+.management-share { display: flex; align-items: center; gap: 18px; background: #f5f5f5; border-radius: 12px; min-height: 40px; width: fit-content; max-width: 100%; padding: 0 16px; }
+.management-share button { display: inline-flex; align-items: center; flex-shrink: 0; gap: 4px; font-size: 12px; padding: 10px 0; }
+.management-share > span:not(.sr-only) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: #7c838e; }
+.management-publication { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 12px; font-size: 11px; color: #6d7671; }
+.management-publication a { display: inline-flex; gap: 4px; align-items: center; color: #50865d; }
+.management-publication button { margin-left: auto; font-size: 11px; }
+.management-content > .notice, .management-content > .success { margin-top: 16px; }
+.management-profile { margin: 72px 0 100px; }
+.management-profile .profile-form { max-width: 100%; }
+.management-usage { font-size: 11px; line-height: 1.8; color: #6d7671; margin-top: 24px; }
+.management-footer { background: #f5f5f5; margin-top: 40px; }
+.management-footer-inner { width: 100%; max-width: 1180px; margin: 0 auto; padding: 78px 46px; }
+.management-footer nav { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: #2cbb50; font-weight: 600; margin-top: 42px; }
+.management-footer-bottom { margin-top: 70px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.management-footer small { color: #7c838e; font-size: 12px; }
+.management-language { display: inline-flex; align-items: center; gap: 22px; padding: 12px 16px; border: 1px solid #b4ffc7; border-radius: 24px; background: #fff; font-size: 13px; }
+.management-language svg { color: #2cbb50; }
+@media (max-width: 650px) {
+  .management-header { height: 90px; padding: 0 clamp(20px, 7.8vw, 35px); gap: 8px; }
+  .management-brand img { width: 95px; height: auto; }
+  .management-header-actions { gap: 8px; }
+  .management-header-actions .button { min-height: 39px; padding: 8px 15px; font-size: 12px; border-radius: 9px; }
+  .management-tabs { width: calc(100% - 35px); max-width: none; margin: 0 0 0 35px; padding: 0 8px 3px 0; gap: 14px; }
+  .management-tabs > * { height: 38px; font-size: 14px; }
+  .management-content { width: min(378px, calc(100% - clamp(40px, 16vw, 72px))); margin-top: 38px; }
+  .management-footer-inner { padding: 80px clamp(24px, 8vw, 38px) 90px; }
+  .management-footer .management-brand img { width: 120px; }
+  .management-footer nav { margin-top: 42px; font-size: 12px; gap: 18px; }
+  .management-footer-bottom { margin-top: 70px; align-items: flex-start; flex-direction: column-reverse; gap: 22px; }
+}
+@media (max-width: 359px) {
+  .management-header-actions .button { padding: 8px 10px; font-size: 11px; }
+  .management-tabs { width: calc(100% - 24px); margin-left: 24px; }
+}

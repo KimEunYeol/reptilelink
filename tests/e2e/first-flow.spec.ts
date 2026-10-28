@@ -33,7 +33,7 @@ test('real local first flow: login, profile, photo, publication and private acce
   await expect.poll(async () => (await request.get('http://localhost:8787/api/health')).status(), { timeout: 30000 }).toBe(200);
   await page.goto('/auth/login');
   await page.getByRole('button', { name: '테스트 브리더로 로그인', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '함께 자라는 우리 아이들.' }).or(page.getByRole('heading', { name: '우리 아이들의 이야기가 시작될 공간을 만들어봐요.' }))).toBeVisible();
+  await expect(page.getByRole('heading', { name: '개체 관리', exact: true }).or(page.getByRole('heading', { name: '우리 아이들의 이야기가 시작될 공간을 만들어봐요.' }))).toBeVisible();
   if (await page.getByRole('button', { name: '내 공간 만들기', exact: true }).isVisible()) {
     await page.getByRole('textbox', { name: '브리더 이름', exact: true }).fill('초록빛 브리딩룸');
     await page.getByRole('textbox', { name: '내 페이지 주소', exact: true }).fill('green-room');
@@ -41,7 +41,7 @@ test('real local first flow: login, profile, photo, publication and private acce
     await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: '내 공간 만들기', exact: true }).click();
   }
-  await expect(page.getByRole('heading', { name: '함께 자라는 우리 아이들.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '개체 관리', exact: true })).toBeVisible();
   // Build an original image fixture from our own vector illustration, then exercise the real file input.
   const svg = renderToStaticMarkup(createElement(Gecko));
   const png = await page.evaluate(async (source) => {
