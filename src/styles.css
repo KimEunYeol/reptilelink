@@ -682,3 +682,16 @@ button.notification-message { cursor:pointer; }
 
 .activity-content .activity-search input::placeholder { color:#666; font-weight:400; }
 .activity-content .text-button { color:#666; }
+
+/* Source statistics: three metrics and the original eight-date green line. */
+.views-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; font-size:12px; color:#111; }
+.views-metrics p { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
+.views-metrics strong { font-size:24px; font-weight:700; overflow-wrap:anywhere; }
+.views-metrics p:first-child strong { color:#178f3c; }
+.views-chart { margin:0 0 16px; }
+.views-chart svg { display:block; width:100%; height:auto; overflow:visible; }
+.views-chart text { fill:#666; font-size:10px; }
+.views-chart .views-date { fill:#111; font-weight:600; }
+.views-line { stroke:#178f3c; stroke-width:1.2; }
+.views-point { fill:#178f3c; }
+.activity-statistics > .comment-hint { margin:8px 0; }

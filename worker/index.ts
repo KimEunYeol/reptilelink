@@ -1,3 +1,4 @@
+import {collectPageView} from './analytics';
 import {processAccountDeletion} from './account-cleanup';
 import {publicSchedulePeriod} from '../src/lib/schedules';
 import {socialNames,socialPlatforms} from '../src/lib/socials';
@@ -9,7 +10,7 @@ import type { PublicPage } from '../src/lib/domain';
 
 type Env = {
   ASSETS: { fetch(request: Request): Promise<Response> };
-  SUPABASE_URL: string; SUPABASE_PUBLISHABLE_KEY: string; SUPABASE_SECRET_KEY: string; APP_ORIGIN: string;
+  SUPABASE_URL: string; SUPABASE_PUBLISHABLE_KEY: string; SUPABASE_SECRET_KEY: string; APP_ORIGIN: string; ANALYTICS_HMAC_KEY?: string;
 };
 const uuid = z.string().uuid();
 const options = { auth: { persistSession: false, autoRefreshToken: false } };
@@ -54,6 +55,15 @@ export default {
       if (request.method === 'POST') {
         const origin = request.headers.get('Origin');
         if (origin && origin !== url.origin && origin !== env.APP_ORIGIN) return json({ code: 'ORIGIN_REJECTED' }, 403);
+      }
+      if(path==='/api/analytics/view'&&request.method==='POST'){
+        const origin=request.headers.get('Origin');
+        if(!origin||(origin!==url.origin&&origin!==env.APP_ORIGIN))return json({code:'ORIGIN_REJECTED'},403);
+        if(request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase()!=='application/json')return json({code:'VALIDATION_FAILED'},400);
+        const input=z.object({slug:z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/),session:uuid}).strict().parse(await body(request));
+        if(!env.ANALYTICS_HMAC_KEY)return json({accepted:false},503);
+        try{return json(await collectPageView(clients(env).admin,env.ANALYTICS_HMAC_KEY,input.slug,input.session));}
+        catch{return json({accepted:false},503);}
       }
       if ((path==='/api/account/delete'||path==='/api/account/cleanup')&&request.method==='POST') {
         const cleanupToken=request.headers.get('Authorization')?.replace(/^Bearer /,'');
