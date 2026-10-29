@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Check, ChevronDown, Link2 } from 'lucide-react';
 
-function SourceBrand() {
+export function SourceBrand() {
   return <Link className="management-brand" to="/" aria-label="렙타일링크 홈"><img src="/brand/reptilelink-source.png" width="120" height="35" alt="ReptileLink"/></Link>;
 }
 
@@ -25,7 +25,7 @@ function ManagementNavigation({ basic }: { basic: boolean }) {
   </nav>;
 }
 
-function ManagementFooter() {
+export function ManagementFooter() {
   return <footer className="management-footer"><div className="management-footer-inner">
     <SourceBrand/>
     <nav aria-label="이용 안내"><Link to="/terms">이용약관</Link><Link to="/privacy">개인정보처리방침</Link></nav>

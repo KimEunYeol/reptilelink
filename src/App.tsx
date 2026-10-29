@@ -1,3 +1,5 @@
+import {Landing} from './components/Landing';
+import {SourceBrand} from './components/ManagementShell';
 import {recordPageView} from './lib/analytics';
 import {Activity} from './components/Activity';
 import {Comments,ManagedComments} from './components/Comments';
@@ -8,7 +10,7 @@ import {Schedules,PublicSchedules} from './components/Schedules';
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, CheckCircle2, ExternalLink, Eye, EyeOff, Leaf, LoaderCircle, MessageSquare, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, CheckCircle2, ExternalLink, Eye, EyeOff, LoaderCircle, MessageSquare, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
 import { Gecko } from './components/Gecko';
 import { AnimalDelete, PendingAnimalDeletions } from './components/AnimalDelete';
 import { AnimalGrowth, PublicGrowth } from './components/AnimalGrowth';
@@ -21,7 +23,7 @@ import { animalSchema, formatBytes, profileSchema, sexLabels, statusLabels, user
 import { configured, googleAuth, localAuth, rpc, serverRequest, supabase } from './lib/supabase';
 import { preparePhoto } from './lib/images';
 
-function Brand() { return <Link className="brand" to="/" aria-label="렙타일링크 홈"><span className="brand-mark"><Sprout size={23}/></span><span>Reptile<span className="brand-light">Link</span><i /></span></Link>; }
+function Brand() { return <SourceBrand/>; }
 function Spinner() { return <div className="loading" role="status"><LoaderCircle className="spin" size={23}/> 불러오고 있어요</div>; }
 function Notice({ children }: { children: ReactNode }) { return <p className="notice" role="alert">{children}</p>; }
 function Modal({ title, children, onClose, narrow = false }: { title: string; children: ReactNode; onClose: () => void; narrow?: boolean }) {
@@ -43,10 +45,6 @@ function AnimalDetail({ animal, onClose,onCount }: { animal: Animal; onClose: ()
   return <Modal title={animal.name} onClose={()=>{if(guard.current?.()!==false)onClose();}} narrow><div className="detail-photo"><Photo animal={animal} full plain/></div><dl className="detail-info"><div><dt>종류</dt><dd>{animal.species}</dd></div><div><dt>모프</dt><dd>{animal.morph || '미입력'}</dd></div><div><dt>성별</dt><dd>{sexLabels[animal.sex]}</dd></div><div><dt>상태</dt><dd>{statusLabels[animal.listing_status]}</dd></div></dl><PublicGrowth key={animal.id} animalId={animal.id}/>{animal.description && <p className="detail-description">{animal.description}</p>}<Comments animalId={animal.id} closeGuard={guard} onClose={onClose} onCount={onCount}/></Modal>;
 }
 
-function Landing({ signedIn }: { signedIn: boolean }) {
-  return <div className="landing"><header className="site-header"><Brand/><div className="header-actions"><Link className="button ghost" to={signedIn ? '/dashboard/animals' : '/auth/login'}>{signedIn ? '마이페이지' : '로그인'}</Link><Link className="button" to={signedIn ? '/dashboard/animals' : '/auth/login'}>내 페이지 만들기 <ArrowUpRight size={16}/></Link></div></header><main><section className="hero"><div className="hero-copy"><span className="hero-tag"><Leaf size={14}/> 파충류와 함께하는 모든 순간</span><h1>작은 기록이 모여,<br/>우리 아이의<br/><span>이야기가 됩니다.</span></h1><p>개체 관리부터 성장 기록, 나만의 브리더 페이지까지.<br/>소중한 아이들의 일상을 하나의 링크에 담아보세요.</p><Link to={signedIn ? '/dashboard/animals' : '/auth/login'} className="button dark">나의 렙타일링크 시작하기 <ArrowRight size={18}/></Link><div className="hero-caption"><Check size={14}/> 무료로 시작하는 브리더의 기록</div></div><div className="hero-art"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><span className="art-label">GROW TOGETHER</span><div className="sample-profile"><div className="sample-cover">every little<br/><b>moment matters.</b><Sprout size={42}/></div><div className="sample-profile-body"><span className="sample-avatar"><Gecko/></span><small>OUR REPTILE FAMILY</small><strong>초록빛 브리딩룸</strong><p>아이들과 함께, 천천히 자라는 중 🌱</p><div className="sample-mini"><Gecko variant={1}/><div><b>도리</b><span>크레스티드 게코</span></div><span className="mini-sex">수컷</span></div><div className="sample-green-button">우리 아이들 만나보기 <ArrowUpRight size={14}/></div></div></div><div className="floating-note"><span><Sprout size={20}/></span><div>오늘도 한 뼘 성장했어요<b>기록하는 즐거움</b></div></div><span className="hero-star">✳</span></div></section><section className="intro"><div><span className="eyebrow">MADE FOR REPTILE PEOPLE</span><h2>한 마리, 한 마리.<br/>모두 다른 이야기를 한곳에.</h2></div><div className="intro-items"><div><span>01</span><h3>나만의 개체 관리</h3><p>사진과 특징을 기록하고<br/>아이들을 한눈에 모아보세요.</p></div><div><span>02</span><h3>브리더의 작은 공간</h3><p>소개와 개체를 담은 페이지를<br/>하나의 주소로 공유하세요.</p></div><div><span>03</span><h3>모바일에서 간편하게</h3><p>사진을 찍고 기록하는 순간까지<br/>어디서든 가볍게 시작하세요.</p></div></div></section><div className="landing-bottom"><span>YOUR REPTILE STORY STARTS HERE</span><ArrowDown size={21}/></div></main><Footer/></div>;
-}
-function Footer() { return <footer className="footer"><Brand/><span>작은 기록, 함께하는 성장.</span><nav><Link to="/terms">이용 안내</Link><Link to="/privacy">개인정보 안내</Link></nav><small>© {new Date().getFullYear()} ReptileLink</small></footer>; }
 function Login({ session }: { session: Session | null }) {
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
   if (session) return <Navigate to="/dashboard/animals" replace/>;
