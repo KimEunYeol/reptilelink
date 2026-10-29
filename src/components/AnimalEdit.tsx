@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { animalDetailsSchema, seoulDate, sexLabels, statusLabels, userMessage, type Animal, type AnimalDetailsInput, type Dashboard } from '../lib/domain';
 import { rpc } from '../lib/supabase';
 import { AnimalPhotoDraft } from './AnimalPhotoDraft';
-import { queuePhotoCleanup, uploadDraftPhotos, type PhotoDraft } from '../lib/photoDraft';
+import { cleanupSelfUploads,queuePhotoCleanup, uploadDraftPhotos, type PhotoDraft } from '../lib/photoDraft';
 import { useUnsavedChanges } from '../lib/useUnsavedChanges';
 import {ParentPhotoDraft} from './ParentPhotos';
 import {animalParents,parentLabels,parentRoles,type ParentAssets} from '../lib/parents';
@@ -84,15 +84,13 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
       pendingCommand.current = {method,started:performance.now(),wallStarted:Date.now(),args:{p_animal_id:animal.id,p_data:data,p_expected:expected,p_request_id:request.current.id,...(detailsChanged?{p_assets:assets??initialPhotos.current,p_parents:parentAssets}:assets?{p_assets:assets}:{})}};
       await rpc(pendingCommand.current.method, pendingCommand.current.args);
       const retained = new Set([...(assets ?? initialPhotos.current),...Object.values(parentAssets).filter((id):id is string=>Boolean(id))]);
+      await cleanupSelfUploads(uploaded.current,retained);
       await queuePhotoCleanup([...allocated.current].filter(id => !retained.has(id))).catch(() => {});
       await cleanupParentUploads(parentUploads.current,retained).catch(()=>{});
       await onSaved();
     } catch (reason) {
       if (commandSent) setUnresolved(true);
-      if (!commandSent) {
-        const ready = new Set(uploaded.current.values());
-        await queuePhotoCleanup([...allocated.current].filter(id => !ready.has(id))).catch(() => {});
-      }
+      // A failed preparation keeps its exact reservation for retry or explicit cancellation.
       const message = String((reason as { message?: string })?.message ?? reason);
       if (/VERSION_CONFLICT|REQUEST_EXPIRED|REQUEST_CONFLICT|NOT_FOUND|VALIDATION_FAILED/.test(message)) { setConflict(true); setLatest(null); }
       setError(userMessage(reason));
@@ -132,6 +130,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
       }
       const retained = new Set([...latest.photos.map(p => p.asset_id),...Object.values(latest.parents).filter((id):id is string=>Boolean(id))]);
       // Free staging slots before allowing another upload; physical bytes stay charged.
+      await cleanupSelfUploads(uploaded.current,retained);
       await queuePhotoCleanup([...allocated.current].filter(id => !retained.has(id)));
       await cleanupParentUploads(parentUploads.current,retained);
       if (!keepInput) setValues(latest.data);
@@ -140,7 +139,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
       initialParents.current=latest.parents;
       parentUploads.current=new Map([...parentUploads.current].filter(([,upload])=>upload.asset_id&&retained.has(upload.asset_id)));
       initialPhotos.current = latest.photos.map(p => p.asset_id);
-      uploaded.current = new Map([...uploaded.current].filter(([, id]) => retained.has(id)));
+      for(const [key,id]of uploaded.current)if(!retained.has(id))uploaded.current.delete(key);
       setUnresolved(false); initial.current = latest.data;
       setExpected(latest.revision); setConflict(false); setLatest(null); request.current = null; pendingCommand.current = null;
       setInvalid({}); setError('최신 저장값을 확인했습니다. 입력을 검토한 뒤 저장해주세요.');
@@ -158,6 +157,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
         if (current.account_status !== 'active' || !found) throw new Error('NOT_FOUND');
         retained = new Set([...found.photos.map(p => p.asset_id),...Object.values(animalParents(found)).filter((id):id is string=>Boolean(id))]);
       }
+      await cleanupSelfUploads(uploaded.current,retained);
       await queuePhotoCleanup([...allocated.current].filter(id => !retained.has(id)));
       await cleanupParentUploads(parentUploads.current,retained);
       if (forNavigation) navigation.leave(); else onClose();

@@ -82,6 +82,8 @@ export function userMessage(error: unknown): string {
     POLICY_CHANGED: '안내 버전이 변경됐습니다. 최신 안내를 다시 불러와 확인해주세요.',
     POLICY_NOT_READY: '운영 문서를 준비 중입니다. 아직 필수 안내를 확인할 수 없습니다.',
     SERVICE_UNAVAILABLE: '지금은 저장을 잠시 사용할 수 없습니다.',
+    UPLOAD_FAILED: '사진 처리를 마치지 못했습니다. 입력을 유지한 채 다시 확인해주세요.',
+    UPLOAD_INCOMPLETE: '사진 파일 확인이 끝나지 않았습니다. 입력을 유지한 채 다시 확인해주세요.',
     UPLOAD_EXPIRED: '사진 업로드 시간이 만료됐습니다. 다시 시도해주세요.',
     VALIDATION_FAILED: '입력값을 확인해주세요.',
     REQUEST_CONFLICT: '저장 요청 내용이 달라졌습니다. 입력값을 확인하고 다시 저장해주세요.',
@@ -90,6 +92,6 @@ export function userMessage(error: unknown): string {
   for (const [code, translation] of Object.entries(translations)) if (message.includes(code)) return translation;
   if (message.includes('duplicate key') || message.includes('23505')) return '이미 사용 중인 주소입니다. 다른 주소를 입력해주세요.';
   if (message.includes('Invalid login credentials')) return '로그인 정보를 확인해주세요. 로컬 테스트 계정은 먼저 준비해야 합니다.';
-  if (/fetch|network|Failed to fetch/i.test(message)) return '연결을 확인해주세요. 로컬 백엔드가 실행 중인지 확인해주세요.';
+  if (/fetch|network|Failed to fetch/i.test(message)) return '연결을 확인한 뒤 다시 시도해주세요. 입력과 처리 상태를 먼저 확인해주세요.';
   return '요청을 처리하지 못했습니다. 입력 내용을 확인하고 다시 시도해주세요.';
 }

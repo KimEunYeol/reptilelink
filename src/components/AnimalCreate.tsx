@@ -2,7 +2,7 @@ import {useEffect,useRef,useState,type FormEvent} from 'react';
 import {X} from 'lucide-react';
 import {animalRegistrationSchema,seoulDate,sexLabels,statusLabels,userMessage,type Animal,type Dashboard,type Profile} from '../lib/domain';
 import {rpc} from '../lib/supabase';
-import {queuePhotoCleanup,uploadDraftPhotos,type PhotoDraft} from '../lib/photoDraft';
+import {cleanupSelfUploads,queuePhotoCleanup,uploadDraftPhotos,type PhotoDraft} from '../lib/photoDraft';
 import {parentDraft,parentDraftKeys,uploadDraftParents,cleanupParentUploads,type ParentDraft,type ParentUpload} from '../lib/parentDraft';
 import {animalParents} from '../lib/parents';
 import {likeRequestExpired} from '../lib/likes';
@@ -54,7 +54,7 @@ export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconc
     try{
       let retained=new Set<string>();
       if(command.current){await settle();const latest=await reconcile();const found=latest.animals.find(a=>a.id===command.current?.created?.id);if(found)retained=new Set([...found.photos.map(p=>p.asset_id),...Object.values(animalParents(found)).filter((id):id is string=>Boolean(id))]);}
-      await queuePhotoCleanup([...allocated.current].filter(id=>!retained.has(id)));await cleanupParentUploads(parentUploads.current,retained);
+      await cleanupSelfUploads(uploaded.current,retained);await queuePhotoCleanup([...allocated.current].filter(id=>!retained.has(id)));await cleanupParentUploads(parentUploads.current,retained);
       if(leaving)navigation.leave();else onClose();
     }catch(reason){setError(userMessage(reason));}finally{sending.current=false;setBusy(false);}
   }
@@ -77,7 +77,8 @@ export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconc
       onClose();
     }catch(reason){
       if(!c.created&&!expired(c)&&definite(reason))c.createRejected=true;
-      if(!c.saveSent){const ready=new Set(uploaded.current.values());await queuePhotoCleanup([...allocated.current].filter(id=>!ready.has(id))).catch(()=>{});}
+      // Keep incomplete self reservations; retry/cancel settles their original UUID.
+
       setError(`${userMessage(reason)} 저장된 개체가 있을 수 있습니다. 같은 요청을 확인하거나 현재 목록을 확인해주세요.`);
     }finally{sending.current=false;setBusy(false);}
   }

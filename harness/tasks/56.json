@@ -1,0 +1,41 @@
+{
+  "issue": 56,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/56",
+  "branch": "codex/fix/56-media-retry-recovery",
+  "baseSha": "24d4027908856a0ddaf5ad5823e5c7e61604bf05",
+  "scope": "자체 사진 예약 동일 UUID/취소 tombstone와 실제 파일 업로드 중단 후 프로필·자체 사진 복구",
+  "acceptance": [
+    "실제 QA/Storage로 기존 예약 응답 유실의 중복 자산과 profile complete 미실행 후409를 먼저 재현",
+    "자체 사진 예약/취소를 동일 요청·개체/역할/소유권·24h/동시성/예산/연결중삭제금지로 보호",
+    "프로필/자체 사진의 저장된 변형은 create-only 유지·complete의 실제 WebP/바이트/SHA 검증으로 복구",
+    "원본 자기3·부/모각1/등록·수정·초안/미확인/취소 및 기존 API 호환 보존",
+    "CLI새migration/로컬진단/shadow·실DB/실제Storage/브라우저·전체verify·정확HEAD리뷰/명시병합/main/보고 후51→52→53"
+  ],
+  "plan": [
+    "원본/현계약·실패재현을 기록",
+    "명세/데이터→자체 예약/취소 UUID RPC·기존호환",
+    "Worker create-only 복구·등록/수정 업로드 상태/안전취소 연결",
+    "실제권한/경합/파일/미확인·원본회귀/전체검증·리뷰/병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png",
+      "design/마이페이지-디자인수정-m.png"
+    ],
+    "notes": "앞선49/40에서 실제 본 보드 추가(5700,1390,800,940)·수정(5300,4050,1650,2400), 모바일우선/PC동일본문 설명(0,8400,5000,1000), 원본 개체관리/디자인수정 사진등록·교체/저장/취소 패턴을 유지. 새 배치/그림 없음. 기존 오류/상태확인·초안 패턴으로 실패복구하며 자기사진3/부모2분리·연결중 취소금지 유지.",
+    "review": {
+      "status": "passed",
+      "summary": "새 배치/그림/원본 변경 없이 기존 사진등록/교체·자기3/부모2·오류/저장/취소 패턴을 유지. 실제320/1440 상단과최종문구하단을 원본보드수정과 직접비교했고7폭·하단액션화면내/취소초점·초안유지 통과. 실제Storage부분파일/손상/연결중취소/응답유실 보호 확인. QA이미지는테스트자료·폰트/native날짜/외부권리경계기존기록유지."
+    },
+    "evidence": [
+      "artifacts/media-56/unknown-{320,360,390,450,768,1440,1920}.png 기존사진/부모/폼배치·초안 유지",
+      "artifacts/media-56/unknown-actions-{320,360,390,450,768,1440,1920}.png 최종사용자문구·실제취소버튼viewport내·초점복귀",
+      "수정전실제2재현실패(자산1→2/profile저장2파일후complete미실행)→수정후2통과; 신규7포함관련43통과; 최종문구신규7재검증통과",
+      "실제DB26·단위74·CLI20261029220106/local이력·lint/advisors이상없음/shadow차이없음. 최종전체build1314(12/74/992/34/202)는고정파일verify보고서/PR참조"
+    ]
+  }
+}
