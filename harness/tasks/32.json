@@ -1,0 +1,40 @@
+{
+  "issue": 32,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/32",
+  "branch": "codex/feat/32-notifications",
+  "baseSha": "79e5436e9e3719df3a0e03fa0c3637556f0d8295",
+  "scope": "F-09 받은 알림·단조 읽음·원본 LIKE 회원 영역",
+  "acceptance": [
+    "최근90일 본인 알림5+1 정밀 커서·권한/대상현재공개/공개작성자만 DTO",
+    "읽음1~5 고유 소유ID·원자/UUID24h/단조·중지중 허용·동시/기존명령 충돌",
+    "비공개 관리 LIKE 검색/2명·원본 최신알림5행/페이지/빈오류/키보드/7폭",
+    "탈퇴/취소/숨김/보관 연계·기존 회귀·새CLI migration/진단/shadow/전체verify",
+    "최신 PR리뷰/명시적병합/이슈종료/깨끗한main/중간보고 후 통계 계속"
+  ],
+  "plan": [
+    "명세/실제DB·원본/설명·권한/잠금 조사",
+    "받은 목록·최소 DTO·읽음 원자 명령과 실제 DB/경합",
+    "원본 관리 LIKE/검색·알림·읽음/미확인/페이지·브라우저7폭",
+    "CLI migration/diagnostics/shadow·문서/전체verify·PR리뷰/병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-통계알림-m.png",
+      "design/마이페이지-통계알림.png"
+    ],
+    "notes": "모바일450/PC1920 원본과 전체 보드(4700,1300,1000,2100) 직접 확인: LIKE+둥근검색·아바타2명·작은 좌우 원형, 구분선 아래 최신알림5행/녹색읽지않음점/시각과 좌우이동. 해당 보드 영역에는 별도 알림 동작 설명이 없으며 PC 공통 안내는 메인 외 모바일과 같은 콘텐츠 크기/레이아웃을 명시. 이전 멘션예시는 채택F08 제외에 따라 구현하지 않는다. 조회수3수치/차트는 다음단계, 예시숫자 금지. 독립 읽음/실패상태는 기존 텍스트 버튼·회색 안내 재사용, 예시 개인/업체정보는 footer에 게시하지 않는다.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 PC/모바일/전체보드와7폭 실제 비교. 둥근검색24px·2회원/5알림·최대378본문·가로넘침/키보드·읽음/Back/미확인/24h/비공개/빈/오류 복구8E2E 통과. 공통 input 충돌 수정. 조회수 미수집·명시적 조작/안내/간격/폰트·주변#2 차이는 docs24에 기록."
+    },
+    "evidence": [
+      "artifacts/notifications-32/activity-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/notifications-32/unknown-390.png,private-owner-390.png,empty-390.png,all-widths.png",
+      "tests/e2e/notifications.spec.ts:8 real flows; scripts/test-notifications.mjs:38; test-notification-races.mjs:7",
+      "docs/24-notifications.md"
+    ]
+  }
+}

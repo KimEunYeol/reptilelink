@@ -1,3 +1,4 @@
+import {Activity} from './components/Activity';
 import {Comments,ManagedComments} from './components/Comments';
 import {AccountWithdrawal,AccountDeletionProgress} from './components/AccountWithdrawal';
 import {useUnsavedChanges} from './lib/useUnsavedChanges';
@@ -110,7 +111,7 @@ function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: 
 }
 
 function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: Dashboard; refresh: () => Promise<void>; refreshCollection: () => Promise<Dashboard>; onSignOut: () => void }) {
-  const location = useLocation(); const schedules = location.pathname.startsWith('/dashboard/schedules'), basic = location.pathname.startsWith('/dashboard/account'), design = location.pathname.startsWith('/dashboard/design'), links = location.pathname.startsWith('/dashboard/links');
+  const location = useLocation(); const activity = location.pathname.startsWith('/dashboard/activity'), schedules = location.pathname.startsWith('/dashboard/schedules'), basic = location.pathname.startsWith('/dashboard/account'), design = location.pathname.startsWith('/dashboard/design'), links = location.pathname.startsWith('/dashboard/links');
   const [creating, setCreating] = useState(false), [editing, setEditing] = useState<Animal | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false), [saved, setSaved] = useState(false);
   const [deleting, setDeleting] = useState<Animal | null>(null);
   const [growing, setGrowing] = useState<Animal | null>(null);
@@ -127,7 +128,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
   }
   return <ManagementShell basic={basic} locked={collectionLocked||withdrawalLocked} onSignOut={onSignOut}>
     <main className="management-content">
-      <h1 className="sr-only">{schedules ? '일정 관리' : basic ? '기본 정보' : design ? '디자인 설정' : links ? '링크 관리' : '개체 관리'}</h1>
+      <h1 className="sr-only">{activity ? '통계/알림' : schedules ? '일정 관리' : basic ? '기본 정보' : design ? '디자인 설정' : links ? '링크 관리' : '개체 관리'}</h1>
       <ManagementShare url={publicUrl} copied={copied} onCopy={copyAddress}/>
       <section className="management-publication" aria-label="페이지 공개 설정">
         <span>{profile.is_published ? '공개 중' : '비공개'}</span>
@@ -136,9 +137,9 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
       </section>
       {error && <Notice>{error}</Notice>}
       {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
-      {schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refreshCollection} onLocked={setCollectionLocked}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p><AccountWithdrawal expected={profile.revision} disabled={collectionLocked} refresh={refreshCollection} onLocked={setWithdrawalLocked}/></section>
+      {activity ? <Activity onLocked={setCollectionLocked}/> : schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refreshCollection} onLocked={setCollectionLocked}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p><AccountWithdrawal expected={profile.revision} disabled={collectionLocked} refresh={refreshCollection} onLocked={setWithdrawalLocked}/></section>
         : design ? <DesignSettings revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : links ? <ExternalLinks revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting && !growing&&!comments} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
-      {!schedules && !basic && !design && !links && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
+      {!activity && !schedules && !basic && !design && !links && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
     </main>
     {deleting && <AnimalDelete animal={deleting} revision={profile.revision} refresh={refreshCollection} onClose={() => setDeleting(null)}/>}
     {comments&&<ManagedComments animalId={comments.id} onClose={()=>setComments(null)}/>}

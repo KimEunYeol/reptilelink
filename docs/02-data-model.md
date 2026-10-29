@@ -467,3 +467,7 @@ comments는 복합 대상 FK/RLS와 일반 역할 테이블 권한 회수, 최�
 ## #30 프로필 좋아요 실제 구조
 
 private.profile_likes는 Auth/대상 FK·회원/프로필 고유·자기 금지·수신자 FK용(id,profile_id) 고유와 RLS를 갖는다. notifications의 comment_id는 nullable이며 like_id 고유/복합 FK/CASCADE와 kind/정확히 한 참조 CHECK를 확장한다. 일반 테이블 권한은 없다. set_profile_like는 actor/대상 계정→대상 프로필 잠금→영수증/시간 제한→좋아요/알림을 원자 처리한다. 공개 DTO에는 like_count만 추가하고 본인 상태는 별도 최소 RPC다. my_existing_profile_like는 비공개 대상 정보 없이 본인의 기존 행동만 제공한다. 탈퇴 요청/최종 정리에 외부 자기 좋아요 제거를 연결했다. private.record_receipt는 기존 단일 INSERT15개를 공통 요청 충돌/전체 롤백으로 바꾸며 선행 버전/해시/잠금은 유지한다. 인계와 검증은 docs/23을 따른다.
+
+## 2026-10-29 받은 알림·읽음 확장
+
+#32의 my_notifications는 active 본인90일·5+1 정밀 커서·현재 공개 대상/공개 작성자 최소 DTO다. read_notifications는 고유1~5개 소유 ID·정렬된 집합 해시/24h 영수증·본인 계정 Share→영수증→전용 제한→정렬된 본인 알림 행으로 원자 처리한다. read_at은 최초 시각을 유지하며 새 명령은 고정시간60회/기존 재확인 무료, 쓰기 중지 중 허용한다. action_buckets의 notification_read는 기존47h 정리에 포함된다. 기존 생성/FK/탈퇴 관계는 유지한다. 상세 검증/차이는 docs/24를 따른다.
