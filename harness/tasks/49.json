@@ -1,0 +1,48 @@
+{
+  "issue": 49,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/49",
+  "branch": "codex/feat/49-animal-parents-adoption",
+  "baseSha": "8095cefc3e6cea3563bea9efcf9b680a75d08449",
+  "scope": "원본 추가/수정·공개 상세의 부/모 사진 각1장과 입양일; 기존 자기사진3장 보존",
+  "acceptance": [
+    "원본 PC/m/-m-1/전체보드 추가·수정·공개/설명과 구체F03·모델 기록",
+    "선택 입양일은 실제 YYYY-MM-DD·서울 오늘까지/해칭일보다 이전 거절; 기존 null 보존",
+    "독립 부/모 사진 각1장·기존 자기3장·역할/동일소유자/동일개체/ready 검증·예산·임대 보존",
+    "현재 버전·영수증·필드/자기사진/부모사진 원자저장/재전송/충돌/중지중축소·취소미확인 보호",
+    "일반사진API 우회·연결중정리/교체/삭제/탈퇴·현재공개 파일/DTO·원시권한 검증",
+    "등록·수정·공개React/Worker/noJS·원본340팝업/2사진/입양일 행·7폭/키보드/긴빈오류",
+    "실제 DB·동시성·Storage/Worker·브라우저·기존자료해시 보존·CLI새migration/advisors/lint/shadow",
+    "전체verify·최신head리뷰·명시적병합·이슈종료/clean main/검증트리/보고 후40→51→52→53"
+  ],
+  "plan": [
+    "원본/명세·실제 DB 제약·현재미디어/취소/탈퇴·등록을 읽고 하위역할 모델 확정",
+    "additive DB fields/부모역할 업로드 예약·취소/원자저장·공개/정리·실제검증/새CLI migration",
+    "공유 부모사진 입력/미확인 업로드 복구·등록/수정/공개/Worker·날짜·충돌/취소",
+    "실제7폭/Storage/Worker/noJS/권한·동시성·원본비교·문서/전체verify·PR/리뷰/병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png",
+      "design/링크페이지.png",
+      "design/링크페이지-m-1.png"
+    ],
+    "notes": "실제 이미지/보드 추가(5700,1390,800,940)·수정(5300,4050,1650,2400)·공개상세와 모바일우선/PC동일폭 안내를 확인. 추가·수정은 대표사진 다음 회색사각 부/모 사진추가 각1칸, 성별→이름/종류/모프/해칭일/입양일 순서. 공개상세는 부/모 사진2개. 개체 선택/가계 그래프는 없어 독립 사진으로 확장하며 기존 자기3슬롯과 혼용하지 않는다. 사용자 원본부모·입양일 이번확장 승인.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 추가/수정/공개·전체보드/PC동일폭 안내와 실제 등록390/수정390/공개1440/정적320 등을 직접 비교했다.340팝업·대표 아래2사각부모/성별·입양일순서/저장취소·7폭/320x600조작을 유지했다. 기존자기3장과부모2장·저장예산/허용역할/현재공개를분리했다. 원본부분기본자산만재사용·97PNG불변. native날짜locale/미확인폰트·동일색계열대비/조작보완·QA사진/외부검증한계를docs33에기록. 실제파일재시도409/정적320intrinsic폭·최신확인상위버전수정후재검증. 독립사진이외가계선택UI를창작하지않았다."
+    },
+    "evidence": [
+      "artifacts/parents-49/{create,edit,detail,static-detail}-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/parents-49/{create,edit}-short-error.png / {detail,static-detail}-short.png",
+      "tests/parents.test.ts:7; scripts/test-animal-parents.mjs:74 actualDB/Auth",
+      "tests/e2e/animal-parents.spec.ts:14; combined existing22/new14=36 passed",
+      "CLI20261029202619 / lint/advisors clean / shadow diff empty",
+      "docs/33-parent-photos-adoption.md / existing-data hash comparison before dedicated fixture regressions"
+    ]
+  }
+}

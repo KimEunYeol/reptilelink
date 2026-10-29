@@ -13,6 +13,8 @@ import{PublicSocials}from'./DesignSettings';
 import{PublicGrowth}from'./AnimalGrowth';
 import{Comments}from'./Comments';
 import{SourceBrand}from'./ManagementShell';
+import{PublicParentPhotos}from'./ParentPhotos';
+import{animalParents}from'../lib/parents';
 
 export function PublicPhoto({animal,full=false}:{animal:Animal;full?:boolean}){
  const[failed,setFailed]=useState<string|null>(null),asset=animal.photos[0]?.asset_id;
@@ -26,7 +28,7 @@ function PublicDetail({animal,onClose,onCount}:{animal:Animal;onClose:()=>void;o
  const dialog=useRef<HTMLDialogElement>(null),guard=useRef<(()=>boolean)|null>(null);
  function close(){if(guard.current?.()!==false)onClose();}
  useEffect(()=>{const previous=document.activeElement as HTMLElement|null,d=dialog.current;d?.showModal();return()=>{d?.close();previous?.focus();};},[]);
- return <dialog ref={dialog} className="animal-edit public-detail" aria-labelledby="public-detail-title" onCancel={e=>{e.preventDefault();close();}}><header className="animal-edit-heading"><h2 id="public-detail-title">{animal.name}</h2><span className={`sex-pill ${animal.sex}`}>{sexLabels[animal.sex]}</span><button type="button" className="icon-button" aria-label="닫기" onClick={close}><X size={20}/></button></header><div className="animal-edit-body"><div className="detail-photo"><PublicPhoto animal={animal} full/></div><dl className="detail-info"><div><dt>이름</dt><dd>{animal.name}</dd></div><div><dt>종류</dt><dd>{animal.species}</dd></div><div><dt>모프</dt><dd>{animal.morph||'미입력'}</dd></div><div><dt>해칭일</dt><dd>{hatchDate(animal.birth_date)}</dd></div><div><dt>상태</dt><dd>{statusLabels[animal.listing_status]}</dd></div></dl><PublicGrowth animalId={animal.id}/>{animal.description&&<div className="public-description"><span>설명</span><p className="detail-description">{animal.description}</p></div>}<Comments animalId={animal.id} closeGuard={guard} onClose={onClose} onCount={onCount}/></div></dialog>;
+ return <dialog ref={dialog} className="animal-edit public-detail" aria-labelledby="public-detail-title" onCancel={e=>{e.preventDefault();close();}}><header className="animal-edit-heading"><h2 id="public-detail-title">{animal.name}</h2><span className={`sex-pill ${animal.sex}`}>{sexLabels[animal.sex]}</span><button type="button" className="icon-button" aria-label="닫기" onClick={close}><X size={20}/></button></header><div className="animal-edit-body"><div className="detail-photo"><PublicPhoto animal={animal} full/></div><PublicParentPhotos assets={animalParents(animal)}/><dl className="detail-info"><div><dt>이름</dt><dd>{animal.name}</dd></div><div><dt>종류</dt><dd>{animal.species}</dd></div><div><dt>모프</dt><dd>{animal.morph||'미입력'}</dd></div><div><dt>해칭일</dt><dd>{hatchDate(animal.birth_date)}</dd></div><div><dt>입양일</dt><dd>{hatchDate(animal.adoption_date??null)}</dd></div><div><dt>상태</dt><dd>{statusLabels[animal.listing_status]}</dd></div></dl><PublicGrowth animalId={animal.id}/>{animal.description&&<div className="public-description"><span>설명</span><p className="detail-description">{animal.description}</p></div>}<Comments animalId={animal.id} closeGuard={guard} onClose={onClose} onCount={onCount}/></div></dialog>;
 }
 function Share({url,title,disabled,onStatus}:{url:string;title:string;disabled:boolean;onStatus:(message:string,manual?:string)=>void}){
  const[busy,setBusy]=useState(false);

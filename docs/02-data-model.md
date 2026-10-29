@@ -128,6 +128,8 @@ slug 정규식은 `^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$`. 저장 전 소문자�
 | `morph` | text, 최대 120자 | 모프 |
 | `sex` | text: unknown/male/female | 성별 |
 | `birth_date` | date nullable | 생일, 저장 시 미래 날짜 거절 |
+| `adoption_date` | date nullable | 입양일, 실제 날짜·서울 오늘까지·알려진 해칭일 이후 |
+| `father_asset_id`, `mother_asset_id` | uuid nullable, 같은 소유자 복합FK | 독립 부/모 사진 각1, 같은자식·역할/ready 검증 |
 | `description` | text, 최대 500자 | 공개 설명 |
 | `listing_status` | text: not_listed/available/reserved/rehomed | 분양 표시 |
 | `is_public` | boolean, 기본 false | 개체 공개 |
@@ -161,6 +163,7 @@ UNIQUE `(id, profile_id)`, UNIQUE `(profile_id, active_sort_order)` DEFERRABLE I
 | `profile_id` | uuid FK profiles, 최종 정리 전 RESTRICT | 소유자 |
 | `animal_id` | uuid nullable, 소유자 일치 FK | 개체 사진일 때 대상 |
 | `purpose` | text: avatar/cover/animal | 용도 |
+| `animal_role` | text: self/father/mother, 기본self | animal만 부모 역할, 자기사진3과 분리 |
 | `state` | text: reserved/ready/delete_pending | 수명 주기 |
 | `reservation_bytes` | bigint ≥ 0 | 업로드 전 최대 예약 바이트 |
 | `actual_bytes` | bigint ≥ 0 | 모든 변형의 확인된 바이트 |
@@ -491,3 +494,12 @@ profiles/animals/animal_photos/growth_records/social_links/external_links/schedu
 ## #42 삭제 대기와 계정 탈퇴 조합
 
 request_account_deletion은 미삭제 개체만 비공개/삭제표시 UPDATE한다. protect_deleted_animal은 기존 삭제 행 UPDATE를 계속 거절하고 deleted_at·기존 개체 작업은 유지한다. 계정 파일 정리는 profile_id의 모든 자산을 대상으로 하며 실제 파일 제거 전 예산/계정을 유지한다. finish_account_data의 최종 프로필/개체 삭제가 기존 animal_deletions·성장/메모 관계를 CASCADE한다. 새 테이블/필드나 삭제 자료 복원은 없다.
+
+
+## #49 부·모 사진·입양일 실제 확장
+
+animals에 adoption_date nullable date와 father_asset_id/mother_asset_id nullable UUID를 추가한다. 사진FK는 (asset_id,profile_id)로 같은 소유자를 제한한다. private.media_assets.animal_role은 self(기본)/father/mother이며 animal 용도만 부모 역할을 가진다. 동작 트리거는 같은자식/역할/ready·검증완료2변형을 검사한다. 자기 animal_photos는 self만 허용한다. 부모는 타 개체 관계가 아닌 자식에 독립 업로드한 사진이므로 가계 관계/순환 그래프를 만들지 않는다.
+
+reserve_parent_photo(animal,role,request)와 cancel_parent_photo_request는 본인·동일요청해시/취소tombstone·예산/동시예약/유효기간으로 분리한다. save_animal_details는8개 일반필드+자기사진 전체세트+명시적father/mother를 단일revision·영수증/직렬화로 저장한다. 기존 update_animal/save_animal_edit은 자기사진3/7필드의 호환 계약을 유지하고 새필드를 보존한다. 중지 중에는 기존 필드값을 바꾸지 않는 사진 축소만 허용한다.
+
+공개는 기존 active+프로필/자식 공개+미삭제/역할/ready 조건의 최소 자산ID/날짜만 추가한다. 미디어원본 테이블 권한은 계속 없으며 관리DTO는 자기필드만 확장한다. 연결된부모는 일반취소/물리정리를 거절하고 교체/삭제/탈퇴에서 참조해제→삭제대기→실제파일/예산반환을 유지한다. 실제 CLI migration20261029202619와 로컬 검증/원본 비교·한계는 [인계](33-parent-photos-adoption.md)를 따른다.

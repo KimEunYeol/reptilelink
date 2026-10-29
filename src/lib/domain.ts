@@ -38,6 +38,19 @@ export const animalEditSchema = z.object({
   description: editText(500), listing_status: z.enum(['not_listed', 'available', 'reserved', 'rehomed']),
 }).strict();
 export type AnimalEditInput = z.infer<typeof animalEditSchema>;
+const adoptionDateSchema = z.string().refine(value => {
+  if (!/^(?!0000)\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value && value <= seoulDate();
+}, '입양일은 오늘까지의 올바른 날짜로 입력해주세요.').nullable();
+const adoptionOrder = (value: {birth_date: string|null; adoption_date: string|null}, context: z.RefinementCtx) => {
+  if (value.birth_date && value.adoption_date && value.adoption_date < value.birth_date)
+    context.addIssue({code:'custom',path:['adoption_date'],message:'입양일은 해칭일보다 이르지 않아야 합니다.'});
+};
+/** The old seven-field command stays compatible; the source extension uses this explicit contract. */
+export const animalDetailsSchema = animalEditSchema.extend({adoption_date:adoptionDateSchema}).superRefine(adoptionOrder);
+export type AnimalDetailsInput = z.infer<typeof animalDetailsSchema>;
+export const animalRegistrationSchema = animalEditSchema.extend({adoption_date:adoptionDateSchema,is_public:z.boolean()}).superRefine(adoptionOrder);
 export const collectionSchema = z.array(z.object({ id: z.uuid(), is_public: z.boolean() }).strict()).max(20)
   .refine(items => new Set(items.map(item => item.id)).size === items.length, '중복된 개체가 있습니다.');
 export type CollectionItem = z.infer<typeof collectionSchema>[number];
@@ -47,7 +60,7 @@ export function moveCollection(items: CollectionItem[], from: number, to: number
   const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next;
 }
 export type Photo = { asset_id: string; sort_order: number };
-export type Animal = AnimalInput & { id: string; birth_date: string | null; comment_count?:number; sort_order: number; photos: Photo[] };
+export type Animal = AnimalInput & { id: string; birth_date: string | null; adoption_date?:string|null;father_asset_id?:string|null;mother_asset_id?:string|null; comment_count?:number; sort_order: number; photos: Photo[] };
 export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string; avatar_asset_id?:string|null;cover_asset_id?:string|null };
 export type PendingAnimalDeletion = { id: string; name: string; requested_at: string };
 export type AccountDeletion={request_id:string;requested_at:string;sessions_revoked:boolean;phase:'sessions'|'files'|'auth'};
