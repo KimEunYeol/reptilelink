@@ -13,7 +13,19 @@ try{
  const before=count('public.comments',`animal_id='${capAnimal.id}'`);await error(writer.c,'create_comment',cmd(capAnimal.id),/QUOTA_EXCEEDED/);assert.equal(count('public.comments',`animal_id='${capAnimal.id}'`),before);assert.equal(count('private.mutation_receipts',`actor_id='${writer.id}' and operation='comment_create'`),0);assert.equal(count('private.action_buckets',`actor_id='${writer.id}'`),0);checks++;
  // The writer cannot recover quota by hiding/deleting; retained rows count too.
  const existing=localQuery(`select id from public.comments where animal_id='${capAnimal.id}' and status='visible' limit 1`).trim();await call(writer.c,'delete_comment',{p_comment_id:existing,p_request_id:crypto.randomUUID()});await error(writer.c,'create_comment',cmd(capAnimal.id),/QUOTA_EXCEEDED/);assert.equal(count('public.comments',`animal_id='${capAnimal.id}'`),200);checks++;
- clear();for(let n=0;n<3;n++){clear(writer,'comment',true);await call(writer.c,'create_comment',cmd(pageAnimal.id,`minute-${n}`));}clear(writer,'comment',true);await error(writer.c,'create_comment',cmd(pageAnimal.id),/RATE_LIMITED/);assert.equal(count('private.mutation_receipts',`actor_id='${writer.id}' and operation='comment_create'`),3);checks++;
+ // Use the real server clock: a new fixed minute legitimately accepts another request.
+ // Retry only a witnessed boundary crossing; an accepted fourth request in one minute still fails.
+ let minuteVerified=false;
+ for(let attempt=0;attempt<3&&!minuteVerified;attempt++){
+  clear();const receiptCount=count('private.mutation_receipts',`actor_id='${writer.id}' and operation='comment_create'`);
+  const minute=()=>localQuery("select date_trunc('minute',clock_timestamp())").trim(),started=minute();
+  for(let n=0;n<3;n++){clear(writer,'comment',true);await call(writer.c,'create_comment',cmd(pageAnimal.id,`minute-${attempt}-${n}`));}
+  clear(writer,'comment',true);const result=await writer.c.schema('api').rpc('create_comment',cmd(pageAnimal.id));
+  if(started!==minute())continue;
+  assert.ok(result.error,'fourth comment in the same server minute must be rejected');assert.match(result.error.message,/RATE_LIMITED/);
+  assert.equal(count('private.mutation_receipts',`actor_id='${writer.id}' and operation='comment_create'`),receiptCount+3);minuteVerified=true;
+ }
+ assert.ok(minuteVerified,'could not verify a stable server minute after three attempts');checks+=2;
  for(const c of [guest,writer.c])await error(c,'admin_content_reports',{},/permission denied/);
  assert.ifError((await foreign.c.auth.updateUser({data:{role:'service_role',is_admin:true}})).error);await error(foreign.c,'admin_content_reports',{},/permission denied/);await error(foreign.c,'prune_activity',{p_actor:writer.id},/permission denied/);
  const reportedId=all[0],reportCmd={p_animal_id:null,p_comment_id:reportedId,p_reason:'privacy',p_detail:'이유 <script>그대로</script>',p_request_id:crypto.randomUUID()};const reported=await call(writer.c,'create_content_report',reportCmd);assert.deepEqual(Object.keys(reported),['id']);assert.deepEqual(await call(writer.c,'create_content_report',reportCmd),reported);assert.equal(count('private.content_reports',`reporter_id='${writer.id}'`),1);checks++;

@@ -1,0 +1,46 @@
+{
+  "issue": 39,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/39",
+  "branch": "codex/design/39-source-public-worker",
+  "baseSha": "35655f6c88061e39e618288c9319a787f61143ad",
+  "scope": "원본 공개450px/카드5개·상세URL/공유와최소Worker초기화면 일치",
+  "acceptance": [
+    "원본PC/m/m-1·보드설명과커버/소개/일정/5카드/링크/SNS/하단브랜드순서",
+    "수제Gecko/영문장식제거·원본부분자산출처와실제이미지/공개조건보존",
+    "실제상세URL·목록닫기/Back/스크롤/미확인CommentsLikes보호·공유취소/실패정직처리",
+    "Worker초기HTML/metadata/JS미사용·일관된현재공개/404/no-store/민감정보제외",
+    "7폭/긴빈본문/키보드/모달/실제미디어·전체검증/리뷰/병합/main/보고"
+  ],
+  "plan": [
+    "명세F03/07·원본PC/m/상세/보드와현재공개DTO/Worker/반응보호확인",
+    "원본부분기본자산·공개카드/상세URL/공유·초기HTML같은패턴구현",
+    "실제QA/7폭/JS미사용/Back/공유/실패/현재공개·원본직접비교",
+    "문서/전체verify·최신리뷰/명시적병합/main/보고후49부모·입양일→40"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/링크페이지.png",
+      "design/링크페이지-m.png",
+      "design/링크페이지-m-1.png"
+    ],
+    "notes": "PC/m/상세를직접열람. 전체보드(7000,1400,1200,2800)/(7000,6000,1200,1200)의공개상태/일정창/댓글과모바일우선·PC동일크기/상세는모바일안내(0,340,3800,370)/(0,8400,5000,1000)를재열람.450외곽/378본문·커버276/우측아바타114겹침·5장photooverlay/페이지·링크/SNS/하단로고. Group/Snippets41개는댓글/언어/무게말풍선으로기본개체자산아님. 작업중사용자가부/모·입양일확장을승인하여독립49를등록했고39병합직후진행한다. 이39는기존공개기반을정비하며추가사진을부모로위장하지않음.",
+    "review": {
+      "status": "passed",
+      "summary": "원본PC/m/상세·전체보드/PC동일폭안내를직접확인하고7폭루트/정적·긴상세 및JS상세/일정390·1440캡처를직접비교했다.450/378폭·5카드photooverlay·커버/우측아바타/일정/링크/SNS/원본하단로고를보존했다. 원본중앙실루엣만crop+배경alpha추출하고원본97PNG보존. 링크잘림/배경노이즈/긴헤더·직접주소초점복구수정후재검증. 명도대비의동일색계열보완·실제데이터높이/기본테마·폰트/noJS동작차이를docs32에기록. 부모/입양일은사용자승인49로즉시이어가며완료로위장하지않는다."
+    },
+    "evidence": [
+      "artifacts/public-39/root-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/public-39/{static-detail,long-detail}-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/public-39/{detail,schedule}-{390,1440}.png",
+      "tests/publicPage.test.ts:6 / tests/e2e/public-source.spec.ts:8",
+      "existing31 public/comment/media flows; original41 corrections documented",
+      "docs/32-source-public-worker.md",
+      "public/brand/public/source.json",
+      "Existing DB comment limit: witnessed server-minute rollover only bounded retry; same-minute fourth success still fails; 27 checks",
+      "public boundary trace: wait actual login heading before Back; same document + actual503 handler count; 20 repeated runs / 60 checks before full rerun"
+    ]
+  }
+}

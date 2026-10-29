@@ -1,0 +1,18 @@
+{
+  "assets": [
+    {
+      "file": "animal-placeholder.png",
+      "source": "design/링크페이지-m.png",
+      "crop": {
+        "left": 128,
+        "top": 1728,
+        "width": 196,
+        "height": 113
+      },
+      "source_sha256": "7ca2f1d0018227be5e289274ee3be69b952f42cfac22da3812c501001571b1db",
+      "sha256": "57aa1c00988f7f936e20724791c7ae60ab0d4655a71834fed1899f0929b5bb85",
+      "alpha_extraction": "Set alpha=0 for pixels within 8 RGB levels of the first background pixel in the same cropped row, removing export dithering; retained source RGB/alpha unchanged."
+    }
+  ],
+  "notes": "Original central silhouette only; example text/count/sex excluded. Deterministic crop/background-alpha extraction removes flat-background dithering, with no drawing or recoloring of retained pixels. Original97PNGs unchanged; distribution rights not independently confirmed."
+}

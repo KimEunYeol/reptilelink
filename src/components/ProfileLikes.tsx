@@ -1,6 +1,6 @@
 import {PolicyRenewalLink} from './PolicyRenewalLink';
 import {publicLoginHref} from '../lib/authReturn';
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {Link} from 'react-router-dom';
 import {Heart,X} from 'lucide-react';
 import {ProfileImage} from './ProfileImage';
@@ -57,9 +57,9 @@ function LikeNotice({control:c}:{control:ReturnType<typeof useProfileLike>}){
  </section>;
 }
 
-export function ProfileLikes({profile,initialCount,onLocked}:{profile:PublicPage['profile'];initialCount?:number;onLocked:(value:boolean)=>void}){
+export function ProfileLikes({profile,initialCount,onLocked,children,account}:{children?:ReactNode;account?:ReactNode;profile:PublicPage['profile'];initialCount?:number;onLocked:(value:boolean)=>void}){
  const c=useProfileLike(profile.slug,onLocked);
- return <><div className={`public-cover theme-${profile.theme_token||'green'}`}><ProfileImage purpose="cover" asset={profile.cover_asset_id}/><div className="profile-reactions"><button type="button" className="profile-like-button" aria-label={c.label} aria-pressed={c.state?.ready&&!c.state.is_owner?c.state.liked:undefined} disabled={c.busy||Boolean(c.pending)||!c.state||c.identityChanged} onClick={c.click}><Heart size={22} aria-hidden="true" fill={c.state?.liked?'currentColor':'none'}/><span>{c.state?.count??(c.loaded?'—':initialCount??'…')}</span></button></div></div><div className="public-avatar"><ProfileImage purpose="avatar" asset={profile.avatar_asset_id}/></div><LikeNotice control={c}/>{c.members&&<LikeMemberList onClose={()=>c.setMembers(false)}/>}</>;
+ return <><div className={`public-cover theme-${profile.theme_token||'green'}`}><ProfileImage purpose="cover" asset={profile.cover_asset_id} publicOnly/>{account}<div className="profile-reactions"><button type="button" className="profile-like-button" aria-label={c.label} aria-pressed={c.state?.ready&&!c.state.is_owner?c.state.liked:undefined} disabled={c.busy||Boolean(c.pending)||!c.state||c.identityChanged} onClick={c.click}><Heart size={22} aria-hidden="true" fill={c.state?.liked?'currentColor':'none'}/><span>{c.state?.count??(c.loaded?'—':initialCount??'…')}</span></button>{children}</div></div><div className="public-avatar"><ProfileImage purpose="avatar" asset={profile.avatar_asset_id} publicOnly/></div><LikeNotice control={c}/>{c.members&&<LikeMemberList onClose={()=>c.setMembers(false)}/>}</>;
 }
 
 /** An unavailable page reveals only an action the signed-in caller already owns. */
