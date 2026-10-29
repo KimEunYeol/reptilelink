@@ -41,3 +41,12 @@
 최종 전체 구성은 build+346개(하네스12·단위17·DB255·미디어10·브라우저52)다. 이 기록/최종 코드의 실제 npm run verify 결과와 파일 해시는 task14·로컬 검증 보고서·PR에서 확인한다. 기존 번들500kB 경고와 실제 OAuth/Cloudflare/운영 배포 미검증은 남는다.
 
 공식 근거: [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [PostgreSQL window functions](https://www.postgresql.org/docs/current/tutorial-window.html). 현재 변경 이력도 확인했으며 이 단계에서 DB/CLI 버전을 올리거나 ltree/GraphQL/암호화 확장을 도입하지 않았다.
+
+
+## 최종 소유권 경합 검토 보완
+
+최초346개 검증 뒤 수동 코드 검토에서 다른 계정이 같은 새 record ID로 동시에 저장할 때 사전 존재 검사와 ON CONFLICT UPDATE 사이에 경합이 생길 수 있음을 확인했다. 새 검사는 첫 QA 트랜잭션의 미커밋 행에 두 번째 계정의 실제 RPC가 PK 충돌로 대기하는 것을 확인한 뒤 첫 트랜잭션을 commit해 수정 전 소유권 침범을 재현했다. 실제 UPDATE 분기에 profile_id/animal_id 일치를 다시 조건으로 걸고 행이 갱신되지 않으면 NOT_FOUND로 롤백하도록 보완했다. 같은 회귀3개(거절/첫 기록 보존/두 번째 계정 상태·영수증 불변)가 수정 후 통과했다.
+
+경합 QA는 전용 QA 계정의 해당 실행 ID에만 적용하며, 수정 전 재현이 건드린 두 번째 QA 대상의 원래 개체/메모/프로필을 snapshot으로 복원하고 생성한 기록/영수증/개체만 정리했다. 이후 기존 적용 migration은 보존한 별도 CLI 보완 migration으로 함수 차이를 기록한다. 최종 전체 필수 구성은 build+349개(하네스12·단위17·DB258·미디어10·E2E52)이며 수정/기록 포함 최종 verify 후 커밋/푸시·PR/리뷰/병합한다. 제품 UI 변화는 없다.
+
+보완 함수는 CLI 생성20261029061558_growth_conflict_ownership.sql로 로컬 이력에 기록했다. 최종 shadow 재현·전체 verify는 이 보완까지 포함한다.

@@ -9,7 +9,8 @@
     "관리/공개 DTO 격리·메모 비공개·상위 공개/활성/삭제 차단",
     "기간별 실제 포인트/최대120·페이지·최신 체중·서버 KST 날짜",
     "초안/취소·미저장/미확인/충돌/이동 보호·기존 편집과 분리",
-    "7개 폭 원본 대조·DB/브라우저/전체 verify·새 migration·PR/병합/main"
+    "7개 폭 원본 대조·DB/브라우저/전체 verify·새 migration·PR/병합/main",
+    "서로 다른 계정의 동일 새 record ID 동시 충돌에서도 UPDATE 시점에 소유자/개체 재검증·타인 데이터/두번째 계정 상태 불변"
   ],
   "plan": [
     "원본 체중/그래프/추가/회색 기록행·보드 설명과 기존 저장 계약 확인",
@@ -41,10 +42,11 @@
   },
   "verification": {
     "targeted": "51 growth DB checks,6 unit,8 browser passed; final full verify required before push",
-    "fullSuite": "Required final build+346 checks:12 harness,17 unit,255 DB,10 media,52 E2E; actual result/fingerprint in .local/harness-verification.json",
+    "fullSuite": "Required final build+349 checks:12 harness,17 unit,258 DB,10 media,52 E2E; actual result/fingerprint in .local/harness-verification.json",
     "database": "dates/strict decimal/duplicate/3000 quota, foreign/inactive/consent/direct privileges, receipts/concurrency/rollback, actual-date sampling/page, opt-in and notes privacy, deleted-animal/cascade",
     "browser": "8 new flows including cancel/7 widths/focus, saved reload/public private-note exclusion, invalid input, response loss and failed authoritative cancellation, explicit conflict review, cursor/period/Back and paused-write restrictions",
-    "migration": "CLI-generated20261029060006_animal_growth.sql; local history matches; shadow diff empty; lint and security advisors no warnings after explicit UUID[] initialization; growth QA preserves existing animal hash",
-    "review": "First UI run found focus/textarea label/DB error message-object classification; same8 passed after fix. Unknown command stays locked until authoritative refresh; latest inspection never silently replaces drafts. UI/SQL iteration uses only current QA animal IDs; no reset/volume deletion/remote deployment."
+    "migration": "CLI-generated20261029060006_animal_growth.sql; local history matches; shadow diff empty; lint and security advisors no warnings after explicit UUID[] initialization; growth QA preserves existing animal hash; separate CLI fix20261029061558 preserves prior history and requires final shadow replay",
+    "review": "First UI run found focus/textarea label/DB error message-object classification; same8 passed after fix. Unknown command stays locked until authoritative refresh; latest inspection never silently replaces drafts. UI/SQL iteration uses only current QA animal IDs; no reset/volume deletion/remote deployment.",
+    "ownershipRace": "Deterministic cross-owner same-ID conflict failed before fix;3 checks passed after final INSERT conflict-branch owner/animal predicate and NOT_FOUND rollback. QA fixtures restored from exact snapshots; no real user data touched."
   }
 }
