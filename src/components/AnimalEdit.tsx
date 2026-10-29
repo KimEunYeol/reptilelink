@@ -11,8 +11,8 @@ function fields(animal: Animal): AnimalEditInput {
     birth_date: animal.birth_date ?? null, description: animal.description, listing_status: animal.listing_status };
 }
 
-export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, onSaved, onDelete, onGrowth }: {
-  animal: Animal; revision: number; renderPhoto: (id: string) => ReactNode; reconcile: () => Promise<Dashboard>; onClose: () => void; onSaved: () => Promise<void>; onDelete?: (animal: Animal) => void; onGrowth?: (animal: Animal) => void;
+export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, onSaved, onDelete, onGrowth,onComments }: {
+  animal: Animal; revision: number; renderPhoto: (id: string) => ReactNode; reconcile: () => Promise<Dashboard>; onClose: () => void; onSaved: () => Promise<void>; onDelete?: (animal: Animal) => void; onGrowth?: (animal: Animal) => void;onComments?:(animal:Animal)=>void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const initial = useRef(fields(animal));
@@ -206,6 +206,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
       </div>}
       <footer className="edit-actions"><button className="button" disabled={busy || conflict}>{busy ? '저장 중' : '저장'}</button>
         <button type="button" className="button ghost" disabled={busy} onClick={() => void discard()}>취소</button></footer>
+      {onComments&&<div className="growth-entry"><span>댓글</span><button type="button" className="text-button" disabled={dirty||conflict||busy} onClick={()=>onComments(animal)}>댓글 관리</button>{dirty&&<small>편집 내용을 저장하거나 취소한 뒤 이동할 수 있습니다.</small>}</div>}
       {onDelete && <aside className="animal-delete-notice"><strong>개체 삭제</strong><p>삭제한 개체와 관련 기록은 복구할 수 없습니다.</p>{dirty && <p>편집 내용을 저장하거나 취소한 뒤 삭제할 수 있습니다.</p>}<button type="button" className="text-button" disabled={dirty || conflict || busy} onClick={() => void beginDelete()}>개체 삭제</button></aside>}
     </form>
   </dialog>;
