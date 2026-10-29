@@ -235,7 +235,9 @@ platform 허용 목록은 기능 명세 F-02. UNIQUE `(profile_id, platform)`, U
 
 `id uuid PK`, `profile_id uuid`, `title text 1~40자`, `url text ≤ 2048자`, `color_token text`, `is_public boolean`(기본 false), `sort_order integer`, `created_at`, `updated_at`.
 
-UNIQUE `(profile_id, sort_order)`. 토큰은 허용 목록만. URL이 같아도 제목이 다른 링크는 허용한다. 10개 제한은 동시 쓰기를 고려해 DB에서 강제한다.
+UNIQUE `(profile_id, sort_order)`는 지연 검사해 순서 교환을 원자 적용한다. 토큰은 원본11색 허용 목록만. URL이 같아도 제목이 다른 링크는 허용한다. 10개 제한은 프로필 행 잠금으로 동시 쓰기까지 강제한다. 신규 ID는 서버 생성이며 소유자는 변경 불가다.
+
+#16 구현: 본인 `my_external_links`, 단일 `save_external_link`, 전체 목록 `apply_external_links`는 활성/동의/소유권·revision·24시간 영수증을 검사한다. 목록 명령은 남길 ID와 삭제 ID가 현재 본인 집합과 정확히 일치해야 한다. `public_page`는 invoker/RLS로 공개된 링크의 id/title/url/color_token만 순서대로 반환한다. 테이블 직접 쓰기는 허용하지 않는다. URL CHECK는 private.valid_https_url이며 노출된 역할에 이 함수 실행 권한은 없다.
 
 ### 5.5 `public.schedules`
 

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { inspectWebp } from './images';
+import { httpsUrl, linkColors, linkTextColor, linkTokens } from '../src/lib/links';
 import type { PublicPage } from '../src/lib/domain';
 
 type Env = {
@@ -133,7 +134,9 @@ export default {
         const representative = (publicRoute[2] ? page.animals.find(a => a.id === publicRoute[2])?.photos[0] : page.animals.flatMap(a => a.photos)[0])?.asset_id;
         const imageMeta = representative ? `<meta property="og:image" content="${escape(`${url.origin}/api/image/${representative}/original_display`)}">` : '';
         html = html.replace('</head>', `<meta name="description" content="${escape(description)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(url.origin + path)}">${imageMeta}</head>`);
-        html = html.replace('<div id="root"></div>', `<div id="root"><main class="public-page"><h1>${escape(page.profile.display_name)}</h1><p>${escape(description)}</p>${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}</main></div>`);
+        const visibleLinks = (page.links ?? []).filter(l => httpsUrl(l.url) && linkTokens.includes(l.color_token));
+        const linksHtml = visibleLinks.length ? `<section class="public-links" aria-label="공개 외부 링크">${visibleLinks.map(l => `<a class="public-link" target="_blank" rel="noopener noreferrer" href="${escape(httpsUrl(l.url)!)}" style="background-color:${linkColors[l.color_token].background};color:${linkTextColor(l.color_token)}">${escape(l.title)}</a>`).join('')}</section>` : '';
+        html = html.replace('<div id="root"></div>', `<div id="root"><main class="public-page"><h1>${escape(page.profile.display_name)}</h1><p>${escape(description)}</p>${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}${linksHtml}</main></div>`);
         html = html.replace('</body>', `<script type="application/json" id="public-bootstrap">${JSON.stringify(page).replace(/</g, '\\u003c')}</script></body>`);
         return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
       }
