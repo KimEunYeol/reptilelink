@@ -1,3 +1,6 @@
+import {PolicyChecks,PolicyRenewal} from './components/PolicyConsent';
+import {PolicyRenewalLink} from './components/PolicyRenewalLink';
+import {policyAvailable,usePolicy} from './lib/policy';
 import {SourcePage} from './components/SourcePage';
 import {LegalPage,HelpPage,PolicyDialog} from './components/InformationPages';
 import {authIssue,authIssueText,publicReturnPath,pendingPublicReturn,rememberPublicReturn} from './lib/authReturn';
@@ -28,7 +31,7 @@ import { preparePhoto } from './lib/images';
 
 function Brand() { return <SourceBrand/>; }
 function Spinner() { return <div className="loading" role="status"><LoaderCircle className="spin" size={23}/> 불러오고 있어요</div>; }
-function Notice({ children }: { children: ReactNode }) { return <p className="notice" role="alert">{children}</p>; }
+function Notice({ children }: { children: ReactNode }) { return <p className="notice" role="alert">{children}{typeof children==='string'&&<PolicyRenewalLink message={children}/>}</p>; }
 function Modal({ title, children, onClose, narrow = false }: { title: string; children: ReactNode; onClose: () => void; narrow?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => { const previous = document.activeElement as HTMLElement | null; const element = ref.current; element?.showModal(); return () => { element?.close(); previous?.focus(); }; }, []);
@@ -51,7 +54,7 @@ function AnimalDetail({ animal, onClose,onCount }: { animal: Animal; onClose: ()
 function AuthDestination({session,data,error,refresh,desiredPath,issue,handled}:{session:Session|null;data:Dashboard|null;error:string;refresh:()=>Promise<void>;desiredPath?:string|null;issue?:'cancelled'|'failed'|null;handled?:()=>void}) {
   const navigate=useNavigate(),location=useLocation(),decided=useRef(false);
   const failure=authIssue(location.search,location.hash)||issue;
-  useEffect(()=>{if(decided.current)return;if(desiredPath!==undefined)rememberPublicReturn(desiredPath);if(failure){decided.current=true;handled?.();navigate('/auth/login',{replace:true,state:{authIssue:failure}});return;}if(!session){decided.current=true;navigate('/auth/login',{replace:true,state:{authIssue:'failed'}});return;}if(!data)return;decided.current=true;const ready=data.account_status==='active'&&Boolean(data.profile);navigate(ready?(pendingPublicReturn(true)||'/dashboard/animals'):'/dashboard/animals',{replace:true});},[session,data,desiredPath,failure,navigate,handled]);
+  useEffect(()=>{if(decided.current)return;if(desiredPath!==undefined)rememberPublicReturn(desiredPath);if(failure){decided.current=true;handled?.();navigate('/auth/login',{replace:true,state:{authIssue:failure}});return;}if(!session){decided.current=true;navigate('/auth/login',{replace:true,state:{authIssue:'failed'}});return;}if(!data)return;decided.current=true;const active=data.account_status==='active',ready=active&&Boolean(data.profile)&&data.policy?.accepted===true;navigate(ready?(pendingPublicReturn(true)||'/dashboard/animals'):(active&&data.profile?'/onboarding':'/dashboard/animals'),{replace:true});},[session,data,desiredPath,failure,navigate,handled]);
   return error&&!data?<div className="not-found"><Notice>{error}</Notice><button className="button" onClick={()=>void refresh()}>다시 불러오기</button></div>:<Spinner/>;
 }
 function Login({session,data,error:dashboardError,refresh}:{session:Session|null;data:Dashboard|null;error:string;refresh:()=>Promise<void>}) {
@@ -66,6 +69,8 @@ function Login({session,data,error:dashboardError,refresh}:{session:Session|null
 }
 function ProfileForm({ profile, refresh, onboarding = false,onLocked,email }: { profile: Profile | null; refresh: () => Promise<Dashboard|void>; onboarding?: boolean;onLocked?:(value:boolean)=>void;email?:string }) {
   const [slug, setSlug] = useState(profile?.slug || ''), [name, setName] = useState(profile?.display_name || ''), [bio, setBio] = useState(profile?.bio || ''), [accepted, setAccepted] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(''), [saved, setSaved] = useState(false);
+  const policies=usePolicy(onboarding);
+  useEffect(()=>{if(onboarding){setAccepted(false);setPrivacyAccepted(false);}},[onboarding,policies.data?.version,policies.data?.digest]);
   const [uncertain,setUncertain]=useState(false),[privacyAccepted,setPrivacyAccepted]=useState(false),[policy,setPolicy]=useState<'terms'|'privacy'|null>(null);
   const dirty=profile?slug!==profile.slug||name!==profile.display_name||bio!==profile.bio:Boolean(slug||name||bio||accepted||privacyAccepted),locked=dirty||busy||uncertain;
   const navigation=useUnsavedChanges(locked,busy),policyTrigger=useRef<HTMLElement|null>(null),policyResumeFocus=useRef<HTMLElement|null>(null);
@@ -81,8 +86,8 @@ function ProfileForm({ profile, refresh, onboarding = false,onLocked,email }: { 
     if (!parsed.success) return setError(parsed.error.issues[0].message);
     if (!profile && !(accepted&&privacyAccepted)) return setError('이용 안내와 개인정보 안내를 모두 확인해주세요.');
     setBusy(true);setUncertain(true);
-    try { await rpc('save_profile', { p_slug: parsed.data.slug, p_name: parsed.data.name, p_bio: parsed.data.bio, p_expected: profile?.revision ?? 0, p_publish: profile?.is_published ?? false, p_accept_terms: accepted&&privacyAccepted }); const d=await refresh();if(!d?.profile)throw new Error('NOT_FOUND');accept(d.profile);setUncertain(false);if(!onboarding)setSaved(true); }
-    catch (reason) { setError(userMessage(reason)); }
+    try { if(onboarding){if(!policyAvailable(policies.data)||policies.loading)throw new Error('POLICY_NOT_READY');await rpc('accept_required_policy',{p_version:policies.data.version,p_digest:policies.data.digest,p_terms:accepted,p_privacy:privacyAccepted});}await rpc('save_profile', { p_slug: parsed.data.slug, p_name: parsed.data.name, p_bio: parsed.data.bio, p_expected: profile?.revision ?? 0, p_publish: profile?.is_published ?? false, p_accept_terms: false }); const d=await refresh();if(!d?.profile)throw new Error('NOT_FOUND');accept(d.profile);setUncertain(false);if(!onboarding)setSaved(true); }
+    catch (reason) { setError(userMessage(reason));if(/POLICY_CHANGED|POLICY_NOT_READY|CONSENT_REQUIRED/.test(String((reason as {message?:string})?.message??reason)))setUncertain(false); }
     finally { setBusy(false); }
   }
   return <form className={`profile-form source-profile-form ${onboarding?'source-onboarding-form':'source-basic-form'}`} onSubmit={submit}><fieldset disabled={busy||uncertain}>
@@ -90,8 +95,9 @@ function ProfileForm({ profile, refresh, onboarding = false,onLocked,email }: { 
     <label className="source-profile-row"><span>이름 <span aria-hidden="true">*</span></span><input aria-label="브리더 이름" value={name} onChange={e=>setName(e.target.value)} placeholder="브리더 이름" required/></label>
     {!onboarding&&email&&<label className="source-profile-row"><span>이메일</span><input aria-label="로그인 계정 이메일" value={email} readOnly/></label>}
     <label className="source-profile-row"><span>소개</span><div className="source-bio"><textarea aria-label="소개" value={bio} onChange={e=>setBio(e.target.value)} placeholder="소개를 입력해주세요" rows={4}/><small className="character-count">{[...bio].length}/300</small></div></label>
-    {!profile&&<div className="source-consents"><label className="source-consent-all"><input type="checkbox" checked={accepted&&privacyAccepted} onChange={e=>{setAccepted(e.target.checked);setPrivacyAccepted(e.target.checked);}}/>필수 안내 전체 동의</label><div><label><input type="checkbox" checked={accepted} onChange={e=>setAccepted(e.target.checked)}/>(필수) 테스트용 이용 안내 확인</label><button type="button" aria-label="이용 안내 보기" onClick={()=>openPolicy('terms')}>›</button></div><div><label><input type="checkbox" checked={privacyAccepted} onChange={e=>setPrivacyAccepted(e.target.checked)}/>(필수) 개인정보 안내 확인</label><button type="button" aria-label="개인정보 안내 보기" onClick={()=>openPolicy('privacy')}>›</button></div><p>현재 문서는 개발 확인용입니다. 운영용 약관·개인정보 처리방침은 준비 중입니다.</p></div>}
-  </fieldset>{error && <Notice>{error}</Notice>}{(dirty||uncertain)&&<button type="button" className="text-button" disabled={busy} onClick={()=>void inspect()}>{uncertain?'저장 상태 확인':'변경 취소'}</button>}{navigation.blocked&&<div data-navigation-prompt><p className="notice" role="alert">적용하지 않은 기본정보가 있습니다.</p><button ref={navigation.stayButton} type="button" className="text-button" onClick={stayProfile}>계속 수정</button><button type="button" className="text-button" disabled={busy} onClick={async()=>{if(await inspect())navigation.leave();}}>최신 정보 확인 후 이동</button></div>}{saved && <p className="success" role="status"><CheckCircle2 size={16}/> 프로필을 저장했어요.</p>}<button className="button form-submit" disabled={busy||uncertain}>{busy ? <LoaderCircle className="spin" size={18}/> : null}{onboarding ? '내 공간 만들기' : '적용하기'}</button>{policy&&!navigation.blocked&&<PolicyDialog privacy={policy==='privacy'} onClose={()=>setPolicy(null)}/>}</form>;
+    {!profile&&<><PolicyChecks bundle={policies.data} terms={accepted} privacy={privacyAccepted} onTerms={setAccepted} onPrivacy={setPrivacyAccepted} onOpen={openPolicy} disabled={policies.loading}/>{policies.error&&<Notice>{policies.error}</Notice>}<button type="button" className="text-button" disabled={policies.loading} onClick={()=>void policies.load()}>최신 안내 다시 불러오기</button></>}
+
+  </fieldset>{error && <Notice>{error}</Notice>}{(dirty||uncertain)&&<button type="button" className="text-button" disabled={busy} onClick={()=>void inspect()}>{uncertain?'저장 상태 확인':'변경 취소'}</button>}{navigation.blocked&&<div data-navigation-prompt><p className="notice" role="alert">적용하지 않은 기본정보가 있습니다.</p><button ref={navigation.stayButton} type="button" className="text-button" onClick={stayProfile}>계속 수정</button><button type="button" className="text-button" disabled={busy} onClick={async()=>{if(await inspect())navigation.leave();}}>최신 정보 확인 후 이동</button></div>}{saved && <p className="success" role="status"><CheckCircle2 size={16}/> 프로필을 저장했어요.</p>}<button className="button form-submit" disabled={busy||uncertain}>{busy ? <LoaderCircle className="spin" size={18}/> : null}{onboarding ? '내 공간 만들기' : '적용하기'}</button>{policy&&!navigation.blocked&&<PolicyDialog bundle={policies.data} privacy={policy==='privacy'} onClose={()=>setPolicy(null)}/>}</form>;
 }
 function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: () => Promise<void>; onClose: () => void }) {
   const [values, setValues] = useState({ name: '', species: '크레스티드 게코', morph: '', sex: 'unknown', description: '', listing_status: 'not_listed', is_public: true });
@@ -143,7 +149,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { 
     catch { setError('주소를 직접 복사해주세요.'); }
   }
   return <ManagementShell basic={basic} locked={collectionLocked||withdrawalLocked} onSignOut={onSignOut}>
-    <main className="management-content">
+    <main className="management-content">{data.policy?.accepted!==true&&<Notice>이용 안내에 동의해주세요.</Notice>}
       <h1 className="sr-only">{activity ? '통계/알림' : schedules ? '일정 관리' : basic ? '기본 정보' : design ? '디자인 설정' : links ? '링크 관리' : '개체 관리'}</h1>
       <ManagementShare url={publicUrl} copied={copied} onCopy={copyAddress}/>
       <section className="management-publication" aria-label="페이지 공개 설정">
@@ -196,6 +202,7 @@ export default function App() {
     if (data.account_status==='deleting'||data.account_status==='deleted')return <AccountDeletionProgress data={data} refresh={refreshCollection}/>;
     if (data.account_status !== 'active') return <div className="not-found"><ShieldCheck size={40}/><h1>승인을 기다리고 있어요</h1><p>초대된 계정의 이용 승인이 끝나면 내 공간을 만들 수 있어요.</p><button className="button ghost" onClick={() => supabase.auth.signOut()}>로그아웃</button><AccountWithdrawal expected={null} refresh={refreshCollection}/></div>;
     if (!data.profile) return onboarding ? <SourcePage signedIn locked={onboardingLocked} onSignOut={()=>void supabase.auth.signOut()}><main className="source-onboarding-main"><h1>회원가입</h1><ProfileForm profile={null} refresh={refreshCollection} onboarding onLocked={setOnboardingLocked}/><AccountWithdrawal expected={null} disabled={onboardingLocked} refresh={refreshCollection}/></main></SourcePage> : <Navigate to="/onboarding" replace/>;
+    if(onboarding&&data.policy?.accepted!==true)return <SourcePage signedIn locked={onboardingLocked} onSignOut={()=>void supabase.auth.signOut()}><main className="source-onboarding-main"><h1>필수 안내 확인</h1><PolicyRenewal refresh={refreshCollection} onLocked={setOnboardingLocked}/><AccountWithdrawal expected={data.profile.revision} disabled={onboardingLocked} refresh={refreshCollection}/></main></SourcePage>;
     if (onboarding) return <AuthDestination session={session} data={data} error={error} refresh={refresh}/>;
     return <DashboardPage data={data} email={session.user.email} refresh={refresh} refreshCollection={refreshCollection} onSignOut={() => supabase.auth.signOut()}/>;
   };

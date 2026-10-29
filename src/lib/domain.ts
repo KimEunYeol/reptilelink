@@ -1,3 +1,4 @@
+import type {PolicyStatus} from './policy';
 import {profileNameSchema,profileBioSchema} from './design';
 import type {PublicSchedule} from './schedules';
 import type {PublicSocial} from './socials';
@@ -50,7 +51,7 @@ export type Animal = AnimalInput & { id: string; birth_date: string | null; comm
 export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string; avatar_asset_id?:string|null;cover_asset_id?:string|null };
 export type PendingAnimalDeletion = { id: string; name: string; requested_at: string };
 export type AccountDeletion={request_id:string;requested_at:string;sessions_revoked:boolean;phase:'sessions'|'files'|'auth'};
-export type Dashboard = { account_deletion?:AccountDeletion|null; account_status: string; profile: Profile | null; animals: Animal[]; pending_deletions?: PendingAnimalDeletion[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
+export type Dashboard = { policy?:PolicyStatus; account_deletion?:AccountDeletion|null; account_status: string; profile: Profile | null; animals: Animal[]; pending_deletions?: PendingAnimalDeletion[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
 export type PublicPage = { like_count?:number; server_now?: string; schedules?: PublicSchedule[]; socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token' | 'avatar_asset_id' | 'cover_asset_id'>; animals: Animal[] };
 export const sexLabels = { unknown: '미구분', male: '수컷', female: '암컷' };
 export const statusLabels = { not_listed: '함께하는 아이', available: '분양 중', reserved: '예약 중', rehomed: '분양 완료' };
@@ -65,6 +66,8 @@ export function userMessage(error: unknown): string {
     SLUG_LOCKED: '공개한 페이지의 주소는 변경할 수 없습니다.',
     SLUG_RESERVED: '사용할 수 없는 주소입니다. 다른 주소를 입력해주세요.',
     CONSENT_REQUIRED: '이용 안내에 동의해주세요.',
+    POLICY_CHANGED: '안내 버전이 변경됐습니다. 최신 안내를 다시 불러와 확인해주세요.',
+    POLICY_NOT_READY: '운영 문서를 준비 중입니다. 아직 필수 안내를 확인할 수 없습니다.',
     SERVICE_UNAVAILABLE: '지금은 저장을 잠시 사용할 수 없습니다.',
     UPLOAD_EXPIRED: '사진 업로드 시간이 만료됐습니다. 다시 시도해주세요.',
     VALIDATION_FAILED: '입력값을 확인해주세요.',

@@ -88,6 +88,14 @@ erDiagram
 
 PK `(user_id, document_kind, document_version)`. 현재 필수 버전이 동의되어야 온보딩·공개 가능. 사용자 임의 시각 수정·타인 동의 기록 생성은 금지. 마케팅 동의를 초기에는 수집하지 않는다.
 
+### 4.2.1 필수 문서 기준과 명시적 확인 (#46)
+
+private.policy_versions는 version PK(ASCII1~40), terms_body/privacy_body(각1~40,000자 일반 텍스트), is_preview, 생성 SHA-256 digest, created_at을 가진다. UPDATE/DELETE는 거절한다. private.policy_settings는 id=1, required_version FK, mode(unconfigured/preview/published)이며 preview 여부/모드 일치를 검사한다. 둘 다 RLS·직접권한 철회, 새 migration에는 운영/미리보기 본문이나 준비 설정 데이터가 없다.
+
+api.policy_context는 현재 본문/버전/지문/모드·본인 확인 boolean만 제공한다. my_dashboard는 본문 없는 최소 상태를 포함한다. api.accept_required_policy는 활성 본인·현재 버전/지문·양 필수 boolean을 검증하고 기존 consents PK에 원자적으로 기록한다. 중복은 최초 시각을 유지하므로 별도 요청 영수증을 만들지 않는다. 일반 쓰기는 계정→정책 FOR SHARE→기존 예산/프로필 순서로 현재 동의를 검사한다. 탈퇴/기존 업로드 취소 경로는 현재 동의 없이 가능하다.
+
+save_profile의 기존 boolean 수집은 preview/local-preview-v1 신규 프로필에만 한정한다. 현재 UI는 신규/기존 모두 실제 표시한 버전을 명시적으로 확인한다. 문서 변경 시 새 버전을 등록하고 기존 회원은 원본 체크/약관 창으로 재확인한다. 현재 로컬 preview 준비와 실제 운영 자료/권한/검증 경계는 [인계](31-policy-version-renewal.md)를 따른다.
+
 ### 4.3 `public.profiles`
 
 | 필드 | 타입·제약 | 의미 |
@@ -133,7 +141,7 @@ UNIQUE `(id, profile_id)`, UNIQUE `(profile_id, active_sort_order)` DEFERRABLE I
 
 이슈 #3의 일반 수정 명령은 `api.update_animal(p_animal_id, p_data, p_expected, p_request_id)`다. `p_data`에는 이름·종류·모프·성별·birth_date·설명·분양 상태 7개 필드를 모두 보내며 다른 필드는 거절한다. 공개 여부·소유자·사진·성장 공개·정렬은 변경하지 않는다. 생일은 `YYYY-MM-DD` 또는 NULL이며 실제 달력 날짜·서기 0001-01-01 이후·Asia/Seoul 오늘까지 허용한다. 트리거도 미래/무한 날짜를 거절한다. 이름/종류 필수·문자 길이·enum·JSON 자료형을 DB에서도 검사한다. 일반 수정의 Unicode 길이는 PostgreSQL과 같은 코드 포인트 기준이다.
 
-활성 계정·현재 필수 동의·쓰기 허용·소유권을 확인하고 프로필 잠금 아래 요청 영수증 → 버전 검사 → 필드 갱신·revision 증가·영수증 저장을 처리한다. 요청 해시에는 대상 개체 ID와 본문을 함께 넣는다. 같은 요청 ID의 본문/대상/명령 변경은 `REQUEST_CONFLICT`, 만료된 영수증 재사용은 `REQUEST_EXPIRED`로 거절한다. 현재 동의 버전은 기존 로컬 구현과 같은 `local-preview-v1`이며 운영 정책 완료를 뜻하지 않는다. 직접 테이블 UPDATE는 계속 금지한다.
+활성 계정·현재 필수 동의·쓰기 허용·소유권을 확인하고 프로필 잠금 아래 요청 영수증 → 버전 검사 → 필드 갱신·revision 증가·영수증 저장을 처리한다. 요청 해시에는 대상 개체 ID와 본문을 함께 넣는다. 같은 요청 ID의 본문/대상/명령 변경은 `REQUEST_CONFLICT`, 만료된 영수증 재사용은 `REQUEST_EXPIRED`로 거절한다. 필수 동의 버전은 private.policy_settings와 불변 policy_versions를 기준으로 검사한다. 현재 로컬은 local-preview-v1 미리보기이며 운영 정책 완료를 뜻하지 않는다. 직접 테이블 UPDATE는 계속 금지한다.
 
 관리 DTO는 nullable 생일을 포함하며 공개 `public_page`는 명시적 허용 필드 목록에만 생일을 추가한다. 생일은 공개 개체 정보이며 비공개 관리 메모와 분리한다. Worker의 기존 bootstrap이 이 허용 DTO를 사용하므로 별도 특권 조회나 사진 경로를 추가하지 않는다.
 
