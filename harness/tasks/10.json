@@ -11,7 +11,8 @@
     "살아있는 업로드 토큰 동안 파일/사용량 보존, 실제 제거 후 반환",
     "7개 폭 원본 비교·전체 verify·PR·main 복귀",
     "부분 업로드 후 초안 교체 시 미선택 캐시를 정리한 뒤 재예약",
-    "쓰기 중지의 확정적 저장 거절에서도 취소/최신값 검토/메뉴 이동 가능"
+    "쓰기 중지의 확정적 저장 거절에서도 취소/최신값 검토/메뉴 이동 가능",
+    "일반 입력만 유지할 때 변경하지 않은 사진은 최신 기준에 맞춤; 변경된 사진 초안의 사라진 asset은 명시적 선택"
   ],
   "plan": [
     "원본/기존 미디어 계약 확정",
@@ -38,18 +39,20 @@
     "evidence": [
       "docs/12-animal-photo-edit.md (원본/동작/실패/한계)",
       "artifacts/photo-10/draft-{320,360,390,450,768,1440,1920}.png 및 overview.png (직접 비교)",
-      "artifacts/photo-10/bottom-{320,390,1440}.png 및 unresolved-390.png (직접 검토)"
+      "artifacts/photo-10/bottom-{320,390,1440}.png 및 unresolved-390.png (직접 검토)",
+      "artifacts/photo-10/unavailable-{390,1440}.png (기존 최신 검토/텍스트 버튼 패턴)"
     ]
   },
   "verification": {
     "status": "passed",
-    "fullSuite": "Final required verification: production build+232 checks (12 harness,11 unit,166 DB,10 media,33 E2E); initial full230 and new targeted2 passed. Final file-state report required before push.",
+    "fullSuite": "Final required build+234 checks (12 harness,11 unit,166 DB,10 media,35 E2E), prior full232 +new targeted2 passed",
     "database": "20 existing+55 edit+46 collection+45 photo; real functions/transactions/ownership/concurrency/receipts; staged metadata fixtures separate from real file E2E",
-    "browser": "33 total; 10 new photo cases including partial upload cached-file replacement and service-disabled cancel/latest review. New2 failed before the fix and passed after.",
+    "browser": "35 total including unchanged-photo rebasing and explicit latest-photo choice when local photo drafts contain unavailable assets",
     "media": "10 API checks; real browser files partially removed retain stored bytes, finish refuses FILES_REMAIN until all files removed; lease time simulated only on this execution QA assets",
     "migration": "CLI-generated 20261028193831_animal_photo_edit.sql; --local history matches; security advisors no warning; initial existing animal-row hash preserved; no reset",
     "design": "7 widths, photos/page/text-button patterns, bottom scroll/actions and unresolved-state screenshots directly inspected; source parent slots not repurposed",
     "review": "Legacy reserve contract retained, signed-token lease registered after token issuance, unknown save is settled before authoritative cancel/review; latest acceptance waits for staging cleanup before allowing reupload. Final recorded state requires verify before push.",
-    "reviewFixes": "PR #11 comments 4405349384 / 4405349398: queue obsolete cached uploads before reserving replacements, retain explicitly selected assets; treat service/consent/quota policy rejection as definitive rollback during pending settlement. No DB/migration/dependency changes."
+    "reviewFixes": "PR #11 comments 4405349384 / 4405349398: queue obsolete cached uploads before reserving replacements, retain explicitly selected assets; treat service/consent/quota policy rejection as definitive rollback during pending settlement. No DB/migration/dependency changes.",
+    "additionalReview": "4405453831: two regressions failed before fix and passed after; no DB/dependency changes"
   }
 }

@@ -18,6 +18,16 @@ async function choose(page:Page,d:Locator,action='사진 추가',color='#185fbe'
   const chooser=page.waitForEvent('filechooser');await d.getByRole('button',{name:action,exact:true}).click();await (await chooser).setFiles({name:'photo-qa.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')});await expect(d.getByAltText('선택한 사진 미리보기')).toBeVisible();
 }
 async function save(d:Locator){await d.getByRole('button',{name:'저장',exact:true}).click();await expect(d).not.toBeVisible({timeout:45000});}
+async function replaceFromOtherEditor(page:Page) {
+  const encoded=await page.evaluate(()=>Object.fromEntries([['original_display',720],['thumbnail',240]].map(([variant,width])=>{const c=document.createElement('canvas');c.width=Number(width);c.height=Number(width)*2/3;c.getContext('2d')!.fillRect(0,0,c.width,c.height);return [variant,c.toDataURL('image/webp',.8).split(',')[1]];})));
+  const token=(await owner.auth.getSession()).data.session!.access_token;
+  const post=async(path:string)=>{const r=await fetch(`http://localhost:8787${path}`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(path==='/api/uploads'?{animal_id:original.id,editing:true}:{})});expect(r.ok).toBe(true);return r.json();};
+  const reservation=await post('/api/uploads');
+  for(const object of reservation.objects)expect((await owner.storage.from('animal-media').uploadToSignedUrl(object.path,object.token,new Blob([Buffer.from(encoded[object.variant],'base64')],{type:'image/webp'}),{contentType:'image/webp',upsert:false})).error).toBeNull();
+  await post(`/api/uploads/${reservation.asset_id}/complete`);
+  const before=await current(),assets=[reservation.asset_id,...before.photos.slice(1).map(p=>p.asset_id)];
+  expect((await owner.schema('api').rpc('save_animal_edit',{p_animal_id:original.id,p_data:fields(before),p_assets:assets,p_expected:(await dash()).profile!.revision,p_request_id:crypto.randomUUID()})).error).toBeNull();return assets;
+}
 test.describe('photo editing with real local QA Storage',()=>{
   test.beforeAll(async()=>{owner=createClient(status.url,status.publishable,{auth:{persistSession:false,autoRefreshToken:false}});expect((await owner.auth.signInWithPassword({email:'qa-owner@reptilelink.test',password:h.fixturePassword})).error).toBeNull();const d=await dash();original=d.animals[0];actor=d.profile!.id;slug=d.profile!.slug;profilePublic=d.profile!.is_published;expect(original.photos).toHaveLength(0);await mkdir('artifacts/photo-10',{recursive:true});});
   test.beforeEach(async({page})=>{await reset();let d=await dash();if(!d.profile!.is_published)expect((await owner.schema('api').rpc('set_profile_public',{p_public:true,p_expected:d.profile!.revision})).error).toBeNull();d=await dash();if(!(await current()).is_public)expect((await owner.schema('api').rpc('set_animal_public',{p_animal_id:original.id,p_public:true,p_expected:d.profile!.revision})).error).toBeNull();beforeAssets=assetIds();await signIn(page);});
@@ -117,6 +127,17 @@ test.describe('photo editing with real local QA Storage',()=>{
       await page.getByRole('link',{name:'기본 정보',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/design$/);
       expect(h.localQuery('select writes_enabled from private.project_budget where id=1').trim()).toBe('f');
     } finally {h.localQuery(`update private.project_budget set writes_enabled=${previous==='t'?'true':'false'} where id=1`);}
+  });
+
+  test('retaining local fields rebases untouched photos after another editor replaces the saved photo',async({page})=>{
+    let d=await open(page);await choose(page,d);await save(d);d=await open(page);await d.getByRole('textbox',{name:'개체 이름',exact:true}).fill('유지할 일반 필드');
+    const latest=await replaceFromOtherEditor(page);await d.getByRole('button',{name:'저장',exact:true}).click();await expect(d.getByRole('alert')).toContainText('다른 화면');await d.getByRole('button',{name:'최신 값 확인',exact:true}).click();await d.getByRole('button',{name:'내 입력 유지',exact:true}).click();
+    const response=page.waitForResponse(r=>/\/rpc\/(update_animal|save_animal_edit)$/.test(r.url()));await d.getByRole('button',{name:'저장',exact:true}).click();expect((await response).ok()).toBe(true);await expect(d).not.toBeVisible();expect((await current()).name).toBe('유지할 일반 필드');expect((await current()).photos.map(p=>p.asset_id)).toEqual(latest);
+  });
+  test('a changed photo draft with an unavailable saved asset requires an explicit latest-photo choice',async({page})=>{
+    let d=await open(page);await choose(page,d);await choose(page,d,'사진 추가','#63ad26');await save(d);d=await open(page);await d.getByRole('button',{name:'2번 사진',exact:true}).click();await d.getByRole('button',{name:'사진 삭제',exact:true}).click();await d.getByRole('textbox',{name:'개체 이름',exact:true}).fill('입력만 유지');
+    const latest=await replaceFromOtherEditor(page);await d.getByRole('button',{name:'저장',exact:true}).click();await expect(d.getByRole('alert')).toContainText('다른 화면');await d.getByRole('button',{name:'최신 값 확인',exact:true}).click();await d.getByRole('button',{name:'내 입력 유지',exact:true}).click();
+    await expect(d.getByRole('button',{name:'저장',exact:true})).toBeDisabled();for(const width of [390,1440]){await page.setViewportSize({width,height:1000});await page.screenshot({path:`artifacts/photo-10/unavailable-${width}.png`});}await d.getByRole('button',{name:'입력 유지·최신 사진 사용',exact:true}).click();await save(d);expect((await current()).name).toBe('입력만 유지');expect((await current()).photos.map(p=>p.asset_id)).toEqual(latest);
   });
 
 });

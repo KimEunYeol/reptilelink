@@ -99,14 +99,20 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
     } catch (reason) { setError(userMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
-  async function acceptLatest(keepInput: boolean) {
+  const unavailableDraftPhotos = latest && photos.some(photo => photo.asset_id && !latest.photos.some(saved => saved.asset_id === photo.asset_id));
+  async function acceptLatest(keepInput: boolean, useLatestPhotos = false) {
     if (!latest || submitting.current) return;
     submitting.current = true; setBusy(true);
     try {
+      if (keepInput && photosChanged && unavailableDraftPhotos && !useLatestPhotos) {
+        setError('다른 화면에서 교체·삭제된 사진이 초안에 있습니다. 일반 입력을 유지하려면 최신 사진 사용을 선택해주세요.');
+        return;
+      }
       const retained = new Set(latest.photos.map(p => p.asset_id));
       // Free staging slots before allowing another upload; physical bytes stay charged.
       await queuePhotoCleanup([...allocated.current].filter(id => !retained.has(id)));
-      if (!keepInput) { setValues(latest.data); setPhotos(latest.photos.map(p => ({ key: p.asset_id, asset_id: p.asset_id }))); }
+      if (!keepInput) setValues(latest.data);
+      if (!keepInput || !photosChanged || useLatestPhotos) setPhotos(latest.photos.map(p => ({ key: p.asset_id, asset_id: p.asset_id })));
       initialPhotos.current = latest.photos.map(p => p.asset_id);
       uploaded.current = new Map([...uploaded.current].filter(([, id]) => retained.has(id)));
       setUnresolved(false); initial.current = latest.data;
@@ -176,6 +182,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
             {latest.photos.map(photo => <div className="edit-photo" key={photo.asset_id}>{renderPhoto(photo.asset_id)}</div>)}
           </div>
           <button type="button" className="text-button" disabled={busy} onClick={() => void acceptLatest(true)}>내 입력 유지</button>
+          {photosChanged && unavailableDraftPhotos && <button type="button" className="text-button" disabled={busy} onClick={() => void acceptLatest(true, true)}>입력 유지·최신 사진 사용</button>}
           <button type="button" className="text-button" disabled={busy} onClick={() => void acceptLatest(false)}>최신값으로 바꾸기</button>
         </>}
       </div>}
