@@ -471,3 +471,7 @@ private.profile_likes는 Auth/대상 FK·회원/프로필 고유·자기 금지�
 ## 2026-10-29 받은 알림·읽음 확장
 
 #32의 my_notifications는 active 본인90일·5+1 정밀 커서·현재 공개 대상/공개 작성자 최소 DTO다. read_notifications는 고유1~5개 소유 ID·정렬된 집합 해시/24h 영수증·본인 계정 Share→영수증→전용 제한→정렬된 본인 알림 행으로 원자 처리한다. read_at은 최초 시각을 유지하며 새 명령은 고정시간60회/기존 재확인 무료, 쓰기 중지 중 허용한다. action_buckets의 notification_read는 기존47h 정리에 포함된다. 기존 생성/FK/탈퇴 관계는 유지한다. 상세 검증/차이는 docs/24를 따른다.
+
+## 2026-10-30 실제 페이지 조회수 (#34)
+
+analytics_daily/analytics_totals/analytics_receipts는 profile FK CASCADE·RLS/일반 권한 회수, service 수집/본인 최소 조회로 구현했다. totals.started_at은 수집 시작을 구분한다. analytics_settings는 singleton 스위치/started_at·profile_limit(≤1000)/day_limit(≤5000)·counter_day/accepted_count로 전체 날짜 예산을 원자 직렬화한다. raw session/IP/UA/path는 보관하지 않고 Worker HMAC(profile/day/session)만 영수증 키로 저장한다. 영수증47h+시간별 정상 정리 여유로48h, 일별은365 달력일·총계유지다. 기존 단일 Cron에500행/분리커밋 analytics drain을 연결했다. service만 target/record/prune, active 본인만 my_analytics를 실행한다. 입력/예산/날짜/잠금/원본/키/복구 근거는 docs/25를 따른다.

@@ -1,0 +1,43 @@
+{
+  "issue": 34,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/34",
+  "branch": "codex/feat/34-page-analytics",
+  "baseSha": "984e82e142182ef14630a28c679427d5eb450c80",
+  "scope": "F-09 실제 페이지 조회수·개인정보 최소 수집/중복/예산·본인 통계/원본 그래프",
+  "acceptance": [
+    "탭무작위UUID/서버HMAC(profile/day/session)·DB에원문세션/IP/UA/path없음·서버키600/재생성보존/비밀미노출",
+    "service수집전용·공개active/DBSeoul날짜/쓰기중지·strict입력/원본·영수증/일별/총계/예산 원자/동시/탈퇴·프로필1000/전체5000 한국날짜한도",
+    "수집실패/키누락/응답유실/날짜경계가공개페이지/댓글/좋아요를막지않고반복루프없음",
+    "본인active최소통계 오늘/어제/누적·최근7/30일·8실제날짜·수집전이력없음·7폭/키보드/실제Worker/DB일치",
+    "영수증최대48h/일별365달력일/총계유지/FK·기존단일Cron bounded500/Commit drain·500초과/보관경계",
+    "새CLI schema/config 유일pending적용·진단/shadow/전체verify·최신PR리뷰/병합/main/보고 후화면별#2/운영계속"
+  ],
+  "plan": [
+    "명세/원본/현재서버·날짜/HMAC/무료저장량·안전한키보존 조사",
+    "비공개 집계/RPC·단일 설정 행의 일 예산·실제 권한/동시/날짜/보관·기존Cron 확장",
+    "Worker서버HMAC·안전한로컬키/탭세션·비차단수집·실제Worker증거",
+    "원본3수치/8날짜·소유자요약/새로고침·7폭/키보드/수집전/실패",
+    "CLI migration/config/진단/shadow·문서/전체verify·PR리뷰/병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-통계알림-m.png",
+      "design/마이페이지-통계알림.png"
+    ],
+    "notes": "같은 F09 원본 모바일450/PC1920·전체보드(4700,1300,1000,2100)와PC공통안내를 실제 확인했다. LIKE/최신알림 다음 구분선 아래 오늘/어제/누적3수치,얇은녹색선·8날짜/0~50격자. 시안의 방문수→채택F09의페이지조회수로 명명,13/20/33과선예시는실제자료로게시하지않음. 수집전날짜는이력없음/중단/실패는기존회색안내·수동확인패턴. 일/주/월요약은기존작은안내문구로최소확장,새레이아웃/그림없음. 같은본문폭/모바일상하단을유지하며폰트/기타#2차이는후속.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 PC/모바일/전체보드·실제 통계7폭 직접 비교. 3수치/8날짜/격자/녹색선·수집전NULL/실제0·가로넘침/키보드/수치·선대비3이상,7E2E 통과. 밝은녹색의최소대비보완·실제날짜/참고지표/7·30일 안내·정확한폰트/주변#2차이는docs25기록. 예시값을기본값으로게시하지않음."
+    },
+    "evidence": [
+      "artifacts/analytics-34/statistics-{320,360,390,450,768,1440,1920}.png and all-widths.png",
+      "artifacts/analytics-34/cold-start-390.png and failed-read-390.png",
+      "tests/e2e/analytics.spec.ts:7 actual browser/Worker flows",
+      "scripts/test-analytics.mjs:36; test-analytics-worker.mjs:15; test-analytics-races.mjs:5; test-analytics-retention.mjs:4; tests/analytics.test.ts:4",
+      "docs/25-page-analytics.md"
+    ]
+  }
+}
