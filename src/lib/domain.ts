@@ -1,3 +1,4 @@
+import {profileNameSchema,profileBioSchema} from './design';
 import type {PublicSchedule} from './schedules';
 import type {PublicSocial} from './socials';
 import type { PublicLink } from './links';
@@ -5,8 +6,8 @@ import { z } from 'zod';
 
 export const profileSchema = z.object({
   slug: z.string().trim().toLowerCase().regex(/^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/, '주소는 소문자 영문·숫자·하이픈 3~30자로 입력해주세요.'),
-  name: z.string().trim().min(1, '이름을 입력해주세요.').max(40),
-  bio: z.string().trim().max(300),
+  name: profileNameSchema,
+  bio: profileBioSchema,
 });
 export const animalSchema = z.object({
   name: z.string().trim().min(1, '개체 이름을 입력해주세요.').max(40),

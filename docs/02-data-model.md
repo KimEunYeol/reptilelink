@@ -440,3 +440,10 @@ cleanup_manifest는 보호 기한 전에 정리 대기를 반환하고 finish_cl
 save_animal_growth(id,data,expected,request_id)는 변경 upsert≤100/삭제 ID≤100·개체 메모·성장 공개 설정을 한 트랜잭션과 한 revision/24시간 영수증으로 처리한다. 활성/현재 동의/소유권·살아 있는 개체·엄격한 필드·최종 날짜 중복·계정당 실제3000행 한도를 검증한다. 프로필 잠금 아래 소유자 및 개체가 다른 record ID는 거절한다. 쓰기 중지 중에도 기록 삭제·공개 끄기·메모 비우기는 허용하되 추가/수정/새 공개/새 메모는 막는다. 사진 정리를 기다리는 개체의 기록도 실제 최종 제거까지 한도에 포함된다.
 
 my_animal_growth는 본인의 기록/메모와 revision·사용량을 반환한다. public_animal_growth는 invoker/RLS와 활성+프로필 공개+개체 공개+show_growth+미삭제를 모두 검사하고 비공개/없는 경우 NULL을 반환한다. 공개 DTO에는 measured_on/weight_g와 범위/페이지 정보만 있고 메모·소유자·사용량·revision은 없다. 7/30/365일 그래프는 실제 날짜순 최대120관측(첫/마지막 포함), 목록은 날짜 커서20건이다. 각 조회는 서버 한국 날짜를 기준으로 한다. [동작/원본/실패 검증 인계](15-animal-growth.md)를 참고한다.
+
+
+## #22 프로필 텍스트·SNS 단일 적용 구현
+
+my_design은 활성 본인의 revision·display_name/tagline/bio·SNS 목록만 조회한다. save_design(profile,items,expected,request_id)은 엄격한 텍스트/필드·정확한6종 SNS·소유권/활성/동의/버전·24시간 영수증과 프로필 잠금을 검사한다. 텍스트와 SNS의 실제 변경이 하나라도 있으면 private.bump를 한 번 호출하며, 실패는 두 영역/영수증/revision을 함께 롤백한다. slug/공개 상태/최초 공개/테마·이미지 ID는 이 명령으로 바꾸지 않는다.
+
+private.apply_social_values는 기존6종 검증/고정순서/쓰기 중지 축소/저장·삭제를 공유하는 내부 invoker 함수다. public/anon/authenticated 실행을 회수하고 두 검증된 API definer가 현재 actor만 넘긴다. 기존 save_social_links의 계약/해시/영수증은 보존한다. private.trim_profile_text는 ECMAScript 공백 집합을 정리하며 외부 실행 권한은 없다. 기존 save_profile에도 같은 이름/설명 검증을 적용해 예전 API가 우회 경로가 되지 않게 했다. 새 테이블이나 사용자 자료 정리는 없다.

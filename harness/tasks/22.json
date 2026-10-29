@@ -1,0 +1,48 @@
+{
+  "issue": 22,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/22",
+  "branch": "codex/feat/22-profile-design",
+  "baseSha": "d9087bf90686e761becd2d386daab92b5666678a",
+  "scope": "F-02 프로필 이름/소개/설명과 SNS6종의 원본 단일 폼·원자적 적용",
+  "acceptance": [
+    "본인 조회·엄격 텍스트/Unicode/한줄/필드·이름40/소개80/설명300",
+    "프로필+SNS6종 한명령/한revision·권한/활성/동의/버전/24h영수증·경합/원자성·기존SNS계약유지",
+    "원본 소개/이름/설명/SNS·단일 적용·전체초안/미확인/취소/명시적최신/복사/이동보호",
+    "공개 실제태그라인/이름/설명·텍스트escape·기존일정/개체/링크/SNS순서·React/초기HTML",
+    "원본설명/PC/모바일7폭·실제DB/단위/브라우저/기존회귀·CLI migration/advisors/shadow·전체verify",
+    "PR최종리뷰/명시적병합/이슈종료/main/보고·이미지/테마후속"
+  ],
+  "plan": [
+    "원본 디자인수정/공개소개·보드설명·기존프로필/SNS 저장규칙 확인",
+    "내부SNS공통적용·본인디자인조회/원자적디자인저장·실제DB검증",
+    "원본프로필입력+SNS의 단일폼/한적용·미확인/충돌/이동·공개텍스트",
+    "7폭/단위/실제DB/브라우저·CLI migration/shadow/advisors·전체verify",
+    "정상훅·PR최신리뷰/보완/명시적병합·main/보고·이미지후속이슈"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-디자인수정.png",
+      "design/마이페이지-디자인수정-m.png",
+      "design/링크페이지-m.png"
+    ],
+    "notes": "전체보드 x1950~3150,y1200~5600 디자인수정열·공통PC x0~3900,y8270~9270과 원본PC/모바일/공개소개 실제확인. 왼쪽라벨/오른쪽입력의 페이지소개→페이지이름→페이지설명300자와 SNS6행/하단단일적용. 원본 소개/이름10자는 채택F02의80/40자로대체. 파일/테마는다음독립단계이며가짜등록버튼/예시이미지를넣지않음. 공개소개는한줄소개→이름→설명 순서,주변기존셸/카드/Gecko차이는후속/#2.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 디자인수정 PC/모바일/보드의 소개→이름→설명300자/SNS6행/하단단일적용을 실제7폭 설정/하단/공개와 대조했다. 원본10자 예시는 채택F02의80/40자로 대체하며 이름/설명/SNS 한폼을 유지한다. 공개 실제소개/이름/설명 순서·빈내용의 임의문구 제거·320 긴ASCII/Unicode 넘침 및 아바타/소개 겹침을 보완하고7폭 기하 검사로 확인했다. 파일/테마는 후속이며 가짜 등록버튼/예시이미지는 없다. 주변 공개 Brand/Gecko/커버·카드/폰트 차이는#2/docs19에 남긴다."
+    },
+    "evidence": [
+      "docs/19-profile-design.md",
+      "artifacts/design-22/{settings,public}-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/design-22/bottom-{390,1440}.png·unresolved-390.png·max-text-320.png·max-public-320.png·all-widths-review.png"
+    ]
+  },
+  "verification": {
+    "targeted": "42 new DB,5 unit,7 new browser passed; legacy44 SNS DB/7 browser also passed;7 profile browser passed again with long-text and avatar/intro overlap checks",
+    "fullSuite": "Required final build+620:12 harness,41 unit,470 DB,10 media,87 E2E. Actual result/fingerprint .local/harness-verification.json",
+    "migration": "CLI20261029083356_profile_design.sql; lint/security no warnings; local history matches/shadow diff empty; existing tables/data preserved",
+    "review": "Shared private SNS helper has no public/anon/auth execute; guarded API wrappers pass current actor only. Combined text+SNS one bump/receipt and rollback, unchanged legacy SNS hash/contract; legacy profile validator hardened too. Unicode whitespace and one-line constraints match UI, unknown full commands stay locked until actual fresh state, explicit latest/copy preserves all fields. QA original values/flags restored with monotonic revisions."
+  }
+}
