@@ -41,7 +41,8 @@
       "artifacts/comments-28/report-{320,360,390,450,768,1440,1920}.png",
       "artifacts/comments-28/all-widths.png and unresolved-390.png",
       "tests/e2e/comments.spec.ts:10 actual browser flows",
-      "docs/22-comments-reports.md"
+      "docs/22-comments-reports.md",
+      "scripts/test-activity-batches.mjs:9 real first-run-only Cron regressions; review P2 drain fix"
     ]
   }
 }

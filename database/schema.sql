@@ -5055,3 +5055,27 @@ declare comments_count integer;notification_count integer;report_count integer;b
  delete from private.action_buckets b using expired e where b.actor_id=e.actor_id and b.action=e.action and b.window_started_at=e.window_started_at and b.window_seconds=e.window_seconds;get diagnostics bucket_count=row_count;
  return jsonb_build_object('comments',comments_count,'notifications',notification_count,'reports',report_count,'buckets',bucket_count);
 end $function$;
+
+-- #28 review: commit each bounded batch and drain the eligible queue.
+-- Drain every eligible category in 500-row transactions; keep the hourly job.
+SELECT cron.schedule('reptilelink-activity-retention','17 * * * *',$job$
+DO $retention$
+DECLARE cleanup_actor uuid := NULL; result jsonb;
+BEGIN
+ LOOP
+  PERFORM pg_catalog.set_config('search_path','',true);
+  result := private.prune_activity(cleanup_actor);
+  COMMIT;
+  EXIT WHEN (result->>'comments')::integer < 500
+    AND (result->>'notifications')::integer < 500
+    AND (result->>'reports')::integer < 500
+    AND (result->>'buckets')::integer < 500;
+ END LOOP;
+ IF cleanup_actor IS NULL THEN
+  DELETE FROM cron.job_run_details
+  WHERE jobid=(SELECT jobid FROM cron.job WHERE jobname='reptilelink-activity-retention')
+    AND end_time < pg_catalog.now()-interval '7 days';
+  COMMIT;
+ END IF;
+END $retention$;
+$job$);
