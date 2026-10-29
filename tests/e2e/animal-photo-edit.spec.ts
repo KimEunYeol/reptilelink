@@ -97,7 +97,7 @@ test.describe('photo editing with real local QA Storage',()=>{
   });
 
   test('SPA Back retains a local photo until explicit discard, without reserving storage',async({page})=>{
-    await page.getByRole('link',{name:'기본 정보',exact:true}).click();await page.getByRole('link',{name:'개체 관리',exact:true}).click();const d=await open(page);await choose(page,d);await page.evaluate(()=>history.back());await expect(d.getByRole('alert')).toContainText('저장하지 않은');await d.getByRole('button',{name:'계속 편집',exact:true}).click();await expect(d.getByAltText('선택한 사진 미리보기')).toBeVisible();await page.evaluate(()=>history.back());await d.getByRole('button',{name:'변경 버리고 이동',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/design$/);expect(assetIds()).toEqual(beforeAssets);
+    await page.getByRole('link',{name:'기본 정보',exact:true}).click();await page.getByRole('link',{name:'개체 관리',exact:true}).click();const d=await open(page);await choose(page,d);await page.evaluate(()=>history.back());await expect(d.getByRole('alert')).toContainText('저장하지 않은');await d.getByRole('button',{name:'계속 편집',exact:true}).click();await expect(d.getByAltText('선택한 사진 미리보기')).toBeVisible();await page.evaluate(()=>history.back());await d.getByRole('button',{name:'변경 버리고 이동',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/account$/);expect(assetIds()).toEqual(beforeAssets);
   });
   test('obsolete cached uploads are released before saving replacement drafts after a partial preparation failure',async({page})=>{
     const d=await open(page);await choose(page,d);await choose(page,d,'사진 추가','#63ad26');
@@ -124,7 +124,7 @@ test.describe('photo editing with real local QA Storage',()=>{
         }
         await d.getByRole('button',{name:'취소',exact:true}).click();await expect(d).not.toBeVisible();expect((await current()).name).toBe(original.name);
       }
-      await page.getByRole('link',{name:'기본 정보',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/design$/);
+      await page.getByRole('link',{name:'기본 정보',exact:true}).click();await expect(page).toHaveURL(/\/dashboard\/account$/);
       expect(h.localQuery('select writes_enabled from private.project_budget where id=1').trim()).toBe('f');
     } finally {h.localQuery(`update private.project_budget set writes_enabled=${previous==='t'?'true':'false'} where id=1`);}
   });

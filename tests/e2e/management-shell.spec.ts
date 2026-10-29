@@ -15,7 +15,7 @@ test('management source layout, keyboard menus and footer work at seven widths',
   await login(page);
   await mkdir('artifacts/shell-8', { recursive: true });
   const tabs = page.getByRole('navigation', { name: '마이페이지 메뉴' });
-  await expect(tabs.locator(':scope > *')).toHaveText(['개체 관리', '링크 관리', '일정 관리 (준비 중)', '디자인 수정 (준비 중)', '기본 정보', '통계/알림 (준비 중)']);
+  await expect(tabs.locator(':scope > *')).toHaveText(['개체 관리', '링크 관리', '일정 관리 (준비 중)', '디자인 수정', '기본 정보', '통계/알림 (준비 중)']);
   for (const width of [320, 360, 390, 450, 768, 1440, 1920]) {
     await page.setViewportSize({ width, height: 1000 });
     await page.evaluate(() => scrollTo(0, 0));
@@ -35,10 +35,12 @@ test('management source layout, keyboard menus and footer work at seven widths',
   await animals.focus();
   await page.keyboard.press('Tab');
   await expect(tabs.getByRole('link', { name: '링크 관리', exact: true })).toBeFocused();
-  await page.keyboard.press('Tab'); // remaining future destinations are skipped
+  await page.keyboard.press('Tab'); // schedule remains unavailable
+  await expect(tabs.getByRole('link', { name: '디자인 수정', exact: true })).toBeFocused();
+  await page.keyboard.press('Tab');
   await expect(tabs.getByRole('link', { name: '기본 정보', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/dashboard\/design$/);
+  await expect(page).toHaveURL(/\/dashboard\/account$/);
   await expect(tabs.getByRole('link', { name: '기본 정보', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('textbox', { name: '브리더 이름', exact: true })).toBeVisible();
   await expect(page.getByText(/사진 저장 공간/)).toBeVisible();

@@ -51,7 +51,7 @@
 | `/onboarding` | 약관 동의·고유 주소·프로필 생성·승인 상태 | A |
 | `/dashboard/animals` | 마이페이지 개체 관리 | A |
 | `/dashboard/animals/:id` | 개체 등록·수정·성장 기록 | A/B |
-| `/dashboard/design` | 프로필·소개·배경·SNS·디자인 수정 | A/B |
+| `/dashboard/design` | 프로필·소개·배경·SNS·디자인 수정(SNS부터 구현) | A/B |
 | `/dashboard/links` | 링크 관리 | B |
 | `/dashboard/schedules` | 일정 관리·일정 팝업 | B |
 | `/dashboard/account` | 기본정보·로그아웃·탈퇴 요청 | A/B |
@@ -94,7 +94,7 @@
 - 표시 이름 1~40자, 한 줄 소개 최대 80자, 소개 본문 최대 300자. 공백만 있는 이름 거절.
 - 프로필·배경 이미지, 허용된 테마 색상, SNS 종류별 URL·노출 여부 편집.
 - 테마는 사전 정의된 색상 토큰만 선택. 임의 CSS·HTML·스크립트 입력 없음.
-- 초기 SNS 종류: band, instagram, facebook, youtube, kakao, naver_blog. 같은 종류는 한 프로필에 한 개.
+- 초기 SNS 종류: band, instagram, facebook, youtube, kakao, naver_blog. 같은 종류는 한 프로필에 한 개. 원본 순서를 고정하며 별도 정렬 UI는 없다. 주소/노출은 전체6종을 적용하기로 저장하고 비공개+빈 주소는 삭제한다. 공개할 SNS에는 유효한 HTTPS 주소가 필수다. 쓰기 중지 중에도 기존주소 숨김/삭제는 허용한다.
 - 새 이미지를 적용하기 전에는 기존 이미지를 유지한다. 취소한 업로드는 정리 대기 상태로 보낸다.
 
 수용 기준: 중복 주소의 동시 생성 중 하나만 성공. 미적용 변경은 외부에 보이지 않음. 공개 프로필 저장 후 새 요청에서 갱신됨. 다른 계정의 이미지 ID를 연결하면 거절.

@@ -229,7 +229,9 @@ PK `(actor_id, request_id)`. 변경 명령의 재전송을 24시간 동안 중�
 
 `id uuid PK`, `profile_id uuid`, `platform text`, `url text ≤ 2048자`, `is_public boolean`(기본 false), `sort_order integer`, `created_at`, `updated_at`.
 
-platform 허용 목록은 기능 명세 F-02. UNIQUE `(profile_id, platform)`, UNIQUE `(profile_id, sort_order)`. URL은 HTTPS·자격증명 없음 규칙을 공유한다. 서버에서는 이 URL을 fetch하지 않는다.
+platform 허용 목록은 기능 명세 F-02. UNIQUE `(profile_id, platform)`, UNIQUE `(profile_id, sort_order)`. sort_order는 원본의 band/instagram/facebook/youtube/kakao/naver_blog 순서0~5로 CHECK 고정한다. URL은 외부 링크와 같은 private.valid_https_url HTTPS·자격증명 없음 규칙을 공유한다. 서버에서는 이 URL을 fetch하지 않는다.
+
+#18 구현: my_social_links는 본인 revision/등록한 SNS를 조회한다. save_social_links는 정확한6종 전체 집합을 받아 빈주소+비공개를 삭제하고 나머지를 동일 소유자/종류 키로 원자 저장한다. profile잠금/동의/활성/버전/24시간영수증을 검사하고 실제 변경이 있을 때만1회revision을 올린다. 쓰기중지중 같은주소숨김/삭제는 허용하며 새주소/수정/새공개는 거절한다. 공개 invoker/RLS DTO에는 platform/url만 있다. 직접쓰기는 허용하지 않는다.
 
 ### 5.4 `public.external_links`
 

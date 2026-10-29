@@ -127,7 +127,7 @@ test.describe('collection apply using real local QA identities',()=>{
     expect((await dash()).animals.map(a=>a.id)).toEqual(original.map(a=>a.id));
     await page.getByRole('link',{name:'기본 정보',exact:true}).click();
     await list(page).getByRole('button',{name:'변경 버리고 이동',exact:true}).click();
-    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await expect(page).toHaveURL(/\/dashboard\/account$/);
     await page.getByRole('link',{name:/개체 관리/}).click();
     await expect(list(page).locator('article').first()).toHaveAttribute('data-collection-id',original[0].id);
   });

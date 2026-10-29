@@ -1,0 +1,49 @@
+{
+  "source": "design/링크페이지-m.png",
+  "sha256": "7ca2f1d0018227be5e289274ee3be69b952f42cfac22da3812c501001571b1db",
+  "crop": [
+    {
+      "platform": "band",
+      "x": 74,
+      "y": 2340,
+      "width": 40,
+      "height": 40
+    },
+    {
+      "platform": "instagram",
+      "x": 127,
+      "y": 2340,
+      "width": 40,
+      "height": 40
+    },
+    {
+      "platform": "facebook",
+      "x": 179,
+      "y": 2340,
+      "width": 40,
+      "height": 40
+    },
+    {
+      "platform": "youtube",
+      "x": 232,
+      "y": 2340,
+      "width": 40,
+      "height": 40
+    },
+    {
+      "platform": "kakao",
+      "x": 285,
+      "y": 2340,
+      "width": 40,
+      "height": 40
+    },
+    {
+      "platform": "naver_blog",
+      "x": 337,
+      "y": 2340,
+      "width": 40,
+      "height": 40
+    }
+  ],
+  "note": "Small original SNS icons only; unchanged supplied reference. No sample account data, external artwork or whole-screen copy."
+}
