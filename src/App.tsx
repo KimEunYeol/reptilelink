@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } fr
 import type { Session } from '@supabase/supabase-js';
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, CheckCircle2, ExternalLink, Eye, EyeOff, Leaf, LoaderCircle, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
 import { Gecko } from './components/Gecko';
+import { AnimalDelete, PendingAnimalDeletions } from './components/AnimalDelete';
 import { AnimalEdit } from './components/AnimalEdit';
 import { AnimalCollection } from './components/AnimalCollection';
 import { ManagementShell, ManagementShare } from './components/ManagementShell';
@@ -96,7 +97,8 @@ function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: 
 function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: Dashboard; refresh: () => Promise<void>; refreshCollection: () => Promise<Dashboard>; onSignOut: () => void }) {
   const location = useLocation(); const design = location.pathname.includes('/design');
   const [creating, setCreating] = useState(false), [editing, setEditing] = useState<Animal | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false), [saved, setSaved] = useState(false);
-  useEffect(() => { setEditing(null); }, [location.pathname]);
+  const [deleting, setDeleting] = useState<Animal | null>(null);
+  useEffect(() => { setEditing(null); setDeleting(null); }, [location.pathname]);
   const [collectionLocked, setCollectionLocked] = useState(false);
   const profile = data.profile!;
   async function togglePage() { setBusy(true); setError(''); try { await rpc('set_profile_public', { p_public: !profile.is_published, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }
@@ -118,10 +120,12 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
       {error && <Notice>{error}</Notice>}
       {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
       {design ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p></section>
-        : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
+        : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
+      {!design && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
     </main>
+    {deleting && <AnimalDelete animal={deleting} revision={profile.revision} refresh={refreshCollection} onClose={() => setDeleting(null)}/>}
     {creating && <AnimalForm profile={profile} refresh={refresh} onClose={() => setCreating(false)}/>}
-    {editing && <AnimalEdit animal={editing} revision={profile.revision} renderPhoto={id => <Photo animal={{ ...editing, photos: [{ asset_id: id, sort_order: 0 }] }} full plain/>} reconcile={refreshCollection} onClose={() => setEditing(null)} onSaved={async () => { await refreshCollection(); setEditing(null); setSaved(true); }}/>}
+    {editing && <AnimalEdit animal={editing} revision={profile.revision} renderPhoto={id => <Photo animal={{ ...editing, photos: [{ asset_id: id, sort_order: 0 }] }} full plain/>} reconcile={refreshCollection} onClose={() => setEditing(null)} onSaved={async () => { await refreshCollection(); setEditing(null); setSaved(true); }} onDelete={animal => { setEditing(null); setDeleting(animal); }}/>}
   </ManagementShell>;
 }
 

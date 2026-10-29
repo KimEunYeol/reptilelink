@@ -14,3 +14,12 @@ for (const row of rows.data) {
   count++;
 }
 console.log(`Cleaned ${count} expired local upload reservations.`);
+const jobs = await admin.schema('api').rpc('pending_animal_deletions');
+if (jobs.error) throw jobs.error;
+let animals = 0;
+for (const row of jobs.data) {
+  const finished = await admin.schema('api').rpc('finish_animal_deletion', { p_animal_id: row.id, p_actor: row.profile_id });
+  if (finished.error) throw finished.error;
+  if (finished.data) animals++;
+}
+console.log(`Finished ${animals} local animal deletions.`);

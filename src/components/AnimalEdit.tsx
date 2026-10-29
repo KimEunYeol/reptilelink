@@ -11,8 +11,8 @@ function fields(animal: Animal): AnimalEditInput {
     birth_date: animal.birth_date ?? null, description: animal.description, listing_status: animal.listing_status };
 }
 
-export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, onSaved }: {
-  animal: Animal; revision: number; renderPhoto: (id: string) => ReactNode; reconcile: () => Promise<Dashboard>; onClose: () => void; onSaved: () => Promise<void>;
+export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, onSaved, onDelete }: {
+  animal: Animal; revision: number; renderPhoto: (id: string) => ReactNode; reconcile: () => Promise<Dashboard>; onClose: () => void; onSaved: () => Promise<void>; onDelete?: (animal: Animal) => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const initial = useRef(fields(animal));
@@ -137,6 +137,16 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
     } catch (reason) { setError(userMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
+  async function beginDelete() {
+    if (dirty || conflict || submitting.current || !onDelete) return;
+    submitting.current = true; setBusy(true);
+    try {
+      const d = await reconcile(), current = d.animals.find(item => item.id === animal.id);
+      if (!current) throw new Error('NOT_FOUND');
+      onDelete(current);
+    } catch (reason) { setError(userMessage(reason)); }
+    finally { submitting.current = false; setBusy(false); }
+  }
   const inputProps = (key: keyof AnimalEditInput) => ({ 'aria-invalid': Boolean(invalid[key]),
     'aria-describedby': invalid[key] ? `edit-error-${key}` : undefined });
   const problem = (key: keyof AnimalEditInput) => invalid[key] && <small id={`edit-error-${key}`} className="edit-field-error">{invalid[key]}</small>;
@@ -188,6 +198,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
       </div>}
       <footer className="edit-actions"><button className="button" disabled={busy || conflict}>{busy ? '저장 중' : '저장'}</button>
         <button type="button" className="button ghost" disabled={busy} onClick={() => void discard()}>취소</button></footer>
+      {onDelete && <aside className="animal-delete-notice"><strong>개체 삭제</strong><p>삭제한 개체와 관련 기록은 복구할 수 없습니다.</p>{dirty && <p>편집 내용을 저장하거나 취소한 뒤 삭제할 수 있습니다.</p>}<button type="button" className="text-button" disabled={dirty || conflict || busy} onClick={() => void beginDelete()}>개체 삭제</button></aside>}
     </form>
   </dialog>;
 }

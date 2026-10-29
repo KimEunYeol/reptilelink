@@ -22,7 +22,7 @@
     "local:stop": "supabase stop",
     "local:env": "node scripts/local-env.mjs",
     "local:seed": "node scripts/local-seed.mjs",
-    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs",
+    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs",
     "worker:preview": "wrangler dev --local --ip 127.0.0.1 --port 8787",
     "dev:all": "node scripts/dev.mjs",
     "local:cleanup": "node scripts/local-cleanup.mjs",

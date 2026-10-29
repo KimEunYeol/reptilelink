@@ -16,7 +16,7 @@
 - Keep the existing stack and accepted D-01~D-08 decisions. Follow specification → one user flow → data/RPC/UI → meaningful verification → status documentation.
 - Use local Codex with the existing ChatGPT entitlement. Never switch to API-key billing, buy credits or delegate cloud work when a limit is reached; stop until the allowance resets.
 - Preserve user changes and local data. Use `codex/` branches; do not reset the local database or remove volumes as a routine startup or migration step.
-- Read docs/05 and current GitHub issue/PR state before selecting work. General-field editing (#3 / PR #5) and collection order/public batch apply (#6 / PR #7) are merged; do not reimplement them. Management-shell design alignment (#8 / PR #9) is merged. Photo editing/recovery is issue #10; inspect its PR before choosing follow-up work. Production OAuth and free deployment remain unverified.
+- Read docs/05 and current GitHub issue/PR state before selecting work. General-field editing (#3 / PR #5), collection order/public batch apply (#6 / PR #7), management-shell design alignment (#8 / PR #9), and photo editing/recovery (#10 / PR #11) are merged; do not reimplement them. Animal deletion is tracked in #12; inspect its PR before choosing follow-up work. Production OAuth and free deployment remain unverified.
 - Add new migrations for database changes. Do not replay the initial migration or database/schema.sql against an already migrated database.
 - Update docs/05 with observed results and unresolved gaps. Do not merge main or deploy remotely without user authorization for that step.
 
