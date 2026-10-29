@@ -250,6 +250,10 @@ UNIQUE `(profile_id, sort_order)`는 지연 검사해 순서 교환을 원자 �
 - `status`는 저장하지 않는다. 기능 명세 F-06의 우선순위와 서버 시각으로 계산한다.
 - 분양 상태·인증 상태와 같은 enum을 공유하지 않는다.
 
+#20 구현: my_schedules는 본인 전체 최대20개·revision·server_now를 반환한다. save_schedule은 정확한 필드/UTC ISO 밀리초 이하·실제 날짜/기간·제목80/설명300·소유권/활성/동의/버전·24시간 영수증과 프로필 잠금을 검사한다. 새 ID는 서버 생성/비공개다. apply_schedules는 현재 본인 전체 집합의 순서/공개/삭제를 원자 적용한다.
+
+public_schedules(slug,from,to)는 invoker/RLS로 상위 공개 조건을 검사하고, 한국 날짜 범위와 겹치는 일반 일정 및 상시 일정의 최소 DTO/서버 기준 시각을 반환한다. public_page도 같은 일정 데이터를 포함한다. 공개 DTO의 is_closed는 상태의 시각 경과 계산에 필요한 공개 모드이며, revision/노출 상태/소유자/내부 시각은 제외한다. private.schedule_status는 전달된 다섯 값만 계산하는 순수 함수로 특권 조회 없이 anon/authenticated 실행을 명시 허용한다. 실제 조회의 p_now는 서버 statement_timestamp로 고정하며 클라이언트가 정하지 않는다.
+
 ## 6. 단계 C: 반응·신고·통계
 
 ### 6.1 `public.comments`

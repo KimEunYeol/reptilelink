@@ -1,3 +1,4 @@
+import type {PublicSchedule} from './schedules';
 import type {PublicSocial} from './socials';
 import type { PublicLink } from './links';
 import { z } from 'zod';
@@ -48,7 +49,7 @@ export type Animal = AnimalInput & { id: string; birth_date: string | null; sort
 export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string };
 export type PendingAnimalDeletion = { id: string; name: string; requested_at: string };
 export type Dashboard = { account_status: string; profile: Profile | null; animals: Animal[]; pending_deletions?: PendingAnimalDeletion[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
-export type PublicPage = { socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token'>; animals: Animal[] };
+export type PublicPage = { server_now?: string; schedules?: PublicSchedule[]; socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token'>; animals: Animal[] };
 export const sexLabels = { unknown: '미구분', male: '수컷', female: '암컷' };
 export const statusLabels = { not_listed: '함께하는 아이', available: '분양 중', reserved: '예약 중', rehomed: '분양 완료' };
 export function formatBytes(bytes: number) { return bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`; }
@@ -64,7 +65,7 @@ export function userMessage(error: unknown): string {
     CONSENT_REQUIRED: '이용 안내에 동의해주세요.',
     SERVICE_UNAVAILABLE: '지금은 저장을 잠시 사용할 수 없습니다.',
     UPLOAD_EXPIRED: '사진 업로드 시간이 만료됐습니다. 다시 시도해주세요.',
-    VALIDATION_FAILED: '입력값을 확인해주세요. 생일은 오늘까지의 날짜만 저장할 수 있습니다.',
+    VALIDATION_FAILED: '입력값을 확인해주세요.',
     REQUEST_CONFLICT: '저장 요청 내용이 달라졌습니다. 입력값을 확인하고 다시 저장해주세요.',
     REQUEST_EXPIRED: '저장 요청이 만료됐습니다. 최신 내용을 불러온 뒤 다시 저장해주세요.',
   };

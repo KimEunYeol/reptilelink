@@ -1,3 +1,4 @@
+import {Schedules,PublicSchedules} from './components/Schedules';
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
@@ -98,7 +99,7 @@ function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: 
 }
 
 function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: Dashboard; refresh: () => Promise<void>; refreshCollection: () => Promise<Dashboard>; onSignOut: () => void }) {
-  const location = useLocation(); const basic = location.pathname.startsWith('/dashboard/account'), design = location.pathname.startsWith('/dashboard/design'), links = location.pathname.startsWith('/dashboard/links');
+  const location = useLocation(); const schedules = location.pathname.startsWith('/dashboard/schedules'), basic = location.pathname.startsWith('/dashboard/account'), design = location.pathname.startsWith('/dashboard/design'), links = location.pathname.startsWith('/dashboard/links');
   const [creating, setCreating] = useState(false), [editing, setEditing] = useState<Animal | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false), [saved, setSaved] = useState(false);
   const [deleting, setDeleting] = useState<Animal | null>(null);
   const [growing, setGrowing] = useState<Animal | null>(null);
@@ -114,7 +115,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
   }
   return <ManagementShell basic={basic} locked={collectionLocked} onSignOut={onSignOut}>
     <main className="management-content">
-      <h1 className="sr-only">{basic ? '기본 정보' : design ? 'SNS' : links ? '링크 관리' : '개체 관리'}</h1>
+      <h1 className="sr-only">{schedules ? '일정 관리' : basic ? '기본 정보' : design ? 'SNS' : links ? '링크 관리' : '개체 관리'}</h1>
       <ManagementShare url={publicUrl} copied={copied} onCopy={copyAddress}/>
       <section className="management-publication" aria-label="페이지 공개 설정">
         <span>{profile.is_published ? '공개 중' : '비공개'}</span>
@@ -123,9 +124,9 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
       </section>
       {error && <Notice>{error}</Notice>}
       {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
-      {basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p></section>
+      {schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p></section>
         : design ? <SocialLinks revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : links ? <ExternalLinks revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting && !growing} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
-      {!basic && !design && !links && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
+      {!schedules && !basic && !design && !links && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
     </main>
     {deleting && <AnimalDelete animal={deleting} revision={profile.revision} refresh={refreshCollection} onClose={() => setDeleting(null)}/>}
     {growing && <AnimalGrowth animal={growing} refresh={refreshCollection} onClose={() => setGrowing(null)}/>}
@@ -140,7 +141,7 @@ function PublicView() {
     (initial ? Promise.resolve(initial) : rpc<PublicPage | null>('public_page', { p_slug: slug })).then(result => { if (!active) return; setData(result); if (id) { const found = result?.animals.find(a => a.id === id); if (found) setSelected(found); else setError(true); } }).catch(() => { if (active) setError(true); }).finally(() => { if (active) setLoading(false); }); return () => { active = false; }; }, [slug, id]);
   if (loading) return <Spinner/>;
   if (!data || error) return <div className="not-found"><Sprout size={38}/><h1>페이지를 찾을 수 없어요</h1><p>공개된 주소인지 확인해주세요.</p><Link className="button" to="/">홈으로 돌아가기</Link></div>;
-  return <div className="public-shell"><header className="site-header"><Brand/><Link className="text-button" to="/auth/login">나도 시작하기 <ArrowUpRight size={15}/></Link></header><main className="public-page"><div className="public-cover"><span>every little<br/><b>moment matters.</b></span><Sprout size={58}/><div className="cover-orbit"/></div><div className="public-avatar"><Gecko/></div><section className="public-intro"><span className="eyebrow">OUR REPTILE FAMILY</span><h1>{data.profile.display_name}</h1><p>{data.profile.bio || '아이들과 함께하는 소중한 순간을 기록합니다.'}</p><span className="public-count"><Sprout size={15}/> 함께하는 아이들 {data.animals.length}</span></section><div className="public-animals">{data.animals.length ? data.animals.map(animal => <AnimalCard key={animal.id} animal={animal} onOpen={() => setSelected(animal)}/>) : <p className="public-empty">곧 우리 아이들의 이야기가 시작됩니다.</p>}</div><PublicLinks links={data.links ?? []}/><PublicSocials links={data.socials ?? []}/><div className="public-bottom"><span>GROWING, ONE MOMENT AT A TIME.</span><Brand/></div></main>{selected && <AnimalDetail animal={selected} onClose={() => setSelected(null)}/>}</div>;
+  return <div className="public-shell"><header className="site-header"><Brand/><Link className="text-button" to="/auth/login">나도 시작하기 <ArrowUpRight size={15}/></Link></header><main className="public-page"><div className="public-cover"><span>every little<br/><b>moment matters.</b></span><Sprout size={58}/><div className="cover-orbit"/></div><div className="public-avatar"><Gecko/></div><section className="public-intro"><span className="eyebrow">OUR REPTILE FAMILY</span><h1>{data.profile.display_name}</h1><p>{data.profile.bio || '아이들과 함께하는 소중한 순간을 기록합니다.'}</p><span className="public-count"><Sprout size={15}/> 함께하는 아이들 {data.animals.length}</span></section><PublicSchedules rows={data.schedules ?? []} serverNow={data.server_now} slug={data.profile.slug}/><div className="public-animals">{data.animals.length ? data.animals.map(animal => <AnimalCard key={animal.id} animal={animal} onOpen={() => setSelected(animal)}/>) : <p className="public-empty">곧 우리 아이들의 이야기가 시작됩니다.</p>}</div><PublicLinks links={data.links ?? []}/><PublicSocials links={data.socials ?? []}/><div className="public-bottom"><span>GROWING, ONE MOMENT AT A TIME.</span><Brand/></div></main>{selected && <AnimalDetail animal={selected} onClose={() => setSelected(null)}/>}</div>;
 }
 
 export default function App() {
