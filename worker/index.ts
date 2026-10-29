@@ -165,7 +165,10 @@ export default {
         const c = clients(env);
         const page = await call<PublicPage | null>(c.user, 'public_page', { p_slug: publicRoute[1] });
         if (!page || (publicRoute[2] && !page.animals.some(a => a.id === publicRoute[2]))) {
-          return new Response('<!doctype html><html lang="ko"><meta charset="utf-8"><title>페이지를 찾을 수 없습니다</title><h1>페이지를 찾을 수 없습니다.</h1><p>공개된 주소인지 확인해주세요.</p><a href="/">렙타일링크로</a></html>', { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+          const fallback=await env.ASSETS.fetch(new Request(new URL('/index.html',url)));
+          let html=await fallback.text();
+          html=html.replace(/<title>.*?<\/title>/,'<title>페이지를 찾을 수 없습니다</title>').replace(/<meta name="description"[^>]*>/,'').replace('</head>','<meta name="robots" content="noindex"></head>').replace('<div id="root"></div>','<div id="root"><main class="not-found"><h1>페이지를 찾을 수 없습니다.</h1><p>공개된 주소인지 확인해주세요.</p><a href="/">렙타일링크로</a></main></div>');
+          return new Response(html,{status:404,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
         }
         const assetResponse = await env.ASSETS.fetch(new Request(new URL('/index.html', url)));
         let html = await assetResponse.text();

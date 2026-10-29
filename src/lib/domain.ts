@@ -51,7 +51,7 @@ export type Profile = { id: string; slug: string; display_name: string; bio: str
 export type PendingAnimalDeletion = { id: string; name: string; requested_at: string };
 export type AccountDeletion={request_id:string;requested_at:string;sessions_revoked:boolean;phase:'sessions'|'files'|'auth'};
 export type Dashboard = { account_deletion?:AccountDeletion|null; account_status: string; profile: Profile | null; animals: Animal[]; pending_deletions?: PendingAnimalDeletion[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
-export type PublicPage = { server_now?: string; schedules?: PublicSchedule[]; socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token' | 'avatar_asset_id' | 'cover_asset_id'>; animals: Animal[] };
+export type PublicPage = { like_count?:number; server_now?: string; schedules?: PublicSchedule[]; socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token' | 'avatar_asset_id' | 'cover_asset_id'>; animals: Animal[] };
 export const sexLabels = { unknown: '미구분', male: '수컷', female: '암컷' };
 export const statusLabels = { not_listed: '함께하는 아이', available: '분양 중', reserved: '예약 중', rehomed: '분양 완료' };
 export function formatBytes(bytes: number) { return bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`; }
