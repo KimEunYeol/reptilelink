@@ -56,7 +56,7 @@ test('real local first flow: login, profile, photo, publication and private acce
   const dialog = page.getByRole('dialog');
   await dialog.getByRole('textbox', { name: '개체 이름', exact: true }).fill('도리');
   await dialog.getByRole('textbox', { name: '모프', exact: true }).fill('릴리화이트');
-  await dialog.getByRole('combobox', { name: '성별', exact: true }).selectOption('male');
+  await dialog.getByRole('radio', { name: '수컷', exact: true }).check();
   await dialog.getByRole('textbox', { name: '개체 소개', exact: true }).fill('호기심이 많고 손 위에서 쉬는 걸 좋아하는 아이예요.');
   await dialog.getByLabel('개체 사진', { exact: true }).setInputFiles({ name: 'dori.png', mimeType: 'image/png', buffer: Buffer.from(png,'base64') });
   const created = page.waitForResponse(response => response.url().endsWith('/rpc/create_animal') && response.request().method() === 'POST');

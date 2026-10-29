@@ -96,6 +96,35 @@ export default {
         const complete = await call<boolean>(c.admin, 'finish_animal_deletion', { p_animal_id: id, p_actor: c.id });
         return json({ deleted: true, cleanup_pending: !complete });
       }
+      if(path==='/api/parent/uploads'&&request.method==='POST'){
+        const c=await actor(request,env);
+        const input=z.object({animal_id:uuid,role:z.enum(['father','mother']),request_id:uuid}).strict().parse(await body(request));
+        const manifest=await call<{asset_id:string;ready:boolean;objects:{path:string;variant:string}[]}>(c.user,'reserve_parent_photo',{p_animal_id:input.animal_id,p_role:input.role,p_request_id:input.request_id});
+        if(manifest.ready)return json({asset_id:manifest.asset_id,ready:true,objects:[]});
+        const objects=[];
+        for(const object of manifest.objects){
+          const {data,error}=await c.admin.storage.from('animal-media').createSignedUploadUrl(object.path,{upsert:false});
+          if(error){
+            // A lost upload/complete response can leave a create-only object present.
+            // Presence never marks the asset ready: /complete still downloads and verifies both variants.
+            if(/already exists|duplicate/i.test(error.message)||Number((error as {statusCode?:string}).statusCode)===409){objects.push({...object,stored:true});continue;}
+            throw Error('UPLOAD_FAILED');
+          }
+          objects.push({...object,token:data.token});
+        }
+        await call(c.admin,'register_upload_lease',{p_asset_id:manifest.asset_id,p_actor:c.id});
+        return json({asset_id:manifest.asset_id,ready:false,objects});
+      }
+      if(path==='/api/parent/uploads/cancel-request'&&request.method==='POST'){
+        const c=await actor(request,env);
+        const input=z.object({animal_id:uuid,role:z.enum(['father','mother']),request_id:uuid}).strict().parse(await body(request));
+        const id=await call<string|null>(c.user,'cancel_parent_photo_request',{p_animal_id:input.animal_id,p_role:input.role,p_request_id:input.request_id});
+        if(!id)return json({ok:true});
+        const paths=await call<string[]|null>(c.admin,'cleanup_manifest',{p_asset_id:id,p_actor:c.id});
+        if(!paths)return json({ok:true,cleanup_pending:true});
+        const removed=await c.admin.storage.from('animal-media').remove(paths);if(removed.error)throw Error('CLEANUP_PENDING');
+        await call(c.admin,'finish_cleanup',{p_asset_id:id});return json({ok:true});
+      }
       if (path === '/api/profile/uploads' && request.method === 'POST') {
         const c = await actor(request, env);
         const input = z.object({purpose:z.enum(['avatar','cover']),request_id:uuid}).strict().parse(await body(request));

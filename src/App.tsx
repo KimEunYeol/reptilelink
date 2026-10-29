@@ -1,3 +1,4 @@
+import {AnimalCreate} from './components/AnimalCreate';
 import {PublicView} from './components/PublicPage';
 import {PolicyChecks,PolicyRenewal} from './components/PolicyConsent';
 import {PolicyRenewalLink} from './components/PolicyRenewalLink';
@@ -14,7 +15,7 @@ import {Schedules} from './components/Schedules';
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
-import { Check, CheckCircle2, ExternalLink, LoaderCircle, Plus, ShieldCheck, X } from 'lucide-react';
+import { CheckCircle2, ExternalLink, LoaderCircle, ShieldCheck } from 'lucide-react';
 import { AnimalDelete, PendingAnimalDeletions } from './components/AnimalDelete';
 import { AnimalGrowth } from './components/AnimalGrowth';
 import { DesignSettings } from './components/DesignSettings';
@@ -22,17 +23,11 @@ import { ExternalLinks } from './components/ExternalLinks';
 import { AnimalEdit } from './components/AnimalEdit';
 import { AnimalCollection } from './components/AnimalCollection';
 import { ManagementShell, ManagementShare } from './components/ManagementShell';
-import { animalSchema, formatBytes, profileSchema, userMessage, type Animal, type Dashboard, type Profile } from './lib/domain';
+import { formatBytes, profileSchema, userMessage, type Animal, type Dashboard, type Profile } from './lib/domain';
 import { configured, googleAuth, initialAuthIssue, localAuth, rpc, serverRequest, supabase } from './lib/supabase';
-import { preparePhoto } from './lib/images';
 
 function Spinner() { return <div className="loading" role="status"><LoaderCircle className="spin" size={23}/> 불러오고 있어요</div>; }
 function Notice({ children }: { children: ReactNode }) { return <p className="notice" role="alert">{children}{typeof children==='string'&&<PolicyRenewalLink message={children}/>}</p>; }
-function Modal({ title, children, onClose, narrow = false }: { title: string; children: ReactNode; onClose: () => void; narrow?: boolean }) {
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => { const previous = document.activeElement as HTMLElement | null; const element = ref.current; element?.showModal(); return () => { element?.close(); previous?.focus(); }; }, []);
-  return <dialog ref={ref} className={narrow ? 'animal-edit' : 'modal'} aria-labelledby="modal-title" onCancel={e => { e.preventDefault(); onClose(); }}><div className={narrow ? 'animal-edit-heading' : 'modal-heading'}><div>{!narrow && <span className="eyebrow">REPTILELINK</span>}<h2 id="modal-title">{title}</h2></div><button className="icon-button" aria-label="닫기" onClick={onClose}><X/></button></div>{narrow ? <div className="animal-edit-body">{children}</div> : children}</dialog>;
-}
 function Photo({ animal, full = false, plain = false }: { animal: Animal; full?: boolean; plain?: boolean }) {
   const [image, setImage] = useState('');
   const asset = animal.photos[0]?.asset_id;
@@ -87,39 +82,6 @@ function ProfileForm({ profile, refresh, onboarding = false,onLocked,email }: { 
 
   </fieldset>{error && <Notice>{error}</Notice>}{(dirty||uncertain)&&<button type="button" className="text-button" disabled={busy} onClick={()=>void inspect()}>{uncertain?'저장 상태 확인':'변경 취소'}</button>}{navigation.blocked&&<div data-navigation-prompt><p className="notice" role="alert">적용하지 않은 기본정보가 있습니다.</p><button ref={navigation.stayButton} type="button" className="text-button" onClick={stayProfile}>계속 수정</button><button type="button" className="text-button" disabled={busy} onClick={async()=>{if(await inspect())navigation.leave();}}>최신 정보 확인 후 이동</button></div>}{saved && <p className="success" role="status"><CheckCircle2 size={16}/> 프로필을 저장했어요.</p>}<button className="button form-submit" disabled={busy||uncertain}>{busy ? <LoaderCircle className="spin" size={18}/> : null}{onboarding ? '내 공간 만들기' : '적용하기'}</button>{policy&&!navigation.blocked&&<PolicyDialog bundle={policies.data} privacy={policy==='privacy'} onClose={()=>setPolicy(null)}/>}</form>;
 }
-function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: () => Promise<void>; onClose: () => void }) {
-  const [values, setValues] = useState({ name: '', species: '크레스티드 게코', morph: '', sex: 'unknown', description: '', listing_status: 'not_listed', is_public: true });
-  const [files, setFiles] = useState<File[]>([]), [busy, setBusy] = useState(false), [error, setError] = useState(''), [progress, setProgress] = useState(''), [partial, setPartial] = useState(false);
-  const requestId = useRef(crypto.randomUUID());
-  const field = (key: keyof typeof values, value: string | boolean) => setValues(previous => ({ ...previous, [key]: value }));
-  async function submit(event: FormEvent) {
-    event.preventDefault(); setError(''); const parsed = animalSchema.safeParse(values);
-    if (!parsed.success) return setError(parsed.error.issues[0].message);
-    if (files.length > 3) return setError('사진은 최대 3장까지 선택할 수 있어요.');
-    setBusy(true); let created = false;
-    try {
-      setProgress('사진을 준비하고 있어요');
-      const photos = await Promise.all(files.map(preparePhoto));
-      setProgress('개체 정보를 저장하고 있어요');
-      const result = await rpc<{ id: string; revision: number }>('create_animal', { p_data: { ...parsed.data, is_public: photos.length ? false : parsed.data.is_public }, p_expected: profile.revision, p_request_id: requestId.current });
-      created = true; let revision = result.revision;
-      for (let index = 0; index < photos.length; index++) {
-        setProgress(`사진 ${index + 1}/${photos.length} 업로드 중`);
-        const upload = await serverRequest<{ asset_id: string; objects: { path: string; variant: keyof typeof photos[number]; token: string }[] }>('/api/uploads', { animal_id: result.id });
-        try {
-          for (const object of upload.objects) { const { error: uploadError } = await supabase.storage.from('animal-media').uploadToSignedUrl(object.path, object.token, photos[index][object.variant], { contentType: 'image/webp', upsert: false }); if (uploadError) throw uploadError; }
-          await serverRequest(`/api/uploads/${upload.asset_id}/complete`, {});
-          const attached = await rpc<{ revision: number }>('attach_photo', { p_asset_id: upload.asset_id, p_expected: revision }); revision = attached.revision;
-        } catch (reason) { await serverRequest(`/api/uploads/${upload.asset_id}/cancel`, {}).catch(() => {}); throw reason; }
-      }
-      if (photos.length && parsed.data.is_public) await rpc('set_animal_public', { p_animal_id: result.id, p_public: true, p_expected: revision });
-      await refresh(); onClose();
-    } catch (reason) { setPartial(created); setError(created ? '개체는 비공개로 저장됐지만 사진 처리를 마치지 못했습니다. 목록에서 확인해주세요.' : userMessage(reason)); await refresh(); }
-    finally { setBusy(false); }
-  }
-  return <Modal title="새로운 아이 등록" onClose={() => { if (!busy) onClose(); }}><form onSubmit={submit} className="animal-form"><label className="photo-upload"><Plus size={25}/><strong>아이의 사진을 올려주세요</strong><small>{files.length ? `${files.length}장 선택됨` : 'JPG, PNG, WebP · 최대 3장'}</small><input aria-label="개체 사진" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e => { const selected = Array.from(e.target.files || []); if (selected.length > 3) { setError('사진은 최대 3장까지 선택해주세요.'); e.target.value = ''; setFiles([]); } else { setFiles(selected); setError(''); } }}/></label><label>이름 <span>*</span><input aria-label="개체 이름" value={values.name} maxLength={40} placeholder="아이의 이름을 입력해주세요" onChange={e => field('name', e.target.value)} required/></label><div className="form-grid"><label>종류 <span>*</span><input aria-label="종류" list="species" value={values.species} maxLength={80} onChange={e => field('species', e.target.value)} required/><datalist id="species"><option>크레스티드 게코</option><option>레오파드 게코</option><option>볼파이톤</option><option>리키에너스</option></datalist></label><label>성별<select aria-label="성별" value={values.sex} onChange={e => field('sex', e.target.value)}><option value="unknown">미구분</option><option value="male">수컷</option><option value="female">암컷</option></select></label></div><label>모프<input aria-label="모프" value={values.morph} maxLength={120} placeholder="예: 릴리화이트" onChange={e => field('morph', e.target.value)}/></label><label>소개<textarea aria-label="개체 소개" value={values.description} maxLength={500} rows={3} placeholder="아이만의 특징을 기록해주세요" onChange={e => field('description', e.target.value)}/></label><label className="check-label"><input type="checkbox" checked={values.is_public} onChange={e => field('is_public', e.target.checked)}/><span>공개 페이지에 보여주기<small>브리더 페이지도 공개 상태여야 방문자에게 보여요.</small></span></label>{error && <Notice>{error}</Notice>}{busy && <p className="upload-progress" role="status"><LoaderCircle className="spin" size={16}/>{progress}</p>}<div className="modal-actions"><button type="button" className="button ghost" disabled={busy} onClick={onClose}>닫기</button><button className="button" disabled={busy || partial}>{busy ? '저장 중' : '개체 등록하기'}<Check size={16}/></button></div></form></Modal>;
-}
-
 function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { data: Dashboard; refresh: () => Promise<void>; refreshCollection: () => Promise<Dashboard>; onSignOut: () => void;email?:string }) {
   const location = useLocation(); const activity = location.pathname.startsWith('/dashboard/activity'), schedules = location.pathname.startsWith('/dashboard/schedules'), basic = location.pathname.startsWith('/dashboard/account'), design = location.pathname.startsWith('/dashboard/design'), links = location.pathname.startsWith('/dashboard/links');
   const [creating, setCreating] = useState(false), [editing, setEditing] = useState<Animal | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false), [saved, setSaved] = useState(false);
@@ -154,7 +116,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { 
     {deleting && <AnimalDelete animal={deleting} revision={profile.revision} refresh={refreshCollection} onClose={() => setDeleting(null)}/>}
     {comments&&<ManagedComments animalId={comments.id} onClose={()=>setComments(null)}/>}
     {growing && <AnimalGrowth animal={growing} refresh={refreshCollection} onClose={() => setGrowing(null)}/>}
-    {creating && <AnimalForm profile={profile} refresh={refresh} onClose={() => setCreating(false)}/>}
+    {creating && <AnimalCreate profile={profile} reconcile={refreshCollection} onClose={() => setCreating(false)}/>}
     {editing && <AnimalEdit animal={editing} revision={profile.revision} renderPhoto={id => <Photo animal={{ ...editing, photos: [{ asset_id: id, sort_order: 0 }] }} full plain/>} reconcile={refreshCollection} onClose={() => setEditing(null)} onSaved={async () => { await refreshCollection(); setEditing(null); setSaved(true); }} onComments={animal=>{setEditing(null);setComments(animal);}} onDelete={animal => { setEditing(null); setDeleting(animal); }} onGrowth={animal => { setEditing(null); setGrowing(animal); }}/>}
   </ManagementShell>;
 }
