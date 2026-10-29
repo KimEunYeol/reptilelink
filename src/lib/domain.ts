@@ -46,7 +46,7 @@ export function moveCollection(items: CollectionItem[], from: number, to: number
   const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next;
 }
 export type Photo = { asset_id: string; sort_order: number };
-export type Animal = AnimalInput & { id: string; birth_date: string | null; sort_order: number; photos: Photo[] };
+export type Animal = AnimalInput & { id: string; birth_date: string | null; comment_count?:number; sort_order: number; photos: Photo[] };
 export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string; avatar_asset_id?:string|null;cover_asset_id?:string|null };
 export type PendingAnimalDeletion = { id: string; name: string; requested_at: string };
 export type AccountDeletion={request_id:string;requested_at:string;sessions_revoked:boolean;phase:'sessions'|'files'|'auth'};

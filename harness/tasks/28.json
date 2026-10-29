@@ -1,0 +1,48 @@
+{
+  "issue": 28,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/28",
+  "branch": "codex/feat/28-comments-reports",
+  "baseSha": "f876752e6ac2f4c0646f1687036b06bf4ee3ceb2",
+  "scope": "F-08 공개 개체 댓글·본인 삭제/소유자 숨김·신고/운영 처리와 관련 알림 저장/정리",
+  "acceptance": [
+    "active/기존온보딩/동의·공개개체·일반텍스트1~500·작성자/대상/시각서버검증·본문수정/답글/첨부/멘션없음",
+    "본인삭제즉시본문NULL/7일최소행·소유자숨김·운영신고처리·타인/숨겨진ID거절·공개/관리최소조회",
+    "보관 중 hidden/deleted 포함200개, 회원 분당3회/한국 날짜별30회와2초 단기 제한, UUID 멱등/원자성/경합, 쓰기 중지 중 삭제 허용",
+    "신고대상일치/4사유/설명500·일5건·자기접수ID만·서비스전용운영/숨김/재시도",
+    "댓글과내부알림동일트랜잭션·자기행동/재전송중복없음·원문복제없음·후속알림화면경계",
+    "공개작성자프로필만이름/링크/이미지·비공개는회원·이메일/권한/메모/경로없음·안정커서20/더보기·새조회상위차단",
+    "원본목록/작성/더보기/역할별조작·dirty/미확인/실제조회/실패·7폭/키보드·retention/탈퇴/개체삭제연결",
+    "현재QA자료만실제검증·CLI/진단/shadow/전체verify·운영절차준비·PR리뷰/병합/main/보고후좋아요/알림/통계"
+  ],
+  "plan": [
+    "원본전체보드/PC/모바일상세댓글·명세/실제기존RPC/권한/삭제조사",
+    "댓글/알림/신고/제한창·최소조회/역할별변이·운영/정리·실제DB/경합/한도검사",
+    "원본댓글목록/더보기/작성·삭제/숨김/신고·미확인/동시/숨김복구·7폭/키보드",
+    "새관계탈퇴/개체삭제/retention·로컬운영CLI·실제QA/기존회귀·migration/진단/shadow",
+    "문서/task·전체verify/훅·PR최신리뷰/명시적병합/main/보고·좋아요후속"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/링크페이지-m-1.png",
+      "design/링크페이지-m.png",
+      "design/링크페이지.png"
+    ],
+    "notes": "모바일 상세 원본의 설명 아래 원형 아바타/굵은 이름/본문/작은 날짜 행→회색 더보기→둥근 입력/녹색 작성 확인. 전체 보드 댓글 (7000,6000,1200,1200)·PC 안내(0,8400,5000,1000) 확대 판독: PC 본문은 모바일과 같은 크기/배치, 상세 팝업은 모바일을 그대로 적용. 공개 PC/모바일 카드의 왼쪽 위 댓글 수 확인. 예시 멘션/답글은 채택 F-08/D-05 초기 제외이므로 일반 텍스트만 허용. 독립 신고/관리 시안이 없어 기존 필드/좁은 창/텍스트 버튼/회색 안내를 최소 확장.",
+    "review": {
+      "status": "passed",
+      "summary": "실제 원본 PC/모바일·전체 보드와 공개 댓글/신고/관리7폭을 직접 대조했다. 아바타40px/본문14px/시각12px로 맞추고320px 신고 하단 넘침을 간격/줄바꿈으로 수정했다. 최종 신규10개 브라우저 흐름이 통과했고 더보기/정밀 커서·일반 초안/Escape/실제 SPA Back·미확인 재시도/취소 잠금·쓰기 중지 삭제·숨김 관리·Worker 초기 공개 HTML의 최소 DTO를 확인했다. 공개 셸/카드 전체 등 남은 #2 차이와 독립 처리 시안 부재는 docs22에 기록했다."
+    },
+    "evidence": [
+      "artifacts/comments-28/public-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/comments-28/manage-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/comments-28/report-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/comments-28/all-widths.png and unresolved-390.png",
+      "tests/e2e/comments.spec.ts:10 actual browser flows",
+      "docs/22-comments-reports.md",
+      "scripts/test-activity-batches.mjs:9 real first-run-only Cron regressions; review P2 drain fix"
+    ]
+  }
+}
