@@ -21,6 +21,8 @@ test.afterEach(async () => {
   helpers.localQuery(`delete from public.animal_photos where animal_id='${id}' and profile_id='${actor}'`);
   const admin = helpers.localAdmin();
   for (const asset of assets) {
+    // Only this execution's disposable fixture: simulate expiry of its upload lease.
+    helpers.localQuery(`update private.media_assets set cleanup_after=now()-interval '1 second' where id='${asset}' and profile_id='${actor}'`);
     const manifest = await admin.schema('api').rpc('cleanup_manifest', { p_asset_id:asset,p_actor:actor });
     expect(manifest.error).toBeNull();
     if (manifest.data?.length) expect((await admin.storage.from('animal-media').remove(manifest.data)).error).toBeNull();

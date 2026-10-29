@@ -121,7 +121,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
         : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
     </main>
     {creating && <AnimalForm profile={profile} refresh={refresh} onClose={() => setCreating(false)}/>}
-    {editing && <AnimalEdit animal={editing} revision={profile.revision} preview={editing.photos.length ? <Photo animal={editing} full/> : null} onClose={() => setEditing(null)} onSaved={async () => { await refresh(); setEditing(null); setSaved(true); }}/>}
+    {editing && <AnimalEdit animal={editing} revision={profile.revision} renderPhoto={id => <Photo animal={{ ...editing, photos: [{ asset_id: id, sort_order: 0 }] }} full plain/>} reconcile={refreshCollection} onClose={() => setEditing(null)} onSaved={async () => { await refreshCollection(); setEditing(null); setSaved(true); }}/>}
   </ManagementShell>;
 }
 
