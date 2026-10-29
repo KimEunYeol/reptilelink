@@ -940,3 +940,12 @@ dialog.public-detail[open],.public-static-overlay .public-detail-static { displa
 dialog.animal-create[open],dialog.animal-parent-editor[open] { display:flex; flex-direction:column; max-height:90dvh; }
 .animal-create .animal-edit-heading,.animal-parent-editor .animal-edit-heading { flex-shrink:0; }
 .animal-create .animal-edit-body,.animal-parent-editor .animal-edit-body { flex:1; min-height:0; max-height:none; overflow-y:auto; }
+
+/* Source PC notification marker; reserve no new tab width. */
+.management-activity-label { position: relative; }
+.management-unread-dot { position:absolute; width:6px; height:6px; border-radius:50%; background:#24853b; top:-2px; right:-7px; }
+/* Retain source green; darken small active navigation text for readability. */
+.management-tabs > [aria-current=page] { color:#24853b; }
+
+.growth-chart polyline { stroke:#178f3c; }
+.growth-chart circle { fill:#178f3c; }

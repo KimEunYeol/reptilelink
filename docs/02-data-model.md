@@ -503,3 +503,6 @@ animals에 adoption_date nullable date와 father_asset_id/mother_asset_id nullab
 reserve_parent_photo(animal,role,request)와 cancel_parent_photo_request는 본인·동일요청해시/취소tombstone·예산/동시예약/유효기간으로 분리한다. save_animal_details는8개 일반필드+자기사진 전체세트+명시적father/mother를 단일revision·영수증/직렬화로 저장한다. 기존 update_animal/save_animal_edit은 자기사진3/7필드의 호환 계약을 유지하고 새필드를 보존한다. 중지 중에는 기존 필드값을 바꾸지 않는 사진 축소만 허용한다.
 
 공개는 기존 active+프로필/자식 공개+미삭제/역할/ready 조건의 최소 자산ID/날짜만 추가한다. 미디어원본 테이블 권한은 계속 없으며 관리DTO는 자기필드만 확장한다. 연결된부모는 일반취소/물리정리를 거절하고 교체/삭제/탈퇴에서 참조해제→삭제대기→실제파일/예산반환을 유지한다. 실제 CLI migration20261029202619와 로컬 검증/원본 비교·한계는 [인계](33-parent-photos-adoption.md)를 따른다.
+
+## #40 최소 미읽음 요약
+api.my_notification_summary()는 private.actor()/본인 profile 확인 뒤 recipient_id=actor, read_at IS NULL, created_at>now()-90days의 count만 반환한다. 최근 알림 목록과 같은 의미이며 타인 ID 입력·본문/작성자/원문은 없다. 일반 테이블 권한을 늘리지 않고 authenticated만 실행한다. 기존 recipient/date 인덱스를 재사용한다(베타 한도에서 유사 인덱스 추가 없음).

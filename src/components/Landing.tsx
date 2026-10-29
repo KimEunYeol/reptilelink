@@ -1,8 +1,10 @@
 import {Link} from 'react-router-dom';
 import {ManagementFooter,SourceBrand} from './ManagementShell';
 
+const exampleSizes:Record<string,{pc:[number,number];mobile:[number,number]}>={phones:{pc:[445,535],mobile:[315,380]},comments:{pc:[545,290],mobile:[390,320]},growth:{pc:[790,430],mobile:[450,320]},calendar:{pc:[850,380],mobile:[400,325]},socials:{pc:[1920,340],mobile:[450,420]}};
 function Example({name,alt,caption,className=''}:{name:string;alt:string;caption:string;className?:string}){
- return <figure className={`main-example ${className}`}><picture><source media="(min-width: 1000px)" srcSet={`/brand/main/${name}-pc.png`}/><img src={`/brand/main/${name}-mobile.png`} alt={alt} loading={name==='phones'?'eager':'lazy'} decoding="async"/></picture><figcaption>{caption}</figcaption></figure>;
+ const size=exampleSizes[name];
+ return <figure className={`main-example ${className}`}><picture><source width={size.pc[0]} height={size.pc[1]} media="(min-width: 1000px)" srcSet={`/brand/main/${name}-pc.png`}/><img width={size.mobile[0]} height={size.mobile[1]} src={`/brand/main/${name}-mobile.png`} alt={alt} loading={name==='phones'?'eager':'lazy'} decoding="async"/></picture><figcaption>{caption}</figcaption></figure>;
 }
 
 export function Landing({signedIn}:{signedIn:boolean}){

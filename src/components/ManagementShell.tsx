@@ -1,3 +1,4 @@
+import type {UnreadSummary} from '../lib/useNotificationSummary';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Check, ChevronDown, Link2 } from 'lucide-react';
@@ -7,7 +8,7 @@ export function SourceBrand() {
 }
 
 /** The source's six tabs; only implemented destinations are interactive. */
-function ManagementNavigation({ basic }: { basic: boolean }) {
+function ManagementNavigation({ basic, unread }: { basic: boolean; unread?:UnreadSummary }) {
   const nav = useRef<HTMLElement>(null);
   const { pathname } = useLocation();
   useEffect(() => {
@@ -21,7 +22,7 @@ function ManagementNavigation({ basic }: { basic: boolean }) {
     <Link to="/dashboard/schedules" aria-current={schedules ? 'page' : undefined}>일정 관리</Link>
     <Link to="/dashboard/design" aria-current={design ? 'page' : undefined}>디자인 수정</Link>
     <Link to="/dashboard/account" aria-current={basic ? 'page' : undefined}>기본 정보</Link>
-    <Link to="/dashboard/activity" aria-current={activity ? 'page' : undefined}>통계/알림</Link>
+    <Link to="/dashboard/activity" aria-label="통계/알림" aria-describedby="management-unread-status" aria-current={activity ? 'page' : undefined}><span className="management-activity-label">통계/알림{unread?.count!==null&&unread?.count!==undefined&&unread.count>0&&<span className="management-unread-dot" aria-hidden="true"/>}</span><span id="management-unread-status" className="sr-only" aria-live="polite">{unread?.count!==null&&unread?.count!==undefined?` · 읽지 않은 알림 ${unread.count}개`:unread?.failed?' · 알림 상태를 확인하지 못했습니다. 통계/알림에서 다시 확인해주세요.':' · 알림 상태 확인 중'}</span></Link>
   </nav>;
 }
 
@@ -33,13 +34,13 @@ export function ManagementFooter() {
   </div></footer>;
 }
 
-export function ManagementShell({ basic, locked, onSignOut, children }: { basic: boolean; locked: boolean; onSignOut: () => void; children: ReactNode }) {
+export function ManagementShell({ basic, locked, onSignOut, children, unread }: { basic: boolean; locked: boolean; onSignOut: () => void; children: ReactNode; unread?:UnreadSummary }) {
   return <div className="management-shell">
     <header className="management-header"><SourceBrand/><div className="management-header-actions">
       <button className="button ghost" disabled={locked} onClick={onSignOut}>로그아웃</button>
       <Link className="button" to="/dashboard/animals">마이페이지</Link>
     </div></header>
-    <ManagementNavigation basic={basic}/>
+    <ManagementNavigation basic={basic} unread={unread}/>
     {children}
     <ManagementFooter/>
   </div>;
