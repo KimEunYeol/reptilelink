@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { collectionItems, type Animal, type CollectionItem, type Dashboard } from '../../src/lib/domain';
 
 const helpersPath = '../../scripts/local-utils.mjs';
@@ -150,6 +150,9 @@ test.describe('collection apply using real local QA identities',()=>{
     expect(removed.photos).toHaveLength(0);
     expect(helpers.localQuery(`select count(*) from private.animal_notes where animal_id='${removed.id}'`).trim()).toBe('0');
     const row=helpers.localQuery(`select to_jsonb(a) from public.animals a where id='${removed.id}'`).trim();
+    // Generated columns must be recomputed on restore. Keep the dedicated QA snapshot for recovery if restoration fails.
+    const columns=helpers.localQuery(`select string_agg(quote_ident(attname),',' order by attnum) from pg_attribute where attrelid='public.animals'::regclass and attnum>0 and not attisdropped and attgenerated=''`).trim();
+    await mkdir('.local',{recursive:true});await writeFile('.local/collection-membership-qa-row.json',row);
     const actor=(await dash()).profile!.id;
     await card(page,original[0]).getByRole('switch').click();
     try {
@@ -163,7 +166,7 @@ test.describe('collection apply using real local QA identities',()=>{
       await list(page).getByRole('button',{name:'다음 페이지',exact:true}).click();
       await expect(list(page).locator('article')).toHaveCount(9);
     } finally {
-      helpers.localQuery(`insert into public.animals select * from jsonb_populate_record(null::public.animals,'${row.replaceAll("'","''")}')`);
+      helpers.localQuery(`insert into public.animals (${columns}) select ${columns} from jsonb_populate_record(null::public.animals,'${row.replaceAll("'","''")}')`);
     }
   });
 

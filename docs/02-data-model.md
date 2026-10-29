@@ -125,9 +125,11 @@ slug 정규식은 `^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$`. 저장 전 소문자�
 | `is_public` | boolean, 기본 false | 개체 공개 |
 | `show_growth` | boolean, 기본 false | 성장 수치 공개 |
 | `sort_order` | integer | 카드 순서 |
+| `deleted_at` | timestamptz nullable | 삭제 요청 후 조회·편집 차단, 실제 파일 정리까지 보존 |
+| `active_sort_order` | integer STORED 생성 열 | 미삭제 행이면 sort_order, 삭제 대기면 NULL |
 | `created_at`, `updated_at` | timestamptz | 시스템 시각 |
 
-UNIQUE `(id, profile_id)`, UNIQUE `(profile_id, sort_order)`(정렬 교체를 고려해 지연 검사 가능하게 구현). 종류·모프는 초기에는 사용자 텍스트다. 별도의 공식 종 분류 DB를 임의로 만들지 않는다.
+UNIQUE `(id, profile_id)`, UNIQUE `(profile_id, active_sort_order)` DEFERRABLE INITIALLY DEFERRED. 삭제 대기 행은 정렬 슬롯을 점유하지 않지만 실제 제거 전까지 등록 개수에 포함한다. 종류·모프는 초기에는 사용자 텍스트다. 별도의 공식 종 분류 DB를 임의로 만들지 않는다.
 
 이슈 #3의 일반 수정 명령은 `api.update_animal(p_animal_id, p_data, p_expected, p_request_id)`다. `p_data`에는 이름·종류·모프·성별·birth_date·설명·분양 상태 7개 필드를 모두 보내며 다른 필드는 거절한다. 공개 여부·소유자·사진·성장 공개·정렬은 변경하지 않는다. 생일은 `YYYY-MM-DD` 또는 NULL이며 실제 달력 날짜·서기 0001-01-01 이후·Asia/Seoul 오늘까지 허용한다. 트리거도 미래/무한 날짜를 거절한다. 이름/종류 필수·문자 길이·enum·JSON 자료형을 DB에서도 검사한다. 일반 수정의 Unicode 길이는 PostgreSQL과 같은 코드 포인트 기준이다.
 
@@ -414,3 +416,10 @@ PK `(actor_id, action, window_started_at, window_seconds)`. 댓글·좋아요·�
 `reserve_photo_edit`는 연결된 최대3장과 별개로 준비 사진을 최대3장, 동시 reserved는 계정당2개 허용한다. 모든 준비/정리 대기도 예산에 포함한다. `media_assets.cleanup_after timestamptz nullable`은 업로드 토큰 종료 전 파일/용량 해제를 막는다. 새 Worker의 서비스 전용 `register_upload_lease`는 토큰 발급 뒤 최소2시간5분 보호와 최대450,560바이트 예약을 보장한 후 토큰을 반환한다. 기존 reserve_upload의307,200바이트 반환 계약은 유지하며 서비스 단계에서 차이를 잠금 아래 보정한다. 검증 후에는 실제 바이트만 stored로 전환한다. 원본/썸네일 출력 한도는220KiB/80KiB 그대로다.
 
 cleanup_manifest는 보호 기한 전에 정리 대기를 반환하고 finish_cleanup는 기한 또는 실제 파일 잔존 시 반환을 거절한다. expired_uploads는 기한이 지난 항목만 배치한다. 상세 실패/응답 유실 복구와 원본 비교는 [사진 편집 기록](12-animal-photo-edit.md)에 있다.
+
+
+## 이슈 #12 개체 삭제의 물리 계약
+
+`api.delete_animal(p_animal_id,p_expected,p_request_id)`는 활성/소유권/동의·프로필 revision·영수증을 검사하고 deleted_at/비공개·사진 연결 해제·모든 준비/예약 파일의 정리 대기·작업 기록·revision/영수증을 원자적으로 저장한다. writes_enabled=false에서도 제한 삭제는 유지한다. 삭제 대기는 RLS/dashboard/media에서 제외하고 UPDATE/새 사진 연결을 트리거로 거절한다. 목록 명령은 미삭제 전체 집합만 사용하며 active_sort_order의 지연 고유 제약으로 정리 대기 중에도 순서를 교체한다. 개체 생성 quota는 삭제 대기를 포함한다.
+
+`private.animal_deletions(animal_id PK,profile_id,animal_name,request_id,requested_at)`는 개체/소유자 복합 FK(CASCADE)와 소유자 FK(RESTRICT), (profile_id,requested_at) 인덱스, RLS를 가진다. 일반 테이블 접근은 없으며 본인 dashboard의 pending_deletions에는 id/name/requested_at만 제공한다. 서비스 전용 자산 목록/최종 삭제 함수도 소유자의 작업 또는 영수증을 확인한다. 모든 asset의 실제 파일 제거 후에만 개체·비공개 메모·작업을 최종 삭제한다. 파일은 Storage API로 제거하며 기한/잔존 확인 전 용량을 반환하지 않는다. [상세 계약과 로컬 재현 증거](13-animal-deletion.md)를 참고한다.

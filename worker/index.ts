@@ -51,6 +51,26 @@ export default {
         const origin = request.headers.get('Origin');
         if (origin && origin !== url.origin && origin !== env.APP_ORIGIN) return json({ code: 'ORIGIN_REJECTED' }, 403);
       }
+      const deletion = path.match(/^\/api\/animals\/([^/]+)\/(delete|cleanup)$/);
+      if (deletion && request.method === 'POST') {
+        const id = uuid.parse(deletion[1]), c = await actor(request, env);
+        if (deletion[2] === 'delete') {
+          const input = z.object({ expected: z.number().int().nonnegative(), request_id: uuid }).strict().parse(await body(request));
+          await call(c.user, 'delete_animal', { p_animal_id: id, p_expected: input.expected, p_request_id: input.request_id });
+        } else z.object({}).strict().parse(await body(request));
+        const assets = await call<string[]>(c.admin, 'animal_deletion_assets', { p_animal_id: id, p_actor: c.id });
+        for (const asset of assets) {
+          try {
+            const paths = await call<string[] | null>(c.admin, 'cleanup_manifest', { p_asset_id: asset, p_actor: c.id });
+            if (!paths) continue;
+            const removed = await c.admin.storage.from('animal-media').remove(paths);
+            if (removed.error) continue;
+            await call(c.admin, 'finish_cleanup', { p_asset_id: asset });
+          } catch { /* The persistent deletion job retains failed assets for retry. */ }
+        }
+        const complete = await call<boolean>(c.admin, 'finish_animal_deletion', { p_animal_id: id, p_actor: c.id });
+        return json({ deleted: true, cleanup_pending: !complete });
+      }
       if (path === '/api/uploads' && request.method === 'POST') {
         const c = await actor(request, env);
         const input = z.object({ animal_id: uuid, editing: z.boolean().optional() }).strict().parse(await body(request));
@@ -122,7 +142,7 @@ export default {
       return env.ASSETS.fetch(request);
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
-      const known = ['UNAUTHENTICATED', 'ACCOUNT_NOT_ACTIVE', 'QUOTA_EXCEEDED', 'NOT_FOUND', 'UPLOAD_EXPIRED', 'INVALID_IMAGE', 'UPLOAD_INCOMPLETE', 'CLEANUP_PENDING', 'CONFIGURATION_REQUIRED', 'SERVICE_UNAVAILABLE'];
+      const known = ['UNAUTHENTICATED', 'ACCOUNT_NOT_ACTIVE', 'QUOTA_EXCEEDED', 'NOT_FOUND', 'VERSION_CONFLICT', 'REQUEST_CONFLICT', 'REQUEST_EXPIRED', 'CONSENT_REQUIRED', 'UPLOAD_EXPIRED', 'INVALID_IMAGE', 'UPLOAD_INCOMPLETE', 'CLEANUP_PENDING', 'CONFIGURATION_REQUIRED', 'SERVICE_UNAVAILABLE'];
       const code = known.find(value => message.includes(value)) || 'VALIDATION_FAILED';
       return json({ code }, code === 'UNAUTHENTICATED' ? 401 : code === 'NOT_FOUND' ? 404 : code === 'ACCOUNT_NOT_ACTIVE' ? 403 : code === 'CONFIGURATION_REQUIRED' || code === 'SERVICE_UNAVAILABLE' ? 503 : 400);
     }
