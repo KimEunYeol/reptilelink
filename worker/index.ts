@@ -199,6 +199,11 @@ export default {
       }
       if (path.startsWith('/api/')) return json({ code: 'NOT_FOUND' }, 404);
       if (path.startsWith('/u/')) return new Response('페이지를 찾을 수 없습니다.', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' } });
+      if(path.startsWith('/auth/')||path==='/onboarding'||path.startsWith('/onboarding/')||path==='/dashboard'||path.startsWith('/dashboard/')){
+        const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers);
+        headers.set('Cache-Control','no-store');headers.set('Referrer-Policy','no-referrer');
+        return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
+      }
       return env.ASSETS.fetch(request);
     } catch (error) {
       const message = error instanceof Error ? error.message : '';

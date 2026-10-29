@@ -1,0 +1,47 @@
+{
+  "issue": 38,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/38",
+  "branch": "codex/design/38-source-auth-account-help",
+  "baseSha": "88fdc6f09d160bc43a8a976d7f9d223d9be03750",
+  "scope": "원본 인증/온보딩/기본정보·고객센터/정책과 허용된 공개 경로 복귀",
+  "acceptance": [
+    "PC/m/전체보드 중앙단일폼·행/약관창·안내 패턴과 D01/06/07 유지",
+    "기존 dirty/미확인/토큰갱신/탈퇴 잠금·실제취소/저장 보존",
+    "허용된 공개 경로만 단기 복귀·외부/위장/만료 거절·승인/온보딩 유지",
+    "연락처/법적문서 미설정시 준비안내·가짜접수/발송 없음·데스크톱연결지점",
+    "7폭/키보드/초점/오류/동의/복귀·실제Worker/생산빌드·전체검증/최신리뷰/병합/main/보고"
+  ],
+  "plan": [
+    "원본PC/m/전체보드와 기존저장/인증 흐름 확인",
+    "허용된 복귀/안전한callback오류·원본폼/약관/기본정보/안내 구현",
+    "실제 QA/경계/보호/7폭/원본 직접비교",
+    "전체검증/리뷰/명시적병합/main/보고 후#39"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/로그인.png",
+      "design/로그인-m.png",
+      "design/회원가입.png",
+      "design/회원가입-m.png",
+      "design/마이페이지-기본정보.png",
+      "design/마이페이지-기본정보-m.png",
+      "design/고객센터.png",
+      "design/고객센터-m.png"
+    ],
+    "notes": "각 PC/m 실제열람. Login 중앙340/흰테두리입력·큰CTA·하단가입, Signup 회색가로행/주소tooltip·필수약관창·Basic흰테두리가로행·회색탈퇴·Help340회색문의폼/완료창. 전체보드인증/문의/약관(650,1000,1500,4900)·PC공통(0,8400,5000,1000) 확인. D01Google로ID/password/SMS/마케팅동의제외·D06주소잠금·D07초대승인 유지. 운영자료없을때제출완료를표시하지않고 현재local-preview안내를정직하게유지한다. 정확한폰트·운영정책/연락처·외부OAuth는미확인.",
+    "review": {
+      "status": "passed",
+      "summary": "원본PC/m8장·보드인증/문의/약관/PC공통을직접확인하고7폭렌더/조작·대표390/1440폼과약관창을비교했다. 중앙340폼·기본정보흰행/가입회색행·원본약관창/공통셸을재사용했다. D01Google/필드제외·D06주소잠금·D07승인,기존소개/공개/용량/탈퇴추가행유지차이를기록한다. 실제법적본문·연락처·정확한font/외부OAuth는미확인. 새로운장식/브랜드/자체비밀번호/SMS/문의완료창작없음. 공개10분복귀·약관스크롤/초점·SPA와Native이탈/미확인보호·실제Worker헤더를검증했다."
+    },
+    "evidence": [
+      "artifacts/auth-38/{auth-login,help,terms,privacy,basic,onboarding,policy}-{320,360,390,450,768,1440,1920}.png",
+      "tests/authReturn.test.ts and tests/support.test.ts:7 new unit cases",
+      "tests/e2e/auth-source.spec.ts:10 actual browser flows, including full-document beforeunload",
+      "tests/e2e/account-withdrawal.spec.ts/first-flow.spec.ts/management-shell.spec.ts:existing18 flows",
+      "docs/30-source-auth-account-help.md"
+    ]
+  }
+}

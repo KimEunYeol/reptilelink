@@ -16,7 +16,7 @@
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
-    "test": "vitest run tests/domain.test.ts tests/growth.test.ts tests/links.test.ts tests/socials.test.ts tests/schedules.test.ts tests/design.test.ts tests/activity.test.ts tests/likes.test.ts tests/analytics.test.ts",
+    "test": "vitest run tests/domain.test.ts tests/growth.test.ts tests/links.test.ts tests/socials.test.ts tests/schedules.test.ts tests/design.test.ts tests/activity.test.ts tests/likes.test.ts tests/analytics.test.ts tests/authReturn.test.ts tests/support.test.ts",
     "test:e2e": "playwright test",
     "local:start": "bash scripts/local-start.sh",
     "local:stop": "supabase stop",

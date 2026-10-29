@@ -40,7 +40,7 @@ test('real local first flow: login, profile, photo, publication and private acce
     await page.getByRole('textbox', { name: '브리더 이름', exact: true }).fill('초록빛 브리딩룸');
     await page.getByRole('textbox', { name: '내 페이지 주소', exact: true }).fill('green-room');
     await page.getByRole('textbox', { name: '소개', exact: true }).fill('작은 발걸음, 천천히 자라는 우리 아이들.\n크레스티드 게코와 함께하는 일상을 기록합니다. 🌱');
-    await page.getByRole('checkbox').check();
+    await page.getByRole('checkbox',{name:'필수 안내 전체 동의',exact:true}).check();
     await page.getByRole('button', { name: '내 공간 만들기', exact: true }).click();
   }
   await expect(page.getByRole('heading', { name: '개체 관리', exact: true })).toBeVisible();
@@ -123,6 +123,6 @@ test('real local first flow: login, profile, photo, publication and private acce
 test('local test login is excluded from the production build', async ({ page }) => {
   const response = await page.goto('http://localhost:8787/auth/login');
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { name: '반가워요, 함께 기록해볼까요?' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '로그인', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: '테스트 브리더로 로그인', exact: true })).toHaveCount(0);
 });

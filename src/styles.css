@@ -760,3 +760,73 @@ button.notification-message { cursor:pointer; }
  .source-main h2 { font-size: clamp(20px, 5.8vw, 26px); }
  .main-community { width: min(378px, calc(100% - 40px)); }
 }
+
+/* #38: same narrow source form on desktop/mobile; D01 replaces password/SMS. */
+.source-page { color: #222; background: #fff; min-height: 100dvh; }
+.source-page .management-footer { margin-top: 0; }
+.source-auth-main, .source-info-main { width: min(340px, calc(100% - 60px)); margin: 0 auto; padding: 100px 0 116px; min-height: 620px; }
+.source-auth-main h1, .source-info-main h1, .source-onboarding-main > h1 { font-size: 30px; font-weight: 500; line-height: 1.4; letter-spacing: -.04em; text-align: center; margin: 0 0 60px; }
+.source-login-form > p { font-size: 14px; line-height: 1.6; color: #60656d; text-align: center; }
+.source-login-form .source-provider { display: flex; width: 100%; min-height: 54px; margin: 42px 0 12px; border-radius: 12px; font-size: 16px; }
+.source-login-form .local-login { margin-top: 42px; text-align: center; }
+.source-login-form .local-login .button { width: 100%; margin-top: 12px; }
+.source-login-form .local-login .text-button { margin-top: 16px; }
+.source-login-form .source-signup-help { margin-top: 50px; font-size: 13px; }
+.source-preparation { color: #60656d; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.source-info-main > .source-preparation { margin: -20px 0 38px; }
+.source-help form fieldset { border: 0; padding: 0; margin: 0; }
+.source-help form label { display: block; margin-bottom: 38px; color: #65676c; font-size: 14px; }
+.source-page .source-help input, .source-page .source-help textarea { display: block; width: 100%; min-width: 0; border: 0; border-radius: 14px; background: #f5f5f5; padding: 17px 22px; margin-top: 16px; color: #222; font-size: 14px; font-weight: 400; box-shadow: none; }
+.source-page .source-help input { min-height: 55px; }
+.source-page .source-help textarea { min-height: 260px; resize: vertical; }
+.source-help .button { width: 100%; min-height: 54px; border-radius: 12px; font-size: 16px; }
+.source-help fieldset:disabled { opacity: .78; }
+.source-help input::placeholder, .source-help textarea::placeholder { color: #606773; opacity: 1; }
+.source-help form > p { margin-top: 20px; }
+.source-policy { font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+.source-policy p { margin-bottom: 22px; }
+.source-info-main > .button { margin-top: 28px; }
+.source-policy-dialog { width: min(340px, calc(100% - 32px)); margin: auto; border: 0; border-radius: 20px; padding: 24px; max-height: 90dvh; color: #222; }
+.source-policy-dialog::backdrop { background: #0006; }
+.source-dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.source-dialog-heading h2 { font-size: 20px; font-weight: 650; }
+.source-dialog-heading button { width: 36px; height: 36px; flex-shrink: 0; font-size: 26px; }
+.source-policy-scroll { max-height: 55dvh; overflow: auto; padding: 4px; }
+.source-policy-dialog > .button { width: 100%; margin-top: 20px; }
+.source-onboarding-main { width: min(378px, calc(100% - 70px)); margin: 0 auto; padding: 100px 0 116px; }
+.source-onboarding-main > h1 { margin-bottom: 64px; }
+.source-profile-form { width: 100%; margin: 0; padding: 0; }
+.source-profile-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.source-profile-form .source-profile-row { display: grid; grid-template-columns: 82px minmax(0, 1fr); align-items: start; gap: 12px; margin: 0 0 38px; }
+.source-profile-form .source-profile-row > span { color: #62656a; font-size: 14px; font-weight: 600; padding-top: 17px; }
+.source-profile-form .source-profile-row input, .source-profile-form .source-profile-row textarea { width: 100%; min-width: 0; background: #fff; color: #222; border: 1px solid #858585; border-radius: 12px; min-height: 55px; padding: 16px 18px; font-size: 14px; font-weight: 400; box-shadow: 0 2px 3px #0000000d; }
+.source-profile-row input:read-only { background: #f8f8f8; }
+.source-profile-row input:disabled { color: #515760; -webkit-text-fill-color: #515760; opacity: 1; border-color: #d7d7d7; }
+.source-profile-row textarea { resize: vertical; }
+.source-slug, .source-bio { min-width: 0; }
+.source-profile-form .slug-input { display: flex; width: 100%; min-height: 55px; border: 1px solid #858585; border-radius: 12px; box-shadow: 0 2px 3px #0000000d; background: #fff; overflow: hidden; }
+.source-profile-form .slug-input > span { padding-left: 14px; align-self: center; color: #606773; font-size: 13px; }
+.source-profile-form .slug-input input { border: 0; border-radius: 0; padding-left: 6px; box-shadow: none; flex: 1; }
+.source-profile-form .source-slug > small { display: block; margin-top: 10px; line-height: 1.6; color: #62656a; font-size: 11px; }
+.source-profile-form .character-count { display: block; margin-top: 6px; color: #62656a; font-size: 11px; }
+.source-onboarding-form .source-profile-row input, .source-onboarding-form .source-profile-row textarea, .source-onboarding-form .slug-input { background: #f5f5f5; border-color: transparent; box-shadow: none; }
+.source-profile-form .form-submit { width: 100%; min-height: 54px; font-size: 16px; border-radius: 12px; margin-top: 30px; }
+.source-basic-form { margin-top: 72px; }
+.source-consents { margin-top: 54px; padding: 20px 18px; border: 1px solid #858585; border-radius: 16px; box-shadow: 0 2px 3px #00000016; }
+.source-consents label { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #60656d; line-height: 1.6; margin: 0; }
+.source-consents input { width: 14px; height: 14px; flex-shrink: 0; padding: 0; min-height: 0; margin: 3px 0 0; accent-color: #157f34; }
+.source-consents .source-consent-all { font-weight: 700; color: #222; padding-bottom: 18px; border-bottom: 1px solid #858585; margin-bottom: 18px; }
+.source-consents > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin: 12px 0; }
+.source-consents > div button { flex-shrink: 0; width: 24px; font-size: 22px; line-height: 1; color: #555; }
+.source-consents > p { margin-top: 18px; color: #60656d; font-size: 11px; line-height: 1.6; }
+@media (max-width: 600px) { .source-page .management-header { height: 100px; } }
+@media (max-width: 380px) {
+ .source-onboarding-main { width: calc(100% - 40px); }
+ .source-profile-form .source-profile-row { grid-template-columns: 66px minmax(0, 1fr); gap: 8px; }
+ .source-profile-form .source-profile-row > span { font-size: 12px; }
+ .source-profile-form .source-profile-row input, .source-profile-form .source-profile-row textarea { padding: 14px 12px; }
+ .source-consents { padding: 18px 12px; }
+}
+.source-profile-form .source-profile-row input, .source-profile-form .source-profile-row textarea { margin-top: 0; }
+.source-profile-form .slug-input:focus-within { outline: 2px solid #178f3c; outline-offset: 4px; }
+.source-page .source-help input:disabled { background: #f5f5f5!important; color: #606773!important; }

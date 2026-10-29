@@ -28,7 +28,7 @@ function ManagementNavigation({ basic }: { basic: boolean }) {
 export function ManagementFooter() {
   return <footer className="management-footer"><div className="management-footer-inner">
     <SourceBrand/>
-    <nav aria-label="이용 안내"><Link to="/terms">이용약관</Link><Link to="/privacy">개인정보처리방침</Link></nav>
+    <nav aria-label="이용 안내"><Link to="/help">고객센터</Link><Link to="/terms">이용약관</Link><Link to="/privacy">개인정보처리방침</Link></nav>
     <div className="management-footer-bottom"><span className="management-language">한국어 <ChevronDown size={16}/></span><small>© {new Date().getFullYear()} ReptileLink</small></div>
   </div></footer>;
 }
