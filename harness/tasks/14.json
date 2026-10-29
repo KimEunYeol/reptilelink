@@ -1,0 +1,52 @@
+{
+  "issue": 14,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/14",
+  "branch": "codex/feat/14-animal-growth",
+  "baseSha": "da5fc90fb9a275aab0de494da2fa120394889cef",
+  "scope": "F-04/F-03 성장 기록 CRUD·날짜순 그래프/커서 목록·비공개 메모·성장 공개 동의",
+  "acceptance": [
+    "실제 날짜/체중·중복/자리수/3000 한도·권한/동의/경합/영수증/원자성",
+    "관리/공개 DTO 격리·메모 비공개·상위 공개/활성/삭제 차단",
+    "기간별 실제 포인트/최대120·페이지·최신 체중·서버 KST 날짜",
+    "초안/취소·미저장/미확인/충돌/이동 보호·기존 편집과 분리",
+    "7개 폭 원본 대조·DB/브라우저/전체 verify·새 migration·PR/병합/main",
+    "서로 다른 계정의 동일 새 record ID 동시 충돌에서도 UPDATE 시점에 소유자/개체 재검증·타인 데이터/두번째 계정 상태 불변"
+  ],
+  "plan": [
+    "원본 체중/그래프/추가/회색 기록행·보드 설명과 기존 저장 계약 확인",
+    "성장/노트 RLS·명령·본인/공개 조회·실제 로컬 DB 반복 검증",
+    "기존 수정창 clean 진입과 원본 성장 팝업/공개 상세 연결",
+    "실제 DB/브라우저·원본 비교·advisors/migration/shadow·전체 verify",
+    "정상 훅·PR/리뷰·명시적 병합·main 복귀·보고 후 다음 기능"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png",
+      "design/링크페이지-m-1.png"
+    ],
+    "notes": "보드 x6030~7230,y4100~6800 수정 전체의 체중/주간월간년간/초록선 실제 포인트/회색 추가/기록 날짜·삭제/더보기/저장취소 실제 확대 확인. 공개 상세 링크페이지-m-1의 같은 체중/그래프/목록 패턴 확인. PC 안내 y8270~9270 동일 크기 유지. clean 일반 편집의 체중 행에서 같은340px 패턴으로 성장 흐름을 분리한다. 원본의 부/모·입양일·댓글을 임의 확장하지 않는다. 메모/공개 설정은 기존 입력/토글 패턴 최소 조합, 독립 원본 부재 기록.",
+    "review": {
+      "status": "passed",
+      "summary": "전체 보드 수정 팝업의 체중/기간/실제 포인트 그래프/회색 추가·기록행/더보기·저장취소, PC 설명과 관리 PC/모바일 및 공개 상세 원본을 실제 실행7개 폭과 대조했다. clean 체중행에서 동일340px 패턴으로 성장 편집을 분리하고, 공개 상세도 좁은 팝업/내부 스크롤로 맞췄다. 메모/공개 동의/오류는 원본 기존 입력·체크/텍스트 패턴만 최소 조합한다. 원본에 없는 부모/입양일/댓글은 추가하지 않는다. 주변 공개 셸/폰트/네이티브 날짜/전체 화면 차이는 #2와 docs/15에 남긴다."
+    },
+    "evidence": [
+      "docs/15-animal-growth.md (원본/권한/동작/실패/한계)",
+      "artifacts/growth-14/draft/saved/public-{320,360,390,450,768,1440,1920}.png 및 overview.png",
+      "artifacts/growth-14/bottom-{390,1440}.png 및 unresolved-390.png"
+    ]
+  },
+  "verification": {
+    "targeted": "51 growth DB checks,6 unit,8 browser passed; final full verify required before push",
+    "fullSuite": "Required final build+349 checks:12 harness,17 unit,258 DB,10 media,52 E2E; actual result/fingerprint in .local/harness-verification.json",
+    "database": "dates/strict decimal/duplicate/3000 quota, foreign/inactive/consent/direct privileges, receipts/concurrency/rollback, actual-date sampling/page, opt-in and notes privacy, deleted-animal/cascade",
+    "browser": "8 new flows including cancel/7 widths/focus, saved reload/public private-note exclusion, invalid input, response loss and failed authoritative cancellation, explicit conflict review, cursor/period/Back and paused-write restrictions",
+    "migration": "CLI-generated20261029060006_animal_growth.sql; local history matches; shadow diff empty; lint and security advisors no warnings after explicit UUID[] initialization; growth QA preserves existing animal hash; separate CLI fix20261029061558 preserves prior history and requires final shadow replay",
+    "review": "First UI run found focus/textarea label/DB error message-object classification; same8 passed after fix. Unknown command stays locked until authoritative refresh; latest inspection never silently replaces drafts. UI/SQL iteration uses only current QA animal IDs; no reset/volume deletion/remote deployment.",
+    "ownershipRace": "Deterministic cross-owner same-ID conflict failed before fix;3 checks passed after final INSERT conflict-branch owner/animal predicate and NOT_FOUND rollback. QA fixtures restored from exact snapshots; no real user data touched."
+  }
+}

@@ -211,7 +211,7 @@ PK `(actor_id, request_id)`. 변경 명령의 재전송을 24시간 동안 중�
 
 ### 5.1 `public.growth_records`
 
-`id uuid PK`, `profile_id uuid`, `animal_id uuid`, `measured_on date`, `weight_g numeric(8,2)`, `created_at timestamptz`, `updated_at timestamptz`.
+`id uuid PK`, `profile_id uuid`, `animal_id uuid`, `measured_on date`, `weight_g numeric CHECK(0 < weight_g ≤ 100000 AND scale(weight_g) ≤ 2)`, `created_at timestamptz`, `updated_at timestamptz`.
 
 - 복합 FK `(animal_id, profile_id) → animals(id, profile_id)`.
 - UNIQUE `(animal_id, measured_on)`. 무게는 `0 < weight_g ≤ 100000`.
@@ -423,3 +423,12 @@ cleanup_manifest는 보호 기한 전에 정리 대기를 반환하고 finish_cl
 `api.delete_animal(p_animal_id,p_expected,p_request_id)`는 활성/소유권/동의·프로필 revision·영수증을 검사하고 deleted_at/비공개·사진 연결 해제·모든 준비/예약 파일의 정리 대기·작업 기록·revision/영수증을 원자적으로 저장한다. writes_enabled=false에서도 제한 삭제는 유지한다. 삭제 대기는 RLS/dashboard/media에서 제외하고 UPDATE/새 사진 연결을 트리거로 거절한다. 목록 명령은 미삭제 전체 집합만 사용하며 active_sort_order의 지연 고유 제약으로 정리 대기 중에도 순서를 교체한다. 개체 생성 quota는 삭제 대기를 포함한다.
 
 `private.animal_deletions(animal_id PK,profile_id,animal_name,request_id,requested_at)`는 개체/소유자 복합 FK(CASCADE)와 소유자 FK(RESTRICT), (profile_id,requested_at) 인덱스, RLS를 가진다. 일반 테이블 접근은 없으며 본인 dashboard의 pending_deletions에는 id/name/requested_at만 제공한다. 서비스 전용 자산 목록/최종 삭제 함수도 소유자의 작업 또는 영수증을 확인한다. 모든 asset의 실제 파일 제거 후에만 개체·비공개 메모·작업을 최종 삭제한다. 파일은 Storage API로 제거하며 기한/잔존 확인 전 용량을 반환하지 않는다. [상세 계약과 로컬 재현 증거](13-animal-deletion.md)를 참고한다.
+
+
+## 이슈 #14 성장 기록·메모·공개 조회 물리 계약
+
+공개 스키마 growth_records는 날짜·체중만 공개 가능한 도메인 행이며 RLS와 소유자 복합 FK/CASCADE, 날짜 고유 제약·소유자 인덱스를 둔다. numeric의 소수3자리 자동 반올림을 피하려고 scale≤2 CHECK로 원래 입력을 거절한다. 입력 명령은 무게를 십진 문자열로 받아 형식/양수/최대값과 실제 YYYY-MM-DD/서버 한국 오늘을 검사한다. 개체/기록 메모는 private 테이블로 분리한다. 일반 역할은 성장 행의 공개 허용 열만 SELECT할 수 있고 직접 쓰기/메모 접근 권한은 없다.
+
+save_animal_growth(id,data,expected,request_id)는 변경 upsert≤100/삭제 ID≤100·개체 메모·성장 공개 설정을 한 트랜잭션과 한 revision/24시간 영수증으로 처리한다. 활성/현재 동의/소유권·살아 있는 개체·엄격한 필드·최종 날짜 중복·계정당 실제3000행 한도를 검증한다. 프로필 잠금 아래 소유자 및 개체가 다른 record ID는 거절한다. 쓰기 중지 중에도 기록 삭제·공개 끄기·메모 비우기는 허용하되 추가/수정/새 공개/새 메모는 막는다. 사진 정리를 기다리는 개체의 기록도 실제 최종 제거까지 한도에 포함된다.
+
+my_animal_growth는 본인의 기록/메모와 revision·사용량을 반환한다. public_animal_growth는 invoker/RLS와 활성+프로필 공개+개체 공개+show_growth+미삭제를 모두 검사하고 비공개/없는 경우 NULL을 반환한다. 공개 DTO에는 measured_on/weight_g와 범위/페이지 정보만 있고 메모·소유자·사용량·revision은 없다. 7/30/365일 그래프는 실제 날짜순 최대120관측(첫/마지막 포함), 목록은 날짜 커서20건이다. 각 조회는 서버 한국 날짜를 기준으로 한다. [동작/원본/실패 검증 인계](15-animal-growth.md)를 참고한다.
