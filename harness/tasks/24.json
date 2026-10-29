@@ -1,0 +1,47 @@
+{
+  "issue": 24,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/24",
+  "branch": "codex/feat/24-profile-media",
+  "baseSha": "d7d24e242d5012fe6372a864b0da1e305425343b",
+  "scope": "F-02 프로필/배경 파일·원본 테마의 단일 적용과 안전한 미디어 복구",
+  "acceptance": [
+    "원본 프로필/커버 컨트롤·초록/연두/짙은초록 테마·제공 자산/색 출처·공개 커버/아바타 관계",
+    "avatar/cover/animal 용도·소유자/현재연결·실제바이트/해시/치수/비율·비공개Storage·예약/실제예산/임대/한도·프로필100KiB/배경200KiB 실제변형합계상한",
+    "새이미지적용전기존보존·전체텍스트/SNS/파일/테마 단일적용/한revision/영수증·기존호출호환·경합/원자성",
+    "참조중취소/정리차단·이전/취소업로드정리대기·실제제거/임대완료전예산유지·실패재시도/미확인보존",
+    "본인/공개이미지조회·상위활성/공개·현재연결/짧은서명·OG초기HTML/React·개인경로/토큰비공개",
+    "7폭/키보드/취소/오류/충돌/유실·실제DB/Storage/Worker·기존사진회귀·필요경합·CLI migration/advisors/shadow·전체verify",
+    "PR최신리뷰/명시적병합/이슈종료/main/보고·계정탈퇴정리로계속"
+  ],
+  "plan": [
+    "실제미디어함수/제약/예산/임대/정리·원본컨트롤/공개자산·현재SDK서명문서확인",
+    "용도/프로필연결·예약/검증/옵션적용/참조보호/접근·실제DB/Storage검증",
+    "원본기본자산/팔레트·이미지선택/삭제/미리보기·미확인/취소/복구·공개/OG",
+    "원본7폭·권한/실패/경합/기존사진회귀·migration/advisors/shadow·전체verify",
+    "정상훅/PR/최신리뷰/보완/명시적병합·main/보고·탈퇴후속이슈"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-디자인수정.png",
+      "design/마이페이지-디자인수정-m.png",
+      "design/링크페이지-m.png",
+      "design/마이페이지-링크관리2-m.png"
+    ],
+    "notes": "보드 x1950~3150,y1200~5600 디자인수정열·공통PC x0~3900,y8270~9270 및 각PC/모바일원본 실제확인. 원형프로필+등록/삭제/자동리사이징 안내→소개/이름/설명→450:276배경+등록/삭제→SNS/단일적용. 공개원본커버/오른쪽겹친둥근아바타/실제소개관계. 테마독립시안없어 원본원형팔레트/체크패턴을재사용하고 green/mint/forest은원본초록/연두#8cd58f/짙은초록#2d964a만사용. 짙은초록은공개PNG의(300,222,114,114)아바타실제반복픽셀96개로확인. 작은원본자산만출처/좌표기록해추출,새그림/브랜드금지. 다른공개카드/메인차이는#2.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 보드/PC/모바일의 프로필→텍스트→배경→SNS 단일폼과 공개커버/오른쪽아바타/소개를 실제7폭으로 비교. 원본작은아바타/워드마크/세녹색과원형팔레트만재사용. 단일적용/취소/미확인/충돌/만료/키보드/가로넘침/소개비중첩을 신규10E2E로 확인. #2 나머지공개/메인차이와독립테마시안부재는docs20에기록."
+    },
+    "evidence": [
+      "artifacts/design-24/settings-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/design-24/public-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/design-24/cover-{390,1440}.png",
+      "tests/e2e/profile-media.spec.ts:10 actual Storage/Worker/browser flows",
+      "docs/20-profile-media.md",
+      "public/brand/profile/source.json"
+    ]
+  }
+}

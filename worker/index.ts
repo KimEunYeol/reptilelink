@@ -74,6 +74,32 @@ export default {
         const complete = await call<boolean>(c.admin, 'finish_animal_deletion', { p_animal_id: id, p_actor: c.id });
         return json({ deleted: true, cleanup_pending: !complete });
       }
+      if (path === '/api/profile/uploads' && request.method === 'POST') {
+        const c = await actor(request, env);
+        const input = z.object({purpose:z.enum(['avatar','cover']),request_id:uuid}).strict().parse(await body(request));
+        const manifest = await call<{asset_id:string;ready:boolean;objects:{path:string;variant:string}[]}>(c.user,'reserve_profile_upload',{p_purpose:input.purpose,p_request_id:input.request_id});
+        if (manifest.ready) return json({asset_id:manifest.asset_id,ready:true,objects:[]});
+        const objects=[];
+        for (const object of manifest.objects) {
+          const {data,error}=await c.admin.storage.from('animal-media').createSignedUploadUrl(object.path,{upsert:false});
+          if(error) throw new Error('UPLOAD_FAILED');
+          objects.push({...object,token:data.token});
+        }
+        await call(c.admin,'register_upload_lease',{p_asset_id:manifest.asset_id,p_actor:c.id});
+        return json({asset_id:manifest.asset_id,ready:false,objects});
+      }
+      if (path === '/api/profile/uploads/cancel-request' && request.method === 'POST') {
+        const c=await actor(request,env);
+        const input=z.object({purpose:z.enum(['avatar','cover']),request_id:uuid}).strict().parse(await body(request));
+        const id=await call<string|null>(c.user,'cancel_profile_upload_request',{p_purpose:input.purpose,p_request_id:input.request_id});
+        if(!id) return json({ok:true});
+        const paths=await call<string[]|null>(c.admin,'cleanup_manifest',{p_asset_id:id,p_actor:c.id});
+        if(!paths) return json({ok:true,cleanup_pending:true});
+        const removed=await c.admin.storage.from('animal-media').remove(paths);
+        if(removed.error) throw new Error('CLEANUP_PENDING');
+        await call(c.admin,'finish_cleanup',{p_asset_id:id});
+        return json({ok:true});
+      }
       if (path === '/api/uploads' && request.method === 'POST') {
         const c = await actor(request, env);
         const input = z.object({ animal_id: uuid, editing: z.boolean().optional() }).strict().parse(await body(request));
@@ -133,7 +159,7 @@ export default {
         let html = await assetResponse.text();
         const title = `${page.profile.display_name} · 렙타일링크`, description = page.profile.bio || '우리 아이들의 기록을 만나보세요.';
         html = html.replace(/<title>.*?<\/title>/, `<title>${escape(title)}</title>`).replace(/<meta name="description"[^>]*>/, '');
-        const representative = (publicRoute[2] ? page.animals.find(a => a.id === publicRoute[2])?.photos[0] : page.animals.flatMap(a => a.photos)[0])?.asset_id;
+        const representative = publicRoute[2] ? page.animals.find(a => a.id === publicRoute[2])?.photos[0]?.asset_id : page.profile.cover_asset_id || page.profile.avatar_asset_id || page.animals.flatMap(a => a.photos)[0]?.asset_id;
         const imageMeta = representative ? `<meta property="og:image" content="${escape(`${url.origin}/api/image/${representative}/original_display`)}">` : '';
         html = html.replace('</head>', `<meta name="description" content="${escape(description)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(url.origin + path)}">${imageMeta}</head>`);
         const visibleLinks = (page.links ?? []).filter(l => httpsUrl(l.url) && linkTokens.includes(l.color_token));
@@ -142,7 +168,7 @@ export default {
         const scheduleSection=scheduleHtml?`<section class="public-schedules" aria-label="공개 일정">${scheduleHtml}</section>`:'';
         const socialsHtml=(page.socials??[]).filter(r=>socialPlatforms.includes(r.platform)&&httpsUrl(r.url)).map(r=>`<a href="${escape(httpsUrl(r.url)!)}" target="_blank" rel="noopener noreferrer" aria-label="${socialNames[r.platform]} 바로가기"><img src="/brand/social/${r.platform}.png" width="40" height="40" alt=""></a>`).join('');
         const socialSection=socialsHtml?`<section class="public-socials" aria-label="공개 SNS">${socialsHtml}</section>`:'';
-        html = html.replace('<div id="root"></div>' , `<div id="root"><main class="public-page">${page.profile.tagline?`<p class="public-tagline">${escape(page.profile.tagline)}</p>`:''}<h1>${escape(page.profile.display_name)}</h1>${page.profile.bio?`<p class="public-bio">${escape(page.profile.bio)}</p>`:''}${scheduleSection}${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}${linksHtml}${socialSection}</main></div>`);
+        html = html.replace('<div id="root"></div>' , `<div id="root"><main class="public-page"><div class="public-cover theme-${page.profile.theme_token||'green'}">${page.profile.cover_asset_id?`<img src="/api/image/${page.profile.cover_asset_id}/original_display" alt="배경 이미지">`:'<div class="source-cover"><img src="/brand/reptilelink-source.png" alt=""></div>'}</div><div class="public-avatar"><img src="${page.profile.avatar_asset_id?`/api/image/${page.profile.avatar_asset_id}/original_display`:'/brand/profile/avatar-public.png'}" alt="프로필 이미지"></div>${page.profile.tagline?`<p class="public-tagline">${escape(page.profile.tagline)}</p>`:''}<h1>${escape(page.profile.display_name)}</h1>${page.profile.bio?`<p class="public-bio">${escape(page.profile.bio)}</p>`:''}${scheduleSection}${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}${linksHtml}${socialSection}</main></div>`);
         html = html.replace('</body>', `<script type="application/json" id="public-bootstrap">${JSON.stringify(page).replace(/</g, '\\u003c')}</script></body>`);
         return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
       }

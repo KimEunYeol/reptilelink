@@ -1,0 +1,43 @@
+{
+  "assets": [
+    {
+      "file": "avatar-settings.png",
+      "source": "design/마이페이지-디자인수정-m.png",
+      "crop": [
+        128,
+        299,
+        96,
+        96
+      ],
+      "source_sha256": "d7c93a779aff75c4a0b4a65f3de0b909a233af3c0a1542c6691ee70757949dff"
+    },
+    {
+      "file": "avatar-public.png",
+      "source": "design/링크페이지-m.png",
+      "crop": [
+        300,
+        222,
+        114,
+        114
+      ],
+      "source_sha256": "7ca2f1d0018227be5e289274ee3be69b952f42cfac22da3812c501001571b1db"
+    }
+  ],
+  "palette": {
+    "green": {
+      "sample": [
+        150,
+        900
+      ],
+      "rgba": [
+        49,
+        186,
+        81,
+        255
+      ]
+    },
+    "mint": "#8cd58f",
+    "forest": "#2d964a"
+  },
+  "notes": "Only provided source avatar crops. Default cover uses source green plane and existing supplied wordmark. Theme choice extends the provided round palette pattern."
+}

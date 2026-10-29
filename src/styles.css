@@ -573,3 +573,40 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .public-intro .public-bio { color:#4d5750; }
 .public-intro .public-tagline { overflow-wrap:anywhere; }
 .public-intro { margin-top:0; padding-top:6px; }
+
+/* Profile media: design/마이페이지-디자인수정-m.png and 링크페이지-m.png. */
+.theme-green { background-color:#31ba51; }
+.theme-mint { background-color:#8cd58f; }
+.theme-forest { background-color:#2d964a; }
+.profile-media-controls { padding:0; margin:0 0 38px; border:0; min-width:0; }
+.design-image-control { display:grid; grid-template-columns:76px minmax(0,1fr); gap:16px; font-size:13px; color:#777; }
+.design-image-control>span { font-weight:600; padding-top:8px; }
+.design-image-control>div { min-width:0; }
+.design-image-preview { overflow:hidden; }
+.design-image-control.avatar .design-image-preview { width:96px; height:96px; border-radius:40%; }
+.design-image-control.avatar .design-image-preview img { width:100%; height:100%; object-fit:cover; }
+.design-image-control.cover .design-image-preview { width:100%; aspect-ratio:450/276; }
+.design-image-control.cover .design-image-preview>img { width:100%; height:100%; object-fit:cover; }
+.design-image-buttons { display:flex; gap:8px; margin:14px 0 9px; }
+.design-image-buttons .text-button { background:#2cba4e; color:#fff; border-radius:12px; padding:7px 20px; line-height:1.2; position:relative; overflow:hidden; font-size:13px; }
+.design-image-buttons button.text-button { background:#aaa; }
+.design-image-buttons input { position:absolute; inset:0; opacity:0; width:100%; cursor:pointer; }
+.design-image-buttons label:focus-within { outline:2px solid #222; outline-offset:3px; }
+fieldset:disabled .design-image-buttons label { opacity:.5; }
+.design-image-control small { display:block; color:#888; font-size:11px; line-height:1.6; }
+.source-cover { width:100%; height:100%; display:grid; place-items:center; }
+.source-cover img { width:50%; height:auto; filter:grayscale(1) invert(1); mix-blend-mode:screen; opacity:.25; }
+.source-theme { display:grid; grid-template-columns:76px minmax(0,1fr); gap:16px; margin-top:24px; font-size:13px; color:#777; }
+.source-theme>div { display:flex; gap:12px; }
+.theme-swatch { width:32px; height:32px; border-radius:50%; color:#173d20; border:1px solid #777; cursor:pointer; font-weight:bold; }
+.public-cover { height:auto; aspect-ratio:450/276; padding:0; display:block; }
+.public-cover>img { width:100%; height:100%; object-fit:cover; }
+.public-avatar { width:25.33%; height:auto; aspect-ratio:1; margin:-12% 8% 0 auto; border:0; border-radius:36%; background:#b8ffc8; }
+.public-avatar>img { width:100%; height:100%; object-fit:cover; }
+@media (min-width:761px) { .design-image-control.avatar>div { display:grid; grid-template-columns:96px 1fr; gap:0 20px; } .design-image-control.avatar small { grid-column:2; } .design-image-control.avatar .design-image-preview { grid-row:1/3; } }
+
+.latest-design-images { display:flex; gap:10px; height:80px; }
+.latest-design-images>img { width:80px; height:80px; object-fit:cover; }
+.latest-design-images>.source-cover { width:130px; background:#31ba51; }
+
+.theme-swatch.theme-forest { color:white; }

@@ -447,3 +447,8 @@ my_animal_growth는 본인의 기록/메모와 revision·사용량을 반환한�
 my_design은 활성 본인의 revision·display_name/tagline/bio·SNS 목록만 조회한다. save_design(profile,items,expected,request_id)은 엄격한 텍스트/필드·정확한6종 SNS·소유권/활성/동의/버전·24시간 영수증과 프로필 잠금을 검사한다. 텍스트와 SNS의 실제 변경이 하나라도 있으면 private.bump를 한 번 호출하며, 실패는 두 영역/영수증/revision을 함께 롤백한다. slug/공개 상태/최초 공개/테마·이미지 ID는 이 명령으로 바꾸지 않는다.
 
 private.apply_social_values는 기존6종 검증/고정순서/쓰기 중지 축소/저장·삭제를 공유하는 내부 invoker 함수다. public/anon/authenticated 실행을 회수하고 두 검증된 API definer가 현재 actor만 넘긴다. 기존 save_social_links의 계약/해시/영수증은 보존한다. private.trim_profile_text는 ECMAScript 공백 집합을 정리하며 외부 실행 권한은 없다. 기존 save_profile에도 같은 이름/설명 검증을 적용해 예전 API가 우회 경로가 되지 않게 했다. 새 테이블이나 사용자 자료 정리는 없다.
+
+
+## #24 프로필 미디어·옵션 실제 확장
+
+media_assets.animal_id는 nullable이며 animal iff 개체ID필수/프로필용도는NULL CHECK를 적용한다. profiles.avatar_asset_id/cover_asset_id는 (asset_id,id)→media_assets(id,profile_id) 복합FK다. 예약/완료/연결/취소/정리/공개 접근은 docs/20을 따른다. my_design은 profile3필드를 유지하고 root options3필드/cleanup_count를 추가한다. save_design의 선택적 options는 기존4인수 호출·해시·영수증을 보존하며 전체소개/SNS/파일/테마를 한버전/원자적으로 저장한다. 이전 #22 설명의 테마/이미지 제외는 이번 확장 전 경계다.
