@@ -1,3 +1,4 @@
+import {socialNames,socialPlatforms} from '../src/lib/socials';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { inspectWebp } from './images';
@@ -136,7 +137,9 @@ export default {
         html = html.replace('</head>', `<meta name="description" content="${escape(description)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(url.origin + path)}">${imageMeta}</head>`);
         const visibleLinks = (page.links ?? []).filter(l => httpsUrl(l.url) && linkTokens.includes(l.color_token));
         const linksHtml = visibleLinks.length ? `<section class="public-links" aria-label="공개 외부 링크">${visibleLinks.map(l => `<a class="public-link" target="_blank" rel="noopener noreferrer" href="${escape(httpsUrl(l.url)!)}" style="background-color:${linkColors[l.color_token].background};color:${linkTextColor(l.color_token)}">${escape(l.title)}</a>`).join('')}</section>` : '';
-        html = html.replace('<div id="root"></div>', `<div id="root"><main class="public-page"><h1>${escape(page.profile.display_name)}</h1><p>${escape(description)}</p>${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}${linksHtml}</main></div>`);
+        const socialsHtml=(page.socials??[]).filter(r=>socialPlatforms.includes(r.platform)&&httpsUrl(r.url)).map(r=>`<a href="${escape(httpsUrl(r.url)!)}" target="_blank" rel="noopener noreferrer" aria-label="${socialNames[r.platform]} 바로가기"><img src="/brand/social/${r.platform}.png" width="40" height="40" alt=""></a>`).join('');
+        const socialSection=socialsHtml?`<section class="public-socials" aria-label="공개 SNS">${socialsHtml}</section>`:'';
+        html = html.replace('<div id="root"></div>' , `<div id="root"><main class="public-page"><h1>${escape(page.profile.display_name)}</h1><p>${escape(description)}</p>${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}${linksHtml}${socialSection}</main></div>`);
         html = html.replace('</body>', `<script type="application/json" id="public-bootstrap">${JSON.stringify(page).replace(/</g, '\\u003c')}</script></body>`);
         return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
       }

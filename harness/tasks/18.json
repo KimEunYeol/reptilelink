@@ -1,0 +1,49 @@
+{
+  "issue": 18,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/18",
+  "branch": "codex/feat/18-social-links",
+  "baseSha": "3c6773e8984e98d9619a9a1df0c583440962eecb",
+  "scope": "F-02/F-05 원본6종 SNS 주소/노출 일괄 적용과 공개 하단 링크",
+  "acceptance": [
+    "고정6종/종류별1개·HTTPS공유검증·활성/동의/소유권·RLS/직접쓰기차단",
+    "전체6종 집합·빈주소삭제·버전/한revision/24h영수증·경합/롤백",
+    "쓰기중지 중 기존주소 숨김/삭제 허용·새주소/변경/새공개차단",
+    "원본SNS6행·미저장/미확인/실패조회/이동/충돌명시적검토·기본정보/디자인경로구분",
+    "공개최소DTO/초기HTML/안전한새탭·원본작은아이콘출처·7폭직접대조",
+    "새CLI migration/advisors/shadow·전체verify/PR리뷰/병합/main/보고·다음일정"
+  ],
+  "plan": [
+    "원본디자인수정 PC/모바일/보드설명·공개하단6아이콘과 기존경로확인",
+    "SNS6종/RLS·전체저장/조회/공개·DB실제검증",
+    "원본6행/스위치·복구/충돌/이동·공개React/Worker",
+    "신규migration/shadow/advisors·실패/7폭/전체검증",
+    "정상훅/PR·최종리뷰/명시적병합/main/중간보고·일정독립이슈"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-디자인수정.png",
+      "design/마이페이지-디자인수정-m.png",
+      "design/링크페이지-m.png"
+    ],
+    "notes": "보드 x1950~3150,y1200~5600 디자인수정열 및 공통PC x0~3900,y8270~9270 실제확인. 프로필/소개/이름/설명/배경 아래 SNS6종(밴드·인스타그램·페이스북·유튜브·카카오톡·블로그) 입력/공개스위치와 하단적용. 공개링크페이지 하단은 같은순서의 회색원형6아이콘. 이번범위는 SNS블록/경로구분이며 상단프로필·배경/테마는 후속에서 채움. HTTP→채택HTTPS,별도정렬UI없이 원본고정순서.",
+    "review": {
+      "status": "passed",
+      "summary": "원본디자인수정 PC/모바일/보드SNS6행과공개하단아이콘을320/360/390/450/768/1440/1920폭 실제설정/공개와 대조하고390/1440하단 적용을 확인했다. 고정순서/왼쪽SNS라벨/입력/스위치/적용과출처기록한40px작은원본아이콘만 재사용한다. 기본정보/디자인탭경로를구분했다. 상단프로필/배경/테마는후속이며 공개주변셸/폰트 차이는#2/docs17에 남긴다."
+    },
+    "evidence": [
+      "docs/17-social-links.md",
+      "public/brand/social/source.json",
+      "artifacts/socials-18/{settings,public}-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/socials-18/bottom-{390,1440}.png·unresolved-390.png·all-widths-review.png"
+    ]
+  },
+  "verification": {
+    "targeted": "44 real DB,4 unit,7 browser and3 management-shell passed",
+    "fullSuite": "Required final build+482:12 harness,29 unit,363 DB,10 media,68 E2E. Actual result/fingerprint .local/harness-verification.json",
+    "migration": "CLI20261029072955_social_links.sql; lint/security no warnings; local history/shadow required",
+    "review": "Exact six unique platforms, server-created IDs and owner/platform conflict key. Unknown commands stable through successful authoritative refresh; conflict latest selection never overwrites drafts silently. Existing real data preserved; dedicated QA platform keys asserted empty before test. First SQL alias ambiguity and decorative-image selector fixed and same tests passed. First full run had64 browser pass/4 fail, all stale basic-info URL expectations in collection/growth/photo after route separation. Updated only that expected destination to /dashboard/account; final complete verify required."
+  }
+}

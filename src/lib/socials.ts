@@ -1,0 +1,12 @@
+import {z} from 'zod';
+import {httpsUrl} from './links';
+export const socialPlatforms=['band','instagram','facebook','youtube','kakao','naver_blog'] as const;
+export type SocialPlatform=typeof socialPlatforms[number];
+export const socialNames:Record<SocialPlatform,string>={band:'네이버밴드',instagram:'인스타그램',facebook:'페이스북',youtube:'유튜브',kakao:'카카오톡',naver_blog:'블로그'};
+export type SocialItem={platform:SocialPlatform;url:string;is_public:boolean};
+export type SocialSnapshot={revision:number;links:SocialItem[]};
+export type PublicSocial=Pick<SocialItem,'platform'|'url'>;
+export const emptySocials=():SocialItem[]=>socialPlatforms.map(platform=>({platform,url:'',is_public:false}));
+export const fullSocials=(rows:SocialItem[]):SocialItem[]=>socialPlatforms.map(platform=>rows.find(r=>r.platform===platform)??{platform,url:'',is_public:false});
+const item=z.object({platform:z.enum(socialPlatforms),url:z.string().refine(v=>v.trim()===''||httpsUrl(v)!==null,'올바른 HTTPS 주소를 2,048자 이내로 입력해주세요.').transform(v=>v.trim()===''?'':httpsUrl(v)!),is_public:z.boolean()}).strict().refine(v=>v.url!==''||!v.is_public,'공개할 SNS 주소를 입력해주세요.');
+export const socialInputSchema=z.array(item).length(6).refine(rows=>new Set(rows.map(r=>r.platform)).size===6,'SNS 종류를 확인해주세요.');

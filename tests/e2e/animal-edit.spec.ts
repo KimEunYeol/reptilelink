@@ -219,7 +219,7 @@ test.describe('animal general field edit with real local QA identity', () => {
     await expect(d.getByRole('textbox', { name: '개체 이름', exact: true })).toBeFocused();
     await page.evaluate(() => history.back());
     await d.getByRole('button', { name: '변경 버리고 이동', exact: true }).click();
-    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await expect(page).toHaveURL(/\/dashboard\/account$/);
     await expect(d).not.toBeVisible();
     expect((await dashboard()).profile!.revision).toBe(before);
   });
@@ -234,17 +234,17 @@ test.describe('animal general field edit with real local QA identity', () => {
     await expect(d.getByRole('alert')).toContainText('저장하지 않은');
     await d.getByRole('button', { name: '계속 편집', exact: true }).click();
     // Dispatch a real Link handler while the modal makes underlying user clicks inert.
-    await page.locator('a[href="/dashboard/design"]').evaluate(el => (el as HTMLAnchorElement).click());
+    await page.locator('a[href="/dashboard/account"]').evaluate(el => (el as HTMLAnchorElement).click());
     await expect(d.getByRole('alert')).toContainText('저장하지 않은');
     await d.getByRole('button', { name: '계속 편집', exact: true }).click();
     await expect(d.getByRole('textbox', { name: '개체 설명', exact: true })).toHaveValue('앞으로가기 보존');
     await d.getByRole('button', { name: '취소', exact: true }).click();
     await page.evaluate(() => history.forward());
-    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await expect(page).toHaveURL(/\/dashboard\/account$/);
     await page.getByRole('link', { name: /개체 관리/ }).click();
     d = await open(page); // Unchanged editor: no confirmation on the same SPA transition.
-    await page.locator('a[href="/dashboard/design"]').evaluate(el => (el as HTMLAnchorElement).click());
-    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await page.locator('a[href="/dashboard/account"]').evaluate(el => (el as HTMLAnchorElement).click());
+    await expect(page).toHaveURL(/\/dashboard\/account$/);
     await expect(d.getByRole('alert')).toHaveCount(0);
     await expect(d).not.toBeVisible();
   });
@@ -272,6 +272,6 @@ test.describe('animal general field edit with real local QA identity', () => {
     await expect(d).not.toBeVisible();
     await expect(page).toHaveURL(/\/dashboard\/animals$/);
     await page.evaluate(() => history.back());
-    await expect(page).toHaveURL(/\/dashboard\/design$/);
+    await expect(page).toHaveURL(/\/dashboard\/account$/);
   });
 });
