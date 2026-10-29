@@ -649,3 +649,36 @@ fieldset:disabled .design-image-buttons label { opacity:.5; }
 .comment-count { position:absolute; top:14px; left:14px; display:flex; align-items:center; gap:4px; font-size:11px; padding:3px 5px; color:white; background:#0006; border-radius:5px; }
 
 .profile-like-button:focus-visible { outline:2px solid #fff; outline-offset:-3px; }
+
+/* design/마이페이지-통계알림: narrow LIKE carousel and five notification rows. */
+.activity-content { margin-top:64px; color:#111; }
+.activity-likes { padding-bottom:16px; border-bottom:1px solid #ededed; }
+.activity-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.activity-heading h2 { font-size:16px; font-weight:700; margin:0; }
+.activity-search { position:relative; width:71%; max-width:268px; }
+.activity-content .activity-search input[type=search] { width:100%; height:40px; min-height:40px; margin:0; color:#111; font-weight:400; border:1px solid #e5e5e5; border-radius:24px; background:#f7f7f7; padding:0 38px 0 16px; font-size:14px; }
+.activity-search svg { position:absolute; right:16px; top:10px; color:#767676; pointer-events:none; }
+.activity-members { display:flex; align-items:center; gap:10px; min-height:50px; }
+.activity-member { display:flex; align-items:center; gap:10px; min-width:0; flex:1; font-size:14px; }
+.activity-member .comment-avatar { width:50px; height:50px; flex-basis:50px; }
+.activity-member a,.activity-member > span:last-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.activity-arrows { display:flex; flex-shrink:0; gap:6px; margin-left:auto; }
+.activity-arrows button { display:grid; place-items:center; width:22px; height:22px; border:0; border-radius:50%; padding:0; background:#767676; color:white; }
+.activity-arrows button:disabled { background:#e5e5e5; opacity:1; cursor:default; }
+.activity-refresh { margin-top:16px; font-size:12px; }
+.activity-notifications { padding:38px 0; border-bottom:1px solid #ededed; }
+.notification-row { display:flex; gap:8px; align-items:flex-start; margin:0 0 20px; font-size:14px; }
+.notification-avatar { position:relative; display:block; flex:0 0 32px; width:32px; height:32px; border-radius:50%; background:#b5ffc9; }
+.notification-avatar > img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
+.notification-dot { position:absolute; width:6px; height:6px; top:0; right:-3px; border-radius:50%; background:#2cbd54; }
+.notification-content { min-width:0; flex:1; }
+.notification-message { border:0; padding:0; background:none; color:#111; font:inherit; text-align:left; line-height:1.55; margin:0; overflow-wrap:anywhere; }
+button.notification-message { cursor:pointer; }
+.notification-content time { color:#64738c; font-size:12px; }
+.notification-target { margin-left:8px; font-size:12px; text-decoration:underline; }
+.activity-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; font-size:12px; }
+.activity-statistics { padding:40px 0; }
+@media(max-width:359px){ .activity-member { gap:6px; } .activity-member .comment-avatar { width:32px; height:32px; flex-basis:32px; } .activity-members { gap:6px; } }
+
+.activity-content .activity-search input::placeholder { color:#666; font-weight:400; }
+.activity-content .text-button { color:#666; }

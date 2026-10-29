@@ -14,14 +14,14 @@ function ManagementNavigation({ basic }: { basic: boolean }) {
     const container = nav.current, active = container?.querySelector<HTMLElement>('[aria-current="page"]');
     if (container && active) container.scrollLeft = active.offsetLeft - (container.clientWidth - active.clientWidth) / 2;
   }, [pathname]);
-  const schedules=pathname.startsWith('/dashboard/schedules'),links=pathname.startsWith('/dashboard/links'),design=pathname.startsWith('/dashboard/design');
+  const activity=pathname.startsWith('/dashboard/activity'),schedules=pathname.startsWith('/dashboard/schedules'),links=pathname.startsWith('/dashboard/links'),design=pathname.startsWith('/dashboard/design');
   return <nav ref={nav} className="management-tabs" aria-label="마이페이지 메뉴">
-    <Link to="/dashboard/animals" aria-current={!schedules && !basic && !links && !design ? 'page' : undefined}>개체 관리</Link>
+    <Link to="/dashboard/animals" aria-current={!activity && !schedules && !basic && !links && !design ? 'page' : undefined}>개체 관리</Link>
     <Link to="/dashboard/links" aria-current={links ? 'page' : undefined}>링크 관리</Link>
     <Link to="/dashboard/schedules" aria-current={schedules ? 'page' : undefined}>일정 관리</Link>
     <Link to="/dashboard/design" aria-current={design ? 'page' : undefined}>디자인 수정</Link>
     <Link to="/dashboard/account" aria-current={basic ? 'page' : undefined}>기본 정보</Link>
-    <button disabled title="준비 중">통계/알림<span className="sr-only"> (준비 중)</span></button>
+    <Link to="/dashboard/activity" aria-current={activity ? 'page' : undefined}>통계/알림</Link>
   </nav>;
 }
 
