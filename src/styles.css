@@ -463,3 +463,33 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .animal-edit-heading > div { min-width: 0; }
 .animal-edit-heading h2 { min-width: 0; overflow-wrap: anywhere; }
 .animal-edit-heading .icon-button { flex-shrink: 0; }
+
+/* Link management: provided narrow color cards, switches, palette and bottom apply. */
+.external-link-manager { width: min(378px, 100%); margin: 88px auto 70px; }
+.link-add-row { display: flex; justify-content: flex-end; margin-bottom: 28px; }
+.link-add-row .button { border-radius: 12px; min-height: 40px; }
+.link-list { display: grid; gap: 28px; }
+.managed-link { position: relative; border-radius: 12px; padding: 20px 14px 14px 62px; min-height: 128px; box-shadow: 0 2px 2px #0002; }
+.link-title { padding-right: 50px; min-width: 0; }
+.link-title strong { display: block; font-size: 14px; overflow-wrap: anywhere; }
+.link-title > span { display: block; font-size: 13px; margin-top: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.link-drag { position: absolute; top: 18px; left: 14px; width: 30px; height: 30px; display: grid; place-items: center; padding: 0; cursor: grab; }
+.link-switch { position: absolute; right: 15px; top: 12px; width: 52px; height: 32px; border-radius: 18px; border: 1px solid #fff; background: #aaa; padding: 2px; display: flex; justify-content: flex-start; }
+.link-switch > span:first-child { width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px #0005; }
+.link-switch[aria-checked=true] { justify-content: flex-end; background: #2cbb50; }
+.link-row-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 14px; }
+.link-row-actions .button { padding: 7px 12px; min-height: 36px; border-radius: 12px; font-size: 12px; font-weight: 400; }
+.link-apply { display: grid; gap: 14px; margin-top: 95px; text-align: center; }
+.link-apply > .button { width: 100%; min-height: 54px; border-radius: 12px; }
+.link-empty { color: #8191a6; font-size: 13px; margin: 50px 0; text-align: center; }
+.link-fields { min-width: 0; border: 0; padding: 0; margin: 0; }
+.link-fields > label { display: block; margin: 8px 12px 28px; }
+.animal-edit .link-fields > label > span, .link-palette legend { display: block; color: #718096; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+.animal-edit .link-fields input { width: 100%; border: 0; border-bottom: 1px solid #dce3ec; border-radius: 0; background: transparent; padding: 8px 0; box-shadow: none; font-size: 14px; }
+.link-palette { border: 0; min-width: 0; padding: 0; margin: 0 12px 28px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.link-palette button { width: min(32px, 100%); justify-self: center; aspect-ratio: 1; border-radius: 50%; padding: 0; display: grid; place-items: center; }
+.link-editor .edit-actions { gap: 20px; }
+.link-editor .edit-actions .button { border-radius: 30px; min-width: 150px; }
+.public-links { width: min(378px, 100%); display: grid; gap: 14px; margin: 30px auto; }
+.public-links a, a.public-link { display: block; padding: 16px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
+.latest-link-url { font-size: 12px; overflow-wrap: anywhere; }

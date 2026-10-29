@@ -1,0 +1,12 @@
+import { describe,it,expect } from 'vitest';
+import { httpsUrl,linkInputSchema,linkTokens,definitiveLinkError } from '../src/lib/links';
+describe('external link boundaries',()=>{
+ it('normalizes HTTPS casing, IDNs and encoded path characters',()=>{expect(httpsUrl(' HTTPS://Example.COM/path ')).toBe('https://example.com/path');expect(httpsUrl('https://bücher.example/안녕')).toMatch(/^https:\/\/xn--bcher-kva.example\/%/);});
+ it('rejects other schemes, credentials including empty/encoded userinfo and backslashes',()=>{for(const url of ['http://example.com','javascript:alert(1)','data:text/plain,x','https://user:pw@example.com/','https://@example.com/','https://u%40name@example.com/','https://example.com\\x','https:example.com'])expect(httpsUrl(url)).toBeNull();});
+ it('rejects control characters before the browser can silently discard them',()=>{for(const c of ['\n','\t','\u0000','\u007f','\u0085'])expect(httpsUrl(`https://example.com/${c}x`)).toBeNull();});
+ it('rejects malformed hosts, port and percent escapes',()=>{for(const url of ['https://','https://[]/','https://[gg::]/','https://999.999.1.1/','https://a.123/','https://example..com/','https://example.com:65536/','https://example.com/%zz'])expect(httpsUrl(url)).toBeNull();});
+ it('uses canonical IPv4/IPv6 representations accepted by the server',()=>{expect(httpsUrl('https://0x7f000001/')).toBe('https://127.0.0.1/');expect(httpsUrl('https://[::1]:443/x')).toBe('https://[::1]/x');expect(httpsUrl('https://example.com/?mail=a@b')).not.toBeNull();});
+ it('applies the stored URL length after canonicalization',()=>{const base='https://example.com/';expect(httpsUrl(base+'a'.repeat(2048-base.length))).toHaveLength(2048);expect(httpsUrl(base+'a'.repeat(2049-base.length))).toBeNull();});
+ it('whitelists fields/colors and counts trimmed Unicode titles',()=>{for(const color_token of linkTokens)expect(linkInputSchema.safeParse({title:'🦎'.repeat(40),url:'https://example.com/',color_token}).success).toBe(true);for(const patch of [{title:'\uFEFF  '},{title:'🦎'.repeat(41)},{title:'a\u0000'},{color_token:'custom'},{is_public:true}])expect(linkInputSchema.safeParse({title:'링크',url:'https://example.com/',color_token:'green',...patch}).success).toBe(false);});
+ it('distinguishes database rejection objects from unknown transport failure',()=>{expect(definitiveLinkError({message:'VERSION_CONFLICT',code:'P0001'})).toBe(true);expect(definitiveLinkError({message:'invalid input',code:'22P05'})).toBe(true);expect(definitiveLinkError(new TypeError('Failed to fetch'))).toBe(false);});
+});

@@ -1,0 +1,49 @@
+{
+  "issue": 16,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/16",
+  "branch": "codex/feat/16-external-links",
+  "baseSha": "ded76b77b8b7cb661c8794f3c387b56628427243",
+  "scope": "F-05 외부 링크 저장·순서/노출/삭제 초안 적용·안전한 공개 링크",
+  "acceptance": [
+    "원본11색/제목40/URL2048·HTTPS 엄격 검증·10개 한도",
+    "활성/소유권/동의/명시적 전체·삭제집합·경합/revision/영수증·원자성",
+    "목록순서/노출/삭제 적용 전 불변·취소·쓰기 중지 숨김/삭제 허용",
+    "일반편집 진입/미확인/실패/이동 보호·최신 명시적 검토",
+    "공개DTO/HTML/새탭/escape·서버 URL fetch 없음·7개 폭 원본 비교",
+    "새 migration/advisors/shadow·전체 verify·PR/리뷰/병합/main/보고 후 SNS"
+  ],
+  "plan": [
+    "원본 링크 열/팝업/공개버튼·기존 목록/저장 계약 확인",
+    "URL 함수/링크 RLS·단일 저장/일괄 명령·본인/공개 조회·실제 DB 검증",
+    "원본 링크 화면/팝업·키보드/드래그·초안/회복·공개 렌더링",
+    "실제 DB/E2E/원본7폭·migration/shadow/전체verify",
+    "정상 훅·PR/리뷰/명시적 병합·main/보고·다음SNS독립이슈"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-링크관리.png",
+      "design/마이페이지-링크관리-m.png",
+      "design/마이페이지-링크관리2-m.png",
+      "design/링크페이지-m.png"
+    ],
+    "notes": "관리 PC/모바일/추가 팝업 실제 확인. 보드 x3300~4500,y1200~4400 일정/링크 열의 오른쪽 링크목록/추가 팝업과 공통 PC 설명x0~3900,y8270~9270. 원본378px 단일열·우측 추가·색상카드/스위치/드래그손잡이·수정삭제·하단적용·제목/11색/링크 팝업. 11색은 링크관리2-m 원본450x1739의 두행 원형팔레트 픽셀에서 읽음. 목록 순서/노출/삭제는 적용, 항목 저장은 즉시라는 D-02 계약을 명시하고 http 예시는 F-05 HTTPS로 대체. 새 레이아웃/그림 없음.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 PC/모바일 링크관리·추가 팝업과 보드 설명을 실제 7개 폭 목록/팝업/공개버튼과 대조했다. 378px 단일열/340px 팝업·11색·드래그/스위치/수정삭제/하단적용을 유지한다. 밝은 색 글자 대비만 가독성 보정하고 취소/실패/충돌은 기존 패턴을 최소 조합했다. 공개 주변 셸/수제Gecko/폰트 차이는 #2, docs/16에 남는다."
+    },
+    "evidence": [
+      "docs/16-external-links.md",
+      "artifacts/links-16/{popup,list,public}-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/links-16/all-widths-review.png 및 unresolved-390.png"
+    ]
+  },
+  "verification": {
+    "targeted": "61 DB checks,8 unit passed;9 browser flows including deterministic unknown-create latest inspection regression",
+    "fullSuite": "Required final build+427:12 harness,25 unit,319 DB,10 media,61 E2E. Actual status/fingerprint .local/harness-verification.json",
+    "migration": "CLI20261029070658_external_links.sql; lint/security no warnings; local history matches; shadow diff empty after reparsing the logically equivalent generated title CHECK expression",
+    "review": "Server-generated create ID avoids cross-owner chosen-ID race. Full-set atomic ownership validation. Source11 palette and seven widths. Keep unresolved/conflict guard until authoritative refresh. First browser failure was test timing: wait failed-refresh completion before unroute. Unknown-create latest-inspection regression failed before fix, passed after closing only on confirmed receipt plus successful authoritative refresh; prevents duplicate creation."
+  }
+}
