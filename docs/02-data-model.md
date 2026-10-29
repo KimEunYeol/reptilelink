@@ -452,3 +452,8 @@ private.apply_social_values는 기존6종 검증/고정순서/쓰기 중지 축�
 ## #24 프로필 미디어·옵션 실제 확장
 
 media_assets.animal_id는 nullable이며 animal iff 개체ID필수/프로필용도는NULL CHECK를 적용한다. profiles.avatar_asset_id/cover_asset_id는 (asset_id,id)→media_assets(id,profile_id) 복합FK다. 예약/완료/연결/취소/정리/공개 접근은 docs/20을 따른다. my_design은 profile3필드를 유지하고 root options3필드/cleanup_count를 추가한다. save_design의 선택적 options는 기존4인수 호출·해시·영수증을 보존하며 전체소개/SNS/파일/테마를 한버전/원자적으로 저장한다. 이전 #22 설명의 테마/이미지 제외는 이번 확장 전 경계다.
+
+
+## #26 계정 탈퇴 실제 구조
+
+private.account_deletions는 user_id PK·request_id·requested_at·sessions_revoked_at/application_deleted_at를 가진 비공개 RLS 작업이다. Auth 삭제 유실 확인까지 유지하기 위해 Auth FK가 없으며 최종 Auth 부재 확인 후 삭제한다. 새 private.write_actor/lock_active_account는 계정 상태를 FOR SHARE로 먼저 잠그고 변이 명령을 시작한다. 탈퇴는 FOR UPDATE 후 기존 예산/프로필/파일 순서를 따른다. 공개 RLS와 읽기 actor의 active 조건을 유지한다. my_dashboard는 탈퇴 중 최소 상태만 반환한다. 실제 정리와 서비스 전용 RPC/권한은 docs/21·새 migration을 따른다. signup_allowlist.invited_user_id는 auth.users PK/FK ON DELETE CASCADE/부분 인덱스이며 신규 가입 바인딩과 별도 데이터 전용 마이그레이션으로 기존 초대를 연결한다.

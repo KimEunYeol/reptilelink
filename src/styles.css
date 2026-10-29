@@ -610,3 +610,15 @@ fieldset:disabled .design-image-buttons label { opacity:.5; }
 .latest-design-images>.source-cover { width:130px; background:#31ba51; }
 
 .theme-swatch.theme-forest { color:white; }
+
+/* Basic-information source: gray withdrawal panel below the account form. */
+.profile-form fieldset { border:0; padding:0; margin:0; min-width:0; }
+.account-withdrawal { margin-top:70px; padding:16px 20px; border-radius:14px; background:#e7e7e7; color:#666; font-size:13px; text-align:left; }
+.account-withdrawal>strong { display:block; font-size:14px; }
+.account-withdrawal>p { margin:3px 0 8px; line-height:1.6; overflow-wrap:anywhere; }
+.account-withdrawal>.text-button { display:block; margin:6px 0 0 auto; padding:5px 13px; border-radius:16px; background:#666; color:#fff; }
+.withdrawal-confirm { display:block; margin:24px 0; font-size:13px; }
+.withdrawal-confirm input { display:block; width:100%; margin-top:10px; border:1px solid #bbb; border-radius:10px; padding:12px; }
+.account-deletion-progress>.account-withdrawal { margin-top:8px; max-width:450px; }
+
+.account-withdrawal>p,.account-withdrawal-dialog .animal-delete-notice p { color:#666; }
