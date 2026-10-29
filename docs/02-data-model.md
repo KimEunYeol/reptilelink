@@ -479,3 +479,7 @@ analytics_daily/analytics_totals/analytics_receipts는 profile FK CASCADE·RLS/�
 ## #36 공개 읽기 경계
 
 profiles/animals/animal_photos/growth_records/social_links/external_links/schedules의 anon/authenticated 원본 테이블·열 권한은 없다. RLS는 방어층으로 남긴다. public_page/public_schedules/public_animal_growth만 빈 search_path/완전한 스키마 지정·명시적공개 조건으로 최소 DTO를 반환한다. 소유자 JWT로 이 공개 RPC를 호출해도 비공개 자식을 포함하지 않는다. 공개 파일 ID는 ready/동일소유자/용도·연결 조건을 검사하고 실제 파일 접근은 기존 media_access의 현재 공개/저장 조건을 별도로 검사한다. 관리/서비스 API는 기존 계약을 유지한다. 과거 invoker/열 SELECT 설명은 변경 전 기록이다.
+
+## #42 삭제 대기와 계정 탈퇴 조합
+
+request_account_deletion은 미삭제 개체만 비공개/삭제표시 UPDATE한다. protect_deleted_animal은 기존 삭제 행 UPDATE를 계속 거절하고 deleted_at·기존 개체 작업은 유지한다. 계정 파일 정리는 profile_id의 모든 자산을 대상으로 하며 실제 파일 제거 전 예산/계정을 유지한다. finish_account_data의 최종 프로필/개체 삭제가 기존 animal_deletions·성장/메모 관계를 CASCADE한다. 새 테이블/필드나 삭제 자료 복원은 없다.

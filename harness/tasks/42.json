@@ -1,0 +1,34 @@
+{
+  "issue": 42,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/42",
+  "branch": "codex/fix/42-withdrawal-pending-animal",
+  "baseSha": "0b2b6c46b1d110335750dca26bf48c87ef1f31b9",
+  "scope": "F01 삭제대기 개체가 있어도 계정 탈퇴 및 전체 파일 정리 허용",
+  "acceptance": [
+    "실제 신규 QA 삭제→탈퇴 충돌을 수정 전 재현",
+    "삭제대기 불가역 보호/기존시각·용량·파일정리와 본인확인/동시성 유지",
+    "실제 파일/응답유실·실패/재시도·브라우저와 전체검증/리뷰/병합/main/보고"
+  ],
+  "plan": [
+    "실제 삭제RPC 뒤 탈퇴 트랜잭션의 NOT_FOUND 재현",
+    "탈퇴 UPDATE를 미삭제 개체에만 제한·새CLI migration",
+    "기존 사진/탈퇴회귀에 조합상태·원문삭제보호·정리 검증 추가",
+    "전체검증/최신리뷰/명시적병합/main/보고 뒤#37"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "references": [],
+    "notes": "새 화면/스타일/문구를 만들지 않는 DB 탈퇴 트랜잭션 수정과 기존 화면의 실제 조합 회귀. 원본/기존 UI 유지.",
+    "review": {
+      "status": "passed",
+      "summary": "화면/스타일/문구 변경 없이 기존 원본 탈퇴화면을 사용한다. 실제 사진이 있는 삭제대기→탈퇴/파일실패·재시도/보호트리거·삭제시각유지와 기존13개 브라우저흐름을 확인한다. 시각창작이나 디자인일치범위확장은없다."
+    },
+    "evidence": [
+      "scripts/test-account-media.mjs:24 actual Worker/Storage/Auth checks",
+      "tests/e2e/account-withdrawal.spec.ts:13 browser flows, including pending deletion",
+      "docs/28-withdrawal-pending-animal.md"
+    ],
+    "reason": "새 화면/스타일/문구를 만들지 않는 DB 탈퇴 트랜잭션 수정과 기존 화면의 실제 조합 회귀. 원본/기존 UI 유지."
+  }
+}
