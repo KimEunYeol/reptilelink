@@ -33,7 +33,7 @@ await expectError(a,'create_animal',{p_data:{...animalData,name:'다른 본문'}
 const bDash = await rpc(b, 'my_dashboard');
 await expectError(b,'set_animal_public',{p_animal_id:created.id,p_public:true,p_expected:bDash.profile.revision},/NOT_FOUND/); checked++;
 const direct = await b.from('animals').update({profile_id:bId}).eq('id',created.id); assert.ok(direct.error); checked++;
-const hidden = await b.from('animals').select('id').eq('id',created.id); assert.ifError(hidden.error); assert.equal(hidden.data.length,0); checked++;
+const hidden = await b.from('animals').select('id').eq('id',created.id); assert.ok(hidden.error); checked++;
 await expectError(a,'complete_upload',{p_asset_id:crypto.randomUUID(),p_actor:aId,p_objects:[]}); checked++;
 await expectError(a,'media_access',{p_asset_id:crypto.randomUUID(),p_variant:'thumbnail',p_actor:aId}); checked++;
 const reservations = await Promise.all(Array.from({length:5},()=>a.schema('api').rpc('reserve_upload',{p_animal_id:created.id})));

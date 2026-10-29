@@ -26,8 +26,8 @@ try{
  const id=await create(),other=await create(),r1=row(day(-1),'32'),r2=row();
  const first=await args(id,data([r1,r2])),saved=await call(owner,'save_animal_growth',first);assert.equal(saved.revision,first.p_expected+1);let v=await view(id);assert.equal(v.total,2);assert.equal(v.latest.weight_g,34.25);assert.equal(v.note,'개체 비공개 메모');assert.equal(v.records[0].note,r2.note);checks++;
  assert.deepEqual(await call(owner,'save_animal_growth',first),saved);assert.equal((await dash()).profile.revision,saved.revision);checks++;
- assert.equal(await pub(id),null);assert.equal((await guest.from('growth_records').select('id,measured_on,weight_g')).data.length,0);checks++;
- assert.equal((await foreign.from('growth_records').select('id,measured_on,weight_g').eq('animal_id',id)).data.length,0);checks++;
+ assert.equal(await pub(id),null);assert.ok((await guest.from('growth_records').select('id,measured_on,weight_g')).error);checks++;
+ assert.ok((await foreign.from('growth_records').select('id,measured_on,weight_g').eq('animal_id',id)).error);checks++;
  assert.ok((await owner.from('growth_records').insert({id:crypto.randomUUID(),animal_id:id,measured_on:today,weight_g:1})).error);assert.ok((await owner.from('growth_records').select('profile_id')).error);checks++;
  await reject(foreign,await args(id,data()),/NOT_FOUND/);await reject(guest,await args(id,data()),null);await reject(pending,await args(id,data()),/ACCOUNT_NOT_ACTIVE/);
  for(const patch of [{weight_g:'0'},{weight_g:'-1'},{weight_g:'100000.01'},{weight_g:'3.001'},{weight_g:3},{weight_g:'NaN'},{weight_g:'1e2'},{measured_on:day(1)},{measured_on:'2024-02-30'},{measured_on:'0000-01-01'},{note:'a'.repeat(1001)},{extra:true}])await reject(owner,await args(id,data([{...row(day(-2)),...patch}])),/VALIDATION_FAILED/);

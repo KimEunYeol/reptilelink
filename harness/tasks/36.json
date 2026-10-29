@@ -1,0 +1,40 @@
+{
+  "issue": 36,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/36",
+  "branch": "codex/fix/36-public-data-boundary",
+  "baseSha": "352b5969e5e36debc6681387d2f427e1367ea3e8",
+  "scope": "F07 공개 최소 DTO·원본 테이블 권한과 첫 진입 bootstrap 한정",
+  "acceptance": [
+    "일반 역할 원본7테이블/열 직접 조회 차단·관리/서비스 RPC 보존",
+    "공개 RPC3개 active/published/child public/nondeleted/growth opt-in/ready media를 명시 검사",
+    "첫 bootstrap 한 번만 사용·SPA/Back은 현재 API 재조회",
+    "실제 DB/Worker/7폭/최소필드·전체verify/리뷰/병합/main/보고"
+  ],
+  "plan": [
+    "기존 grant/RLS/invoker 의존성 확인",
+    "명시 공개 조건과 새 CLI migration·기존 권한 회귀 갱신",
+    "bootstrap 소비 및 실제 공개→숨김→Back/SPA 검사",
+    "원본 비교/전체검증·PR리뷰/병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/링크페이지.png",
+      "design/링크페이지-m.png",
+      "design/링크페이지-m-1.png"
+    ],
+    "notes": "원본 공개 PC/m/m-1와 전체 보드 공개/댓글·PC 공통 설명 확인. 단일열 공개 카드/상세/현재 공개 조건·D01~08 유지. 기존 위치/스타일은 변경하지 않고 과거 bootstrap을 재진입 데이터로 재사용하지 않는다. 실제 시각 마감은 독립#39.",
+    "review": {
+      "status": "passed",
+      "summary": "공개PC/m/m-1·전체보드의공개/상세·PC공통설명과현재화면7폭을비교했다. 배치/자산을새로만들지않고현재공개조건과초기데이터수명만보완했다. 원본에없는기존헤더/카드/수제자산의시각차이는#39로남긴다. 7폭넘침없음·키보드이동·실제Worker/SPA/Back/비공개/503실패·최소필드를검증했다."
+    },
+    "evidence": [
+      "artifacts/public-boundary-36/public-{320,360,390,450,768,1440,1920}.png",
+      "scripts/test-public-boundary.mjs:32 actual DB checks",
+      "tests/e2e/public-boundary.spec.ts:3 actual Worker/browser flows",
+      "docs/27-public-boundary.md"
+    ]
+  }
+}

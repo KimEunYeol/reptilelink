@@ -24,8 +24,8 @@ try{
   localQuery(`insert into private.animal_notes(animal_id,profile_id,body) values('${target.id}','${actor}','삭제할 비공개 QA 메모')`);
   const targetArgs=await args(target.id),usage=(await dash()).usage;const result=await call(owner,'delete_animal',targetArgs);assert.equal(result.revision,targetArgs.p_expected+1);checks++;
   const d=await dash();assert.equal(d.animals.some(a=>a.id===target.id),false);assert.equal(d.pending_deletions[0].id,target.id);assert.deepEqual(d.usage,usage);checks++;
-  assert.equal((await owner.from('animals').select('id').eq('id',target.id)).data.length,0);checks++;
-  assert.equal((await foreign.from('animal_photos').select('asset_id').in('asset_id',photos)).data.length,0);checks++;
+  assert.ok((await owner.from('animals').select('id').eq('id',target.id)).error);checks++;
+  assert.ok((await foreign.from('animal_photos').select('asset_id').in('asset_id',photos)).error);checks++;
   for(const id of photos)assert.equal(await call(admin,'media_access',{p_asset_id:id,p_variant:'thumbnail',p_actor:actor}),null);checks++;
   assert.equal(localQuery(`select count(*) from private.media_assets where animal_id='${target.id}' and state='delete_pending'`).trim(),'5');checks++;
   assert.deepEqual(await call(owner,'delete_animal',targetArgs),result);assert.equal((await dash()).profile.revision,result.revision);checks++;

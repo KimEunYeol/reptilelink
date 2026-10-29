@@ -435,11 +435,11 @@ cleanup_manifest는 보호 기한 전에 정리 대기를 반환하고 finish_cl
 
 ## 이슈 #14 성장 기록·메모·공개 조회 물리 계약
 
-공개 스키마 growth_records는 날짜·체중만 공개 가능한 도메인 행이며 RLS와 소유자 복합 FK/CASCADE, 날짜 고유 제약·소유자 인덱스를 둔다. numeric의 소수3자리 자동 반올림을 피하려고 scale≤2 CHECK로 원래 입력을 거절한다. 입력 명령은 무게를 십진 문자열로 받아 형식/양수/최대값과 실제 YYYY-MM-DD/서버 한국 오늘을 검사한다. 개체/기록 메모는 private 테이블로 분리한다. 일반 역할은 성장 행의 공개 허용 열만 SELECT할 수 있고 직접 쓰기/메모 접근 권한은 없다.
+공개 스키마 growth_records는 날짜·체중만 공개 가능한 도메인 행이며 RLS와 소유자 복합 FK/CASCADE, 날짜 고유 제약·소유자 인덱스를 둔다. numeric의 소수3자리 자동 반올림을 피하려고 scale≤2 CHECK로 원래 입력을 거절한다. 입력 명령은 무게를 십진 문자열로 받아 형식/양수/최대값과 실제 YYYY-MM-DD/서버 한국 오늘을 검사한다. 개체/기록 메모는 private 테이블로 분리한다. 당시 일반 역할에는 성장 행 공개 허용 열 SELECT가 있었으나 #36에서 원본 테이블/열 권한을 모두 회수했다. 직접 쓰기/메모 접근 권한은 없다.
 
 save_animal_growth(id,data,expected,request_id)는 변경 upsert≤100/삭제 ID≤100·개체 메모·성장 공개 설정을 한 트랜잭션과 한 revision/24시간 영수증으로 처리한다. 활성/현재 동의/소유권·살아 있는 개체·엄격한 필드·최종 날짜 중복·계정당 실제3000행 한도를 검증한다. 프로필 잠금 아래 소유자 및 개체가 다른 record ID는 거절한다. 쓰기 중지 중에도 기록 삭제·공개 끄기·메모 비우기는 허용하되 추가/수정/새 공개/새 메모는 막는다. 사진 정리를 기다리는 개체의 기록도 실제 최종 제거까지 한도에 포함된다.
 
-my_animal_growth는 본인의 기록/메모와 revision·사용량을 반환한다. public_animal_growth는 invoker/RLS와 활성+프로필 공개+개체 공개+show_growth+미삭제를 모두 검사하고 비공개/없는 경우 NULL을 반환한다. 공개 DTO에는 measured_on/weight_g와 범위/페이지 정보만 있고 메모·소유자·사용량·revision은 없다. 7/30/365일 그래프는 실제 날짜순 최대120관측(첫/마지막 포함), 목록은 날짜 커서20건이다. 각 조회는 서버 한국 날짜를 기준으로 한다. [동작/원본/실패 검증 인계](15-animal-growth.md)를 참고한다.
+my_animal_growth는 본인의 기록/메모와 revision·사용량을 반환한다. public_animal_growth는 #36부터 최소 definer DTO로 활성+프로필 공개+개체 공개+show_growth+미삭제를 모두 검사하고 비공개/없는 경우 NULL을 반환한다. 공개 DTO에는 measured_on/weight_g와 범위/페이지 정보만 있고 메모·소유자·사용량·revision은 없다. 7/30/365일 그래프는 실제 날짜순 최대120관측(첫/마지막 포함), 목록은 날짜 커서20건이다. 각 조회는 서버 한국 날짜를 기준으로 한다. [동작/원본/실패 검증 인계](15-animal-growth.md)를 참고한다.
 
 
 ## #22 프로필 텍스트·SNS 단일 적용 구현
@@ -475,3 +475,7 @@ private.profile_likes는 Auth/대상 FK·회원/프로필 고유·자기 금지�
 ## 2026-10-30 실제 페이지 조회수 (#34)
 
 analytics_daily/analytics_totals/analytics_receipts는 profile FK CASCADE·RLS/일반 권한 회수, service 수집/본인 최소 조회로 구현했다. totals.started_at은 수집 시작을 구분한다. analytics_settings는 singleton 스위치/started_at·profile_limit(≤1000)/day_limit(≤5000)·counter_day/accepted_count로 전체 날짜 예산을 원자 직렬화한다. raw session/IP/UA/path는 보관하지 않고 Worker HMAC(profile/day/session)만 영수증 키로 저장한다. 영수증47h+시간별 정상 정리 여유로48h, 일별은365 달력일·총계유지다. 기존 단일 Cron에500행/분리커밋 analytics drain을 연결했다. service만 target/record/prune, active 본인만 my_analytics를 실행한다. 입력/예산/날짜/잠금/원본/키/복구 근거는 docs/25를 따른다.
+
+## #36 공개 읽기 경계
+
+profiles/animals/animal_photos/growth_records/social_links/external_links/schedules의 anon/authenticated 원본 테이블·열 권한은 없다. RLS는 방어층으로 남긴다. public_page/public_schedules/public_animal_growth만 빈 search_path/완전한 스키마 지정·명시적공개 조건으로 최소 DTO를 반환한다. 소유자 JWT로 이 공개 RPC를 호출해도 비공개 자식을 포함하지 않는다. 공개 파일 ID는 ready/동일소유자/용도·연결 조건을 검사하고 실제 파일 접근은 기존 media_access의 현재 공개/저장 조건을 별도로 검사한다. 관리/서비스 API는 기존 계약을 유지한다. 과거 invoker/열 SELECT 설명은 변경 전 기록이다.
