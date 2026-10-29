@@ -1,0 +1,49 @@
+{
+  "issue": 20,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/20",
+  "branch": "codex/feat/20-schedules",
+  "baseSha": "966d0c3f7017a9f81660d4b5c854f069fcafe1d7",
+  "scope": "F-06 일정 관리·서버 시각 상태/날짜 필터·원자적 목록 적용·공개 일정",
+  "acceptance": [
+    "일반기간/상시/수동종료·제목80/설명300·20개 한도·UTC/KST 경계 검증",
+    "활성/동의/소유권/RLS·서버ID·한revision/24h영수증·경합/원자성",
+    "전체집합 순서/노출/삭제 초안·쓰기중지 숨김/삭제/수동종료와 상대순서 유지",
+    "원본 목록/추가수정팝업·필터/드래그/키보드·미확인/실패/취소/충돌/이동보호",
+    "최소공개DTO/초기HTML/React·서버 기준시각/필터·7폭 직접비교",
+    "CLI migration/advisors/shadow·전체verify/PR리뷰/병합/main/보고·다음프로필"
+  ],
+  "plan": [
+    "원본 PC/모바일/추가팝업·전체보드 일정열/PC설명·공개요약 대조",
+    "일정/RLS·서버상태/날짜필터·단일저장/목록적용/공개·실제DB검증",
+    "원본 관리/팝업·일시/필터·초안/미확인/충돌/이동·공개React/Worker",
+    "7폭/단위/DB/브라우저·migration/shadow/advisors·전체verify",
+    "정상훅·PR/최신리뷰/명시적병합·main/보고·프로필독립이슈"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-일정관리.png",
+      "design/마이페이지-일정관리-m.png",
+      "design/마이페이지-일정관리2-m.png",
+      "design/링크페이지-m.png"
+    ],
+    "notes": "전체보드 x3300~4500,y1200~4400 왼쪽일정열/하단추가팝업·공통PC x0~3900,y8270~9270과 각PC/모바일 원본 실제확인. 378px중앙목록·우측추가·흰카드/손잡이·SOON초록/OPEN빨강/ALWAYS파랑/CLOSE회색·제목/기간/공개스위치/수정삭제/하단적용. 추가팝업 제목→기간설정없음/시작종료날짜시간→반복→상세내용→저장. 채택F06의 반복제외는 반복없음으로표시하며 수동종료/날짜필터/오류는 기존 체크/일시입력/notice 패턴 최소재사용. 공개 원본450x2557 상단 프로필아래의회색 요약2행(상태/제목/시계/날짜)을 따름.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 일정관리 PC/모바일/추가팝업·보드 설명과 공개 프로필 아래 회색 일정요약을 실제7폭 목록/팝업/공개 및390/1440하단과 대조했다. 378px열/340px팝업·흰 카드/손잡이/4색 상태·원형 선택/기존 입력·상세/저장취소를 유지한다. 반복은 채택F06의없음, 수동종료/날짜필터는 기존체크/일시입력/텍스트패턴 최소조합이며 필터 중 정렬 잠금·숨은 항목 보존을 안내한다. 날짜 네이티브 언어별 표시·정확한 폰트/주변공개셸 차이는#2/docs18에 남긴다."
+    },
+    "evidence": [
+      "docs/18-schedules.md",
+      "artifacts/schedules-20/{popup,list,public}-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/schedules-20/bottom-{390,1440}.png·unresolved-390.png·all-widths-review.png"
+    ]
+  },
+  "verification": {
+    "targeted": "65 real DB,7 unit,12 browser and3 management-shell passed;12 browser passed again after source spacing/controls/date-row adjustment",
+    "fullSuite": "Required final build+566:12 harness,36 unit,428 DB,10 media,80 E2E. Actual result/fingerprint .local/harness-verification.json",
+    "migration": "CLI20261029080057_schedules.sql; lint/security no warnings; local history matches/shadow diff empty after equivalent title CHECK reparse; previous migrations/data preserved",
+    "review": "Server-made IDs; profile-serialized whole-set applies; paused reductions/manual-close only; strict UTC/real calendar/precision; IANA Seoul overlap/gap/midnight filter normalization; immutable status function has no privileged reads. UI uses monotonic elapsed server time, keeps uncertain receipt until successful actual refresh, latest selection never silently replaces drafts. QA cleans only generated IDs."
+  }
+}

@@ -18,7 +18,7 @@
 
 큰 단계도 한 PR에 몰지 않고 명세 → 사용자 흐름 하나 → 실제 DB/RPC/UI → 실패/권한/복구 검사 → 원본 비교 → 문서/검증 → PR로 나눈다. 완료된 의존성이 main에 들어간 뒤 최신 origin/main에서 다음 이슈의 새 브랜치를 만든다. 각 PR은 실제 head/base/변경 파일/이슈/리뷰/mergeability를 확인하고 명시적 squash 병합 뒤 이슈 자동 종료·main 동기화를 확인해 중간보고한다. 직접 main push·자기 승인·auto-merge·Actions는 사용하지 않는다.
 
-1단계는 PR #13 리뷰 해결·build281개 검증/병합·#12 종료·main da5fc90 복귀로 완료했다. 2단계는 #14 / PR #15의 소유권 경합 보완을 포함한 build349개 검증·명시적 squash 병합·#14 종료·main ded76b7 복귀로 완료했다. 3단계의 외부 링크 #16 / PR #17은 build427개·해당head 자동리뷰completed/no findings·명시적병합·#16종료·main3c6773e복귀로 완료했다. SNS는 독립 #18/최신 main 브랜치에서 진행하며 다음은 일정이다. 이후 실제 상태는 docs/05, 기능 이슈/PR과 task 기록으로 갱신한다.
+1단계는 PR #13 리뷰 해결·build281개 검증/병합·#12 종료·main da5fc90 복귀로 완료했다. 2단계는 #14 / PR #15의 소유권 경합 보완을 포함한 build349개 검증·명시적 squash 병합·#14 종료·main ded76b7 복귀로 완료했다. 3단계의 외부 링크 #16 / PR #17은 build427개·해당head 자동리뷰completed/no findings·명시적병합·#16종료·main3c6773e복귀로 완료했다. SNS #18 / PR #19도 build482개·해당 head 자동 코드 리뷰 completed/no findings·명시적 병합·#18 종료·main966d0c3 복귀로 완료했다. 4단계 일정은 독립 #20/최신 main 브랜치에서 진행한다. 다음은 프로필/디자인이다. 이후 실제 상태는 docs/05, 기능 이슈/PR과 task 기록으로 갱신한다.
 
 ## 별도로 남겨 둘 항목
 
