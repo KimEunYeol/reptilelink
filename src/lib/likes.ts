@@ -1,0 +1,6 @@
+export type LikeState={count:number|null;available?:boolean;liked:boolean;ready:boolean;signed_in:boolean;is_owner:boolean};
+export type LikeCommand={slug:string;liked:boolean;id:string;started:number;wallStarted:number};
+export type LikeMember={id:string;created_at:string;author:{name:string;slug:string|null;avatar_asset_id:string|null}};
+export type LikeMembers={rows:LikeMember[];total:number;next:{before:string;id:string}|null};
+export function likeRequestExpired(started:number,now:number,wallStarted?:number,wallNow?:number){const limit=24*60*60*1000;return now-started>=limit||(wallStarted!==undefined&&wallNow!==undefined&&wallNow-wallStarted>=limit);}
+export function likeError(reason:unknown){const e=reason as {message?:string;hint?:string};if(e?.message==='RATE_LIMITED'){const seconds=Number(e.hint);return `좋아요 요청은 시간당 60회까지 가능합니다.${Number.isInteger(seconds)&&seconds>0&&seconds<=3600?` 약 ${Math.ceil(seconds/60)}분 후 다시 시도해주세요.`:''}`;}return null;}
