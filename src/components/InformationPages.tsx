@@ -2,16 +2,19 @@ import {useEffect,useId,useRef,useState,type FormEvent} from 'react';
 import {Link} from 'react-router-dom';
 import {SourcePage} from './SourcePage';
 import {supportAddress,supportDraft} from '../lib/support';
+import {policyAvailable,usePolicy,type PolicyBundle} from '../lib/policy';
 
-export function PolicyContent({privacy}:{privacy:boolean}){
- return <article className="source-policy"><p className="source-preparation">개발 확인용 안내 · 운영 문서 준비 중</p><p>현재 안내는 로컬 개발 흐름을 확인하기 위한 미리보기입니다. 실제 서비스의 {privacy?'개인정보 처리방침':'이용약관'}은 운영 주체와 수집·보관 기준을 확정한 후 게시합니다.</p><p>{privacy?'로컬 테스트 계정의 프로필과 개체 사진은 로컬 Supabase에 저장됩니다. 공개로 설정한 정보만 방문자에게 표시됩니다. 실명·연락처·민감한 자료 대신 테스트 데이터를 사용해주세요.':'초대·승인된 계정으로 개체 기록과 공개 페이지를 확인합니다. 결제·문자 인증·분양 거래 기능은 제공하지 않습니다.'}</p><p>이 안내를 정식 운영 문서로 사용하지 않습니다. 운영용 문서와 연락처가 게시되기 전에는 서비스 출시 검증이 완료된 상태가 아닙니다.</p></article>;
+export function PolicyContent({privacy,bundle}:{privacy:boolean;bundle:PolicyBundle|null}){
+ if(!policyAvailable(bundle))return <article className="source-policy"><p className="source-preparation">운영 문서를 준비 중입니다. 현재 필수 안내를 확인할 수 없습니다.</p></article>;
+ return <article className="source-policy"><p className="source-preparation">{bundle.mode==='preview'?'개발 확인용 안내 · 운영 문서 준비 중':'문서 버전'} · {bundle.version}</p>{(privacy?bundle.privacy:bundle.terms).split('\n\n').map((text,i)=><p key={i} style={{whiteSpace:'pre-wrap'}}>{text}</p>)}</article>;
 }
-export function PolicyDialog({privacy,onClose}:{privacy:boolean;onClose:()=>void}){
+export function PolicyDialog({privacy,onClose,bundle}:{privacy:boolean;onClose:()=>void;bundle:PolicyBundle|null}){
  const ref=useRef<HTMLDialogElement>(null),id=useId();useEffect(()=>{const previous=document.activeElement as HTMLElement|null,d=ref.current;d?.showModal();return()=>{d?.close();previous?.focus();};},[]);
- return <dialog className="source-policy-dialog" ref={ref} aria-labelledby={id} onCancel={e=>{e.preventDefault();onClose();}}><div className="source-dialog-heading"><h2 id={id}>{privacy?'개인정보 안내':'이용 안내'}</h2><button type="button" aria-label="안내 닫기" onClick={onClose}>×</button></div><div className="source-policy-scroll" tabIndex={0}><PolicyContent privacy={privacy}/></div><button type="button" className="button" onClick={onClose}>확인</button></dialog>;
+ return <dialog className="source-policy-dialog" ref={ref} aria-labelledby={id} onCancel={e=>{e.preventDefault();onClose();}}><div className="source-dialog-heading"><h2 id={id}>{privacy?'개인정보 안내':'이용 안내'}</h2><button type="button" aria-label="안내 닫기" onClick={onClose}>×</button></div><div className="source-policy-scroll" tabIndex={0}><PolicyContent privacy={privacy} bundle={bundle}/></div><button type="button" className="button" onClick={onClose}>확인</button></dialog>;
 }
 export function LegalPage({privacy,signedIn=false,onSignOut}:{privacy:boolean;signedIn?:boolean;onSignOut?:()=>void}){
- return <SourcePage signedIn={signedIn} onSignOut={onSignOut}><main className="source-info-main"><h1>{privacy?'개인정보처리방침':'이용약관'}</h1><PolicyContent privacy={privacy}/><Link className="button ghost" to="/">홈으로</Link></main></SourcePage>;
+ const policy=usePolicy();
+ return <SourcePage signedIn={signedIn} onSignOut={onSignOut}><main className="source-info-main"><h1>{privacy?'개인정보처리방침':'이용약관'}</h1>{policy.loading?<p role="status">안내를 불러오고 있어요.</p>:policy.error?<p className="notice" role="alert">{policy.error}</p>:<PolicyContent privacy={privacy} bundle={policy.data}/>}<button type="button" className="text-button" disabled={policy.loading} onClick={()=>void policy.load()}>안내 다시 불러오기</button><Link className="button ghost" to="/">홈으로</Link></main></SourcePage>;
 }
 export function HelpPage({signedIn=false,onSignOut}:{signedIn?:boolean;onSignOut?:()=>void}){
  const address=supportAddress(import.meta.env.VITE_SUPPORT_EMAIL),[name,setName]=useState(''),[email,setEmail]=useState(''),[body,setBody]=useState(''),[error,setError]=useState(''),[attempted,setAttempted]=useState(false);

@@ -1,3 +1,4 @@
+import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { collectionItems, collectionSchema, moveCollection, sexLabels, userMessage, type Animal, type CollectionItem, type Dashboard } from '../lib/domain';
@@ -139,7 +140,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
       {Array.from({length:pages},(_,i) => <button type="button" key={i} aria-label={`${i+1}페이지`} aria-current={currentPage === i ? 'page':undefined} onClick={() => setPage(i)}>{i+1}</button>)}
       <button type="button" aria-label="다음 페이지" disabled={currentPage === pages-1} onClick={() => setPage(currentPage+1)}><ChevronRight size={16}/></button>
     </nav>
-    {error && <p className="notice" role="alert">{error}</p>}
+    {error && <p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/></p>}
     {unresolved && <p className="notice" role="status">실제 저장 상태를 아직 확인하지 못했습니다. 재시도하거나 변경 취소로 저장 상태를 확인해주세요.</p>}
     {saved && <p className="success" role="status">목록을 적용했어요.</p>}
     {conflict && <div className="collection-feedback">

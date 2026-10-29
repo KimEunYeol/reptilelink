@@ -1,3 +1,4 @@
+import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { rpc } from '../lib/supabase';
@@ -31,7 +32,7 @@ export function PublicGrowth({ animalId }: { animalId: string }) {
   useEffect(() => { void load('month'); return () => { serial.current++; }; }, [animalId]);
   if (!data && !error) return null;
   return <section className="growth-section" aria-label="공개 성장 기록"><div className="growth-weight"><span>체중</span><strong>{data?.latest ? `${data.latest.weight_g}g` : '기록 없음'}</strong></div><div className="growth-periods">{growthPeriods.map(([p, label]) => <button key={p} type="button" aria-pressed={period === p} disabled={busy} onClick={() => { setPeriod(p); void load(p); }}>{label}</button>)}</div>
-    {error && <p className="notice" role="alert">{error}<button type="button" className="text-button" disabled={busy} onClick={() => void load(period)}>다시 불러오기</button></p>}
+    {error && <p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/><button type="button" className="text-button" disabled={busy} onClick={() => void load(period)}>다시 불러오기</button></p>}
     {data && <><GrowthChart data={data}/><ul className="growth-records">{data.records.map(r => <li key={r.measured_on}><strong>{r.weight_g}g</strong><time>{r.measured_on}</time></li>)}</ul>{data.next_before && <button type="button" className="growth-more" disabled={busy} onClick={() => void load(period, true)}>더보기</button>}</>}
   </section>;
 }
@@ -74,7 +75,7 @@ export function AnimalGrowth({ animal, refresh, onClose }: { animal: Animal; ref
   function edit(id: string, field: 'measured_on' | 'weight_g' | 'note', value: string) { setRows(old => old.map(r => r.id === id ? { ...r, [field]: value } : r)); setError(''); }
   function remove(id: string) { setRows(old => old.filter(r => r.id !== id)); if (baseline.some(r => r.id === id)) setRemoved(old => [...old, id]); }
   return <dialog ref={dialog} className="animal-edit" aria-labelledby="growth-title" onCancel={e => { e.preventDefault(); void discard(); }}><header className="animal-edit-heading"><h2 id="growth-title">성장 기록</h2><button type="button" className="icon-button" aria-label="성장 기록 닫기" disabled={busy} onClick={() => void discard()}><X size={20}/></button></header><form className="animal-edit-body" onSubmit={e => { e.preventDefault(); void save(); }}>
-    <p className="growth-animal-name">{animal.name}</p>{error && <p className="notice" role="alert">{error}</p>}{!data && !error && <p role="status" className="edit-photo-hint">기록을 불러오고 있습니다.</p>}{!data && error && <button type="button" className="text-button" onClick={() => void retryInitial()}>다시 불러오기</button>}
+    <p className="growth-animal-name">{animal.name}</p>{error && <p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/></p>}{!data && !error && <p role="status" className="edit-photo-hint">기록을 불러오고 있습니다.</p>}{!data && error && <button type="button" className="text-button" onClick={() => void retryInitial()}>다시 불러오기</button>}
     <fieldset className="growth-fields" disabled={busy || unresolved || conflict || !data}><legend className="sr-only">성장 기록 편집</legend>
       <div className="growth-weight"><span>체중</span><strong>{data?.latest ? `${data.latest.weight_g}g` : '기록 없음'}</strong></div><div className="growth-periods">{growthPeriods.map(([p, label]) => <button key={p} type="button" aria-pressed={period === p} onClick={() => void load(p)}>{label}</button>)}</div>
       {data && <GrowthChart data={data}/>}<p className="edit-photo-hint">그래프는 저장된 기록 기준입니다.</p>

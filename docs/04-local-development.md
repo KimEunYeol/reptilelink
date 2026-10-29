@@ -95,3 +95,7 @@ npm run local:cleanup
 /help는 실제문의채널이없으면 준비상태의원본폼을보여준다. 실제공개연락처를확인한뒤 VITE_SUPPORT_EMAIL을설정하면 사용자가메일앱에서직접발송할초안을연결한다. 이값은공개연락처이며비밀키가아니다. 자동접수/SMTP/API/메일발송을구성하지않았고외부앱동작/실제수신은데스크톱에서확인한다. local:env는기존추가환경값을보존한다. 약관·개인정보본문은현재개발확인용이며실제운영자료와버전연결/재동의#46은별도이다.
 
 인증/온보딩/관리HTML은로컬Worker에서no-store/no-referrer를검사한다. assets.run_worker_first는해당경로와기존api/u에만적용하며assets/CSS/JS는직접제공한다. 운영배포/공급업체OAuth를검증했다는뜻이아니다.
+
+## 필수 안내 로컬 미리보기 (#46)
+
+local:start는 신규 schema migration 이후 loopback에 local-policy-preview를 실행한다. 별도 준비는 npm run local:policy-preview다. 기존 설정/동의/버전을 덮어쓰지 않고 최초 로컬 설정만 만든다. 일반 쓰기에 현재 동의가 필요하며 기존 회원은 /onboarding에서 확인한다. 운영 자료나 게시를 준비한 명령이 아니며 새 migration만 적용한 원격은 미준비 상태다. [문서 버전/재동의·운영 입력점](31-policy-version-renewal.md)을 따른다.

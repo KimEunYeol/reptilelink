@@ -1,3 +1,4 @@
+import {PolicyRenewalLink} from './PolicyRenewalLink';
 import {publicLoginHref} from '../lib/authReturn';
 import {useEffect,useRef,useState,type FormEvent,type MutableRefObject} from 'react';
 import {Link} from 'react-router-dom';
@@ -60,7 +61,7 @@ export function Comments({animalId,manage=false,closeGuard,onClose,onCount}:{ani
   {report&&<form className="comment-report-form edit-fields" onSubmit={sendReport} aria-label="신고 접수"><h4>{report.kind==='comment'?'댓글':'개체'} 신고</h4><label>사유<select aria-label="신고 사유" value={reason} disabled={disabled} onChange={e=>setReason(e.target.value as keyof typeof reportReasons)}>{Object.entries(reportReasons).map(([code,label])=><option key={code} value={code}>{label}</option>)}</select></label><label>설명<textarea aria-label="신고 설명" rows={3} value={detail} disabled={disabled} onChange={e=>setDetail(e.target.value)}/></label><small>설명은 500자 이내로 입력해주세요. 신고 내용은 운영자만 확인합니다.</small><div className="edit-actions"><button type="button" className="button ghost" disabled={disabled} onClick={()=>{setReport(null);setDetail('');}}>취소</button><button className="button" disabled={disabled}>신고 접수하기</button></div></form>}
   {pending&&<div className="edit-conflict"><p className="notice" role="alert">처리 결과를 확인하고 있습니다. 확인될 때까지 입력과 이동이 잠깁니다.</p><button type="button" className="text-button" disabled={busy||identityChanged} onClick={()=>void run(pending)}>같은 요청 결과 확인</button></div>}
   {(closing||navigation.blocked)&&<div className="edit-conflict" data-navigation-prompt><p className="notice" role="alert">{busy||pending?'요청 결과를 먼저 확인해주세요.':'작성 중인 내용이 있습니다. 닫으면 입력이 사라집니다.'}</p><button ref={navigation.blocked?navigation.stayButton:focus} type="button" className="text-button" onClick={()=>{setClosing(false);navigation.stay();}}>계속 작성</button><button type="button" className="text-button" disabled={busy||Boolean(pending)} onClick={()=>discard(navigation.blocked)}>입력 버리고 이동</button></div>}
-  {notice&&<p role="status" className="comment-hint">{notice}</p>}{error&&<p className="notice" role="alert">{error}</p>}
+  {notice&&<p role="status" className="comment-hint">{notice}</p>}{error&&<p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/></p>}
   {!pending&&<button type="button" className="text-button comment-refresh" disabled={locked} onClick={()=>void refresh()}>{loaded?'댓글 새로 확인':'댓글 다시 불러오기'}</button>}
  </section>;
 }

@@ -1,3 +1,4 @@
+import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { animalEditSchema, seoulDate, sexLabels, statusLabels, userMessage, type Animal, type AnimalEditInput, type Dashboard } from '../lib/domain';
@@ -190,7 +191,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
       {busy && <p className="edit-photo-hint" aria-live="polite">{progress}</p>}
       {unresolved && <p className="edit-photo-hint">저장 결과를 확인하지 못했습니다. 같은 요청으로 다시 저장하거나 최신 값을 확인해주세요. 취소할 때도 실제 저장 상태를 확인합니다.</p>}
       {unresolved && !conflict && <button type="button" className="text-button" disabled={busy} onClick={() => { setConflict(true); setLatest(null); }}>최신 값 검토</button>}
-      {error && <p className="notice" role="alert">{error}</p>}
+      {error && <p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/></p>}
       {conflict && <div className="edit-conflict">
         {!latest ? <button type="button" className="button ghost" disabled={busy} onClick={inspectLatest}>최신 값 확인</button> : <>
           <dl className="detail-info" aria-label="최신 저장값">{Object.entries(latest.data).map(([key, value]) =>

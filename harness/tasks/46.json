@@ -1,0 +1,41 @@
+{
+  "issue": 46,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/46",
+  "branch": "codex/fix/46-required-policy-renewal",
+  "baseSha": "49f92eacf4c6806cb07ddcd644fd42d0325c506f",
+  "scope": "필수 문서 버전/본문 중앙 기준·기존 회원 재동의·동일 표시 버전 확인과 새 탭 복구",
+  "acceptance": [
+    "새 QA 기존 프로필 동의 누락의 저장거절/재동의부재 실제 재현",
+    "불변 문서버전·최소 공개 본문/본인 상태·타인/설정 직접권한 차단",
+    "표시 버전/지문/양필수 확인의 원자적·반복 안전 기록, 불일치/미준비 거절",
+    "원본 체크/약관창 재사용·기존/신규 및 공개복귀·미저장/미확인/탈퇴보호",
+    "새 CLI schema migration/diagnostics/shadow·실제 DB/브라우저/7폭/전체verify·리뷰/병합/main/보고"
+  ],
+  "plan": [
+    "명세·원본·현재 함수/권한·새 QA 재현 확인",
+    "중앙 문서/요구조건·표시 버전 동의·로컬preview 준비",
+    "신규/기존 폼·공개복귀·오류에서새탭연결·실제검증",
+    "진단/생성migration/문서·전체검증·최신리뷰·명시적병합/main/보고 후39"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/회원가입.png",
+      "design/회원가입-m.png"
+    ],
+    "notes": "PC/m 가입 원본과 전체보드 인증/약관(top/lower:650,1000,1500,4900)을 실제재열람. 원본 단일체크박스박스/전체필수동의·좁은흰약관스크롤창/닫기·녹색확인 재사용. D01/06/07 유지, 법적 예시문서/연락처 사용없음. 새로운재동의조합은 같은폼패턴만사용한다.",
+    "review": {
+      "status": "passed",
+      "summary": "가입PC/m·전체보드 원본필수체크박스/좁은약관창을재열람하고7폭의 실제체크·dialog/Escape/초점·이탈과대표390/1440캡처를직접비교했다. 기존 gray탈퇴/공통셸 유지, 새장식/브랜드/법적예시/마케팅/SMS없음. 실제서버본문/버전연결과기존회원조합은같은폼패턴이다. 공개복귀·응답유실재확인·편집창새탭·입력/한revision·미준비/승인보호를검증했다. 운영본문/연락처/폰트/외부OAuth/배포는미검증."
+    },
+    "evidence": [
+      "artifacts/policy-46/{renew,dialog}-{320,360,390,450,768,1440,1920}.png",
+      "scripts/test-policy.mjs:44 / scripts/test-policy-races.mjs:2 actual checks",
+      "tests/e2e/policy-renewal.spec.ts:6 browser flows / existing auth-source10",
+      "docs/31-policy-version-renewal.md",
+      "CLI advisors/lint no warning/errors; generated migration20261029180915 and shadow diff empty"
+    ]
+  }
+}
