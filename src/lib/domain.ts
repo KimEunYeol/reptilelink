@@ -47,10 +47,10 @@ export function moveCollection(items: CollectionItem[], from: number, to: number
 }
 export type Photo = { asset_id: string; sort_order: number };
 export type Animal = AnimalInput & { id: string; birth_date: string | null; sort_order: number; photos: Photo[] };
-export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string };
+export type Profile = { id: string; slug: string; display_name: string; bio: string; is_published: boolean; revision: number; first_published_at: string | null; tagline?: string; theme_token?: string; avatar_asset_id?:string|null;cover_asset_id?:string|null };
 export type PendingAnimalDeletion = { id: string; name: string; requested_at: string };
 export type Dashboard = { account_status: string; profile: Profile | null; animals: Animal[]; pending_deletions?: PendingAnimalDeletion[]; usage: { stored_bytes: number; reserved_bytes: number; limit_bytes: number } | null };
-export type PublicPage = { server_now?: string; schedules?: PublicSchedule[]; socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token'>; animals: Animal[] };
+export type PublicPage = { server_now?: string; schedules?: PublicSchedule[]; socials?: PublicSocial[]; links?: PublicLink[]; profile: Pick<Profile, 'slug' | 'display_name' | 'bio' | 'tagline' | 'theme_token' | 'avatar_asset_id' | 'cover_asset_id'>; animals: Animal[] };
 export const sexLabels = { unknown: '미구분', male: '수컷', female: '암컷' };
 export const statusLabels = { not_listed: '함께하는 아이', available: '분양 중', reserved: '예약 중', rehomed: '분양 완료' };
 export function formatBytes(bytes: number) { return bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`; }
