@@ -553,3 +553,23 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .schedule-editor input[type=checkbox]:checked { border-color:#2cbb50; background:radial-gradient(circle,#fff 0 4px,#2cbb50 5px); }
 .schedule-editor .edit-actions .button { min-width:180px; }
 .public-schedules .schedule-summary-date { flex:0 0 auto; max-width:none; white-space:nowrap; }
+
+/* Source design-settings text rows share the SNS form's single Apply button. */
+.design-manager { width:100%; margin-top:88px; }
+.design-profile-fields { min-width:0; padding:0; margin:0; border:0; }
+.design-profile-fields > label { display:grid; grid-template-columns:76px minmax(0,1fr); gap:18px; align-items:start; margin-bottom:40px; }
+.design-profile-fields > label > span { padding-top:17px; font-size:13px; font-weight:600; color:#7d8480; }
+.design-profile-fields input,.design-profile-fields textarea { width:100%; min-width:0; border:1px solid #a9aca9; background:#fff; border-radius:12px; padding:14px 16px; box-shadow:0 2px 3px #00000010; font-size:14px; }
+.design-profile-fields input { min-height:54px; }
+.design-profile-fields textarea { min-height:166px; display:block; }
+.design-character-count { display:block; text-align:right; margin-top:8px; font-size:13px; color:#5d6660; }
+.design-manager .social-manager { margin-top:54px; }
+.latest-design-bio,.public-bio { white-space:pre-wrap; overflow-wrap:anywhere; }
+.public-intro .public-tagline { margin:0 0 4px; color:#252c28; font-size:20px; line-height:1.45; }
+.public-intro h1 { margin:0 0 22px; font-weight:700; overflow-wrap:anywhere; }
+.public-intro .public-bio { margin:0; font-size:16px; line-height:1.8; }
+@media(max-width:359px) { .design-profile-fields > label { grid-template-columns:60px minmax(0,1fr); gap:12px; } }
+.public-intro h1 { font-size:24px; line-height:1.4; }
+.public-intro .public-bio { color:#4d5750; }
+.public-intro .public-tagline { overflow-wrap:anywhere; }
+.public-intro { margin-top:0; padding-top:6px; }

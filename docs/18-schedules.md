@@ -45,3 +45,8 @@ public_schedules(slug,from,to)는 invoker/RLS로 활성·상위 공개·항목 �
 로컬 SQL 반복 검증 → lint/보안 advisors 경고 이상 없음 → CLI migration new의 빈 작업 파일 제거 → 실제 db pull --local 출력20261029080057_schedules.sql → 로컬 이력 일치/shadow 재현 차이 없음으로 확인했다. 동등한 BETWEEN CHECK가 CLI 출력에서 AND로 정규화되는 표현 차이는 로컬 동일 정의 재파싱으로 맞췄다. 기존 적용 migration은 수정/재생하지 않았고 DB/볼륨도 초기화하지 않았다. 누적 database/schema.sql은 검토 snapshot이다.
 
 최종 필수 전체 구성은 build566개(하네스12·단위36·DB428·미디어10·Playwright80)다. 최종 실제 결과/파일 해시는.local/harness-verification.json과 PR 기록을 따른다. 정상 훅·최신 원격 리뷰/보완·명시적 병합·이슈 종료/main 복귀/보고 뒤 프로필/디자인을 계속한다. 비용0원·단일 에이전트·Actions 비활성·외부 콘솔/운영 배포 미수행을 유지한다.
+
+
+## 병합 확인
+
+PR #21 head d9de37c의 최종 build566개(2026-10-29T08:10:45.164Z), 해당 head 자동 코드 리뷰 completed/no findings·미해결 스레드0·원격23개 파일/head/base/이슈 연결/clean을 확인해 squash 병합했다. #20 자동 종료·main d9087bf90686e761becd2d386daab92b5666678a의 깨끗한 상태와 검증 트리216549b 일치를 확인하고 보고했다. 이후 프로필 텍스트·SNS 단일 적용 #22를 최신 main의 새 브랜치로 계속한다.

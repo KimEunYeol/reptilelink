@@ -1,0 +1,10 @@
+import {z} from 'zod';
+import {socialInputSchema,type SocialItem,type SocialSnapshot} from './socials';
+const oneLine=(max:number,label:string,required=false)=>z.string().trim().refine(v=>(!required||v.length>0)&&[...v].length<=max&&!/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/.test(v),`${label}은 ${required?'1~':''}${max}자 이내의 한 줄로 입력해주세요.`);
+export const profileNameSchema=oneLine(40,'페이지 이름',true);
+export const profileBioSchema=z.string().trim().refine(v=>[...v].length<=300&&!v.includes('\u0000'),'페이지 설명은300자 이내로 입력해주세요.');
+export const designProfileSchema=z.object({display_name:profileNameSchema,tagline:oneLine(80,'페이지 소개'),bio:profileBioSchema}).strict();
+export type DesignProfile=z.infer<typeof designProfileSchema>;
+export type DesignSnapshot=SocialSnapshot & {profile:DesignProfile};
+export const designInputSchema=z.object({profile:designProfileSchema,links:socialInputSchema}).strict();
+export type DesignCommand={p_profile:DesignProfile;p_items:SocialItem[];p_expected:number;p_request_id:string};

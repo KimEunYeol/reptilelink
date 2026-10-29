@@ -33,7 +33,7 @@ test.describe('source SNS with real local QA identity',()=>{
  });
 
  test('lost apply response retains a fixed request and creates one revision',async({page})=>{
-  await login(page);await url(page).fill('https://example.com/lost');await toggle(page).click();const before=(await data()).revision,seen:string[]=[];let first=true;await page.route('**/rest/v1/rpc/save_social_links',async r=>{seen.push(r.request().postDataJSON().p_request_id);if(first){first=false;await r.fetch();await r.abort('failed');}else await r.continue();});await apply(page).click();await expect(manager(page).getByRole('alert')).toBeVisible();await expect(url(page)).toBeDisabled();await apply(page).click();await expect(manager(page).getByRole('status')).toContainText('SNS를 적용');expect(new Set(seen).size).toBe(1);expect(seen).toHaveLength(2);expect((await data()).revision).toBe(before+1);expect((await data()).links).toHaveLength(1);
+  await login(page);await url(page).fill('https://example.com/lost');await toggle(page).click();const before=(await data()).revision,seen:string[]=[];let first=true;await page.route('**/rest/v1/rpc/save_design',async r=>{seen.push(r.request().postDataJSON().p_request_id);if(first){first=false;await r.fetch();await r.abort('failed');}else await r.continue();});await apply(page).click();await expect(manager(page).getByRole('alert')).toBeVisible();await expect(url(page)).toBeDisabled();await apply(page).click();await expect(manager(page).getByRole('status')).toContainText('SNS를 적용');expect(new Set(seen).size).toBe(1);expect(seen).toHaveLength(2);expect((await data()).revision).toBe(before+1);expect((await data()).links).toHaveLength(1);
  });
 
  test('failed authoritative refresh locks cancellation and Back until reconciliation succeeds',async({page})=>{
@@ -41,7 +41,7 @@ test.describe('source SNS with real local QA identity',()=>{
  });
 
  test('latest inspection preserves conflicting input until explicit selection',async({page})=>{
-  await login(page);await url(page).fill('https://example.com/my-draft');await saveApi(seeded());await apply(page).click();await expect(manager(page).getByRole('alert')).toContainText('다른 화면');await manager(page).getByRole('button',{name:'최신 SNS 확인',exact:true}).click();await expect(manager(page).getByRole('region',{name:'최신 SNS 내용'})).toContainText('https://example.com/band');await expect(url(page)).toHaveValue('https://example.com/my-draft');await manager(page).getByRole('button',{name:'최신 SNS 사용',exact:true}).click();await expect(url(page)).toHaveValue('https://example.com/band');await expect(apply(page)).toBeDisabled();await url(page).fill('https://example.com/reviewed');await apply(page).click();await expect(manager(page).getByRole('status')).toContainText('SNS를 적용');expect((await data()).links[0].url).toBe('https://example.com/reviewed');
+  await login(page);await url(page).fill('https://example.com/my-draft');await saveApi(seeded());await apply(page).click();await expect(manager(page).getByRole('alert')).toContainText('다른 화면');await manager(page).getByRole('button',{name:'최신 설정 확인',exact:true}).click();await expect(manager(page).getByRole('region',{name:'최신 설정 내용'})).toContainText('https://example.com/band');await expect(url(page)).toHaveValue('https://example.com/my-draft');await manager(page).getByRole('button',{name:'최신 설정 사용',exact:true}).click();await expect(url(page)).toHaveValue('https://example.com/band');await expect(apply(page)).toBeDisabled();await url(page).fill('https://example.com/reviewed');await apply(page).click();await expect(manager(page).getByRole('status')).toContainText('SNS를 적용');expect((await data()).links[0].url).toBe('https://example.com/reviewed');
  });
 
  test('paused writes permit hiding and deleting but reject fresh addresses',async({page})=>{
@@ -49,6 +49,6 @@ test.describe('source SNS with real local QA identity',()=>{
  });
 
  test('an initial failed read never displays fabricated slots and retry restores the six rows',async({page})=>{
-  await page.route('**/rest/v1/rpc/my_social_links',r=>r.abort('failed'));await enter(page);await expect(manager(page).getByRole('alert')).toBeVisible();await expect(manager(page).getByRole('textbox')).toHaveCount(0);await page.unroute('**/rest/v1/rpc/my_social_links');await manager(page).getByRole('button',{name:'다시 불러오기',exact:true}).click();await expect(manager(page).getByRole('textbox')).toHaveCount(6);
+  await page.route('**/rest/v1/rpc/my_design',r=>r.abort('failed'));await enter(page);await expect(manager(page).getByRole('alert')).toBeVisible();await expect(manager(page).getByRole('textbox')).toHaveCount(0);await page.unroute('**/rest/v1/rpc/my_design');await manager(page).getByRole('button',{name:'다시 불러오기',exact:true}).click();await expect(manager(page).getByRole('textbox')).toHaveCount(6);
  });
 });
