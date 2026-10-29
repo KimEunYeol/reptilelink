@@ -1,0 +1,145 @@
+[
+  {
+    "file": "phones-pc.png",
+    "source": "design/메인화면.png",
+    "rectangle": [
+      975,
+      230,
+      445,
+      535
+    ],
+    "sourceSha256": "1e3210da362e9880c3b26a097638c32a0d147419395e13426ee84a2a161f9557",
+    "sha256": "46131765150b0dc2d9f843141245510fb3f240943741dc7f25f4b4da1cb4ecbe",
+    "bytes": 196273
+  },
+  {
+    "file": "phones-mobile.png",
+    "source": "design/메인화면-m.png",
+    "rectangle": [
+      85,
+      420,
+      315,
+      380
+    ],
+    "sourceSha256": "a639ddbfbf380d3a0abe29f82e15bec9d910b95cbe599144b2c6e24ee0d47ac2",
+    "sha256": "4ed85d59c6bdd7a424df580e7eba2e1542ef7a53ab41d507957db9cc233f465b",
+    "bytes": 112990
+  },
+  {
+    "file": "reptiles-pc.png",
+    "source": "design/메인화면.png",
+    "rectangle": [
+      408,
+      1028,
+      552,
+      120
+    ],
+    "sourceSha256": "1e3210da362e9880c3b26a097638c32a0d147419395e13426ee84a2a161f9557",
+    "sha256": "079cb138d83cd167004dcea75e94897a401bff925add050dbc311a5c0cb61541",
+    "bytes": 29043
+  },
+  {
+    "file": "comments-pc.png",
+    "source": "design/메인화면.png",
+    "rectangle": [
+      975,
+      885,
+      545,
+      290
+    ],
+    "sourceSha256": "1e3210da362e9880c3b26a097638c32a0d147419395e13426ee84a2a161f9557",
+    "sha256": "6901bb88c6589c8a419fbe75e7bffeb42921cf80bb5eb229756d654e5d059364",
+    "bytes": 74486
+  },
+  {
+    "file": "comments-mobile.png",
+    "source": "design/메인화면-m.png",
+    "rectangle": [
+      30,
+      1170,
+      390,
+      320
+    ],
+    "sourceSha256": "a639ddbfbf380d3a0abe29f82e15bec9d910b95cbe599144b2c6e24ee0d47ac2",
+    "sha256": "75f05c4632c28d0042b403172b50eb22219fdb569009ce4164c036ce4231d84c",
+    "bytes": 56451
+  },
+  {
+    "file": "growth-pc.png",
+    "source": "design/메인화면.png",
+    "rectangle": [
+      370,
+      1360,
+      790,
+      430
+    ],
+    "sourceSha256": "1e3210da362e9880c3b26a097638c32a0d147419395e13426ee84a2a161f9557",
+    "sha256": "70dc050d9d3eda12a029c8fbe1681727dba71d58097b1c0e73ec8ca6c10d318d",
+    "bytes": 86074
+  },
+  {
+    "file": "growth-mobile.png",
+    "source": "design/메인화면-m.png",
+    "rectangle": [
+      0,
+      1860,
+      450,
+      320
+    ],
+    "sourceSha256": "a639ddbfbf380d3a0abe29f82e15bec9d910b95cbe599144b2c6e24ee0d47ac2",
+    "sha256": "8aad3f28cbf22cd8cc825ad53b07f21fc8e894e19608410ff9f3fdc890c9fd4c",
+    "bytes": 52801
+  },
+  {
+    "file": "calendar-pc.png",
+    "source": "design/메인화면.png",
+    "rectangle": [
+      550,
+      2135,
+      850,
+      380
+    ],
+    "sourceSha256": "1e3210da362e9880c3b26a097638c32a0d147419395e13426ee84a2a161f9557",
+    "sha256": "ea10e3acd834c7c2307c62963d5a0b78315195287f9d47de6d8507a4aaa3c155",
+    "bytes": 55264
+  },
+  {
+    "file": "calendar-mobile.png",
+    "source": "design/메인화면-m.png",
+    "rectangle": [
+      25,
+      2550,
+      400,
+      325
+    ],
+    "sourceSha256": "a639ddbfbf380d3a0abe29f82e15bec9d910b95cbe599144b2c6e24ee0d47ac2",
+    "sha256": "7e22522f5eac54eaac690f20ade61eef10a24267842d8e9e39b9ce42ad120a12",
+    "bytes": 33428
+  },
+  {
+    "file": "socials-pc.png",
+    "source": "design/메인화면.png",
+    "rectangle": [
+      0,
+      2875,
+      1920,
+      340
+    ],
+    "sourceSha256": "1e3210da362e9880c3b26a097638c32a0d147419395e13426ee84a2a161f9557",
+    "sha256": "caacf51908d11491bff3629a0fbf3b8b598a919ddb6e4f6ff7b2ad0040318fa3",
+    "bytes": 92897
+  },
+  {
+    "file": "socials-mobile.png",
+    "source": "design/메인화면-m.png",
+    "rectangle": [
+      0,
+      3255,
+      450,
+      420
+    ],
+    "sourceSha256": "a639ddbfbf380d3a0abe29f82e15bec9d910b95cbe599144b2c6e24ee0d47ac2",
+    "sha256": "26c486aff7296fa7398a1b22591b1518d3115bcc036b20ba662bf9a600fbe2fb",
+    "bytes": 49303
+  }
+]

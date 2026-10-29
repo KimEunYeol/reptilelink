@@ -1,0 +1,41 @@
+{
+  "issue": 37,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/37",
+  "branch": "codex/design/37-source-main-common",
+  "baseSha": "df800b71995d88dc4bd35c8710a044bed20e7092",
+  "scope": "design 원본 메인5구간·부분 자산/브랜드와 공통 대비/폰트 마감",
+  "acceptance": [
+    "전체보드/PC/m 원본 순서·배치·곡률·타이포 관계와 기존 D07 유지",
+    "원본 부분이미지 출처/좌표/해시 및 명확한 예시·HTML 제목/실제 CTA",
+    "공통 원본 로고/푸터·일반 버튼/본문 최소대비/초점과 폰트fallback 기록",
+    "7폭/키보드/CTA/긴화면·실제Worker/전체검증/최신리뷰/병합/main/보고"
+  ],
+  "plan": [
+    "원본 PC/m/전체보드 메인·공통 설명 재확인 및 부분추출 확인",
+    "메인5구간과 원본공통브랜드/푸터·최소대비 구현",
+    "실제7폭/키보드/CTA/예시/원본 직접대조·필요수정",
+    "전체검증/리뷰/명시적병합/main/보고 후#38"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/메인화면.png",
+      "design/메인화면-m.png",
+      "design/최하단.png"
+    ],
+    "notes": "실제 PC1920×3647/m450×4191·모바일상/중/하crop와 전체보드메인(0,2800,700,3300), PC공통(0,8400,5000,1000) 설명 확인. 초록히어로/폰예시→개체·댓글→회색성장→흰일정→초록SNS→회색푸터. PC메인만 가로확장 예외·다른화면은동일모바일본문 유지. 평생무제한/경매·예시운영자료는 채택D07/범위와 달라 실제초대·승인과일정만 안내. 새일러스트/로고/레이아웃방향 없음. 원본작은흰글자/green2.52의 최소대비보완과 실제fontfallback을 별도기록.",
+    "review": {
+      "status": "passed",
+      "summary": "원본PC1920/m450·전체보드메인/공통설명과 실제7폭전체화면을직접비교했다. 원본5구간·PC가로/모바일세로·부분그림/곡률·헤더푸터를복원하고320~390제목/패딩을최소반응형조정했다. 원본배경픽셀#31ba51/그림접합확인·어두운문자대비/가중치fallback·명확한예시/주소형식과실제가입/로그인/관리/정책이동을확인했다. source화이트글자/평생무제한/경매·회사예시를그대로운영표시하지않는차이를문서화했다. 정확한font/운영자료·권리와다른화면내부는남는다."
+    },
+    "evidence": [
+      "artifacts/main-37/main-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/main-37/facts.json:actual DOM colors/contrast and source pixel",
+      "public/brand/main/manifest.json:11 crop coordinates/source/result SHA256",
+      "tests/e2e/main-source.spec.ts and tests/e2e/management-shell.spec.ts:7 target flows",
+      "docs/29-source-main.md"
+    ]
+  }
+}

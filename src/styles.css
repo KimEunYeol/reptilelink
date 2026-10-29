@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme { --color-reptile: #2cbb50; --font-sans: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif; }
-:root { font-family: var(--font-sans); color: #203229; background: #fff; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-weight: 400; }
+:root { font-family: var(--font-sans); color: #203229; background: #fff; font-synthesis: weight; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-weight: 400; }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; }
 button, input, select, textarea { font: inherit; }
@@ -15,11 +15,11 @@ a { color: inherit; text-decoration: none; }
 button { color: inherit; }
 h1, h2, h3, p { margin: 0; }
 button { border: 0; background: none; }
-.button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 43px; border-radius: 10px; padding: 11px 19px; font-size: 13px; font-weight: 650; color: #fff; background: #2cbb50; border: 1px solid transparent; transition: background .18s, transform .18s; white-space: nowrap; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 43px; border-radius: 10px; padding: 11px 19px; font-size: 13px; font-weight: 650; color: #102a18; background: #31ba51; border: 1px solid transparent; transition: background .18s, transform .18s; white-space: nowrap; }
 .button:hover:not(:disabled) { background: #20a844; transform: translateY(-1px); }
 .button.ghost { background: #f4f6f4; color: #46554b; }
 .button.ghost:hover { background: #e9eeea; }
-.button.dark { background: #163e2b; }
+.button.dark { background: #163e2b; color: #fff; }
 .button.dark:hover { background: #0c3020; }
 .button.small { min-height: 34px; padding: 7px 12px; font-size: 11px; border-radius: 7px; }
 .icon-button { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; color: #6e7d72; border-radius: 8px; flex-shrink: 0; }
@@ -388,9 +388,9 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .management-usage { font-size: 11px; line-height: 1.8; color: #6d7671; margin-top: 24px; }
 .management-footer { background: #f5f5f5; margin-top: 40px; }
 .management-footer-inner { width: 100%; max-width: 1180px; margin: 0 auto; padding: 78px 46px; }
-.management-footer nav { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: #2cbb50; font-weight: 600; margin-top: 42px; }
+.management-footer nav { display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: #157f34; font-weight: 600; margin-top: 42px; }
 .management-footer-bottom { margin-top: 70px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.management-footer small { color: #7c838e; font-size: 12px; }
+.management-footer small { color: #626874; font-size: 12px; }
 .management-language { display: inline-flex; align-items: center; gap: 22px; padding: 12px 16px; border: 1px solid #b4ffc7; border-radius: 24px; background: #fff; font-size: 13px; }
 .management-language svg { color: #2cbb50; }
 @media (max-width: 650px) {
@@ -695,3 +695,68 @@ button.notification-message { cursor:pointer; }
 .views-line { stroke:#178f3c; stroke-width:1.2; }
 .views-point { fill:#178f3c; }
 .activity-statistics > .comment-hint { margin:8px 0; }
+
+/* #37: source main PC/mobile examples; real copy/actions remain HTML. */
+.source-main { color: #171717; background: #fff; }
+.source-main .management-footer { margin-top: 0; }
+.source-main h1, .source-main h2 { font-weight: 400; letter-spacing: -.055em; overflow-wrap: anywhere; }
+.source-main strong { font-weight: 750; }
+.source-main h2 { font-size: 26px; line-height: 1.4; }
+.source-main section > p, .main-community-copy > p, .main-growth-copy > p { font-size: 14px; line-height: 1.6; color: #626872; margin-top: 26px; }
+.main-example { margin: 0; position: relative; min-width: 0; }
+.main-example picture, .main-example img { display: block; width: 100%; height: auto; }
+.main-example figcaption { font-size: 11px; line-height: 16px; text-align: center; color: #5f6670; padding: 0 8px; }
+.main-hero { --hero-width: min(378px, calc(100vw - 70px)); width: var(--hero-width); margin: 0 auto; position: relative; padding-top: 64px; isolation: isolate; }
+.main-hero::before { content: ''; position: absolute; inset: 0 0 calc(var(--hero-width) * 89 / 378); border-radius: calc(var(--hero-width) * 50 / 378); background: #31ba51; z-index: -1; }
+.main-hero-copy { padding: 0 34px; color: #102a18; }
+.main-hero h1 { font-size: 30px; line-height: 1.3; }
+.main-hero-copy > p { margin-top: 18px; font-size: 14px; line-height: 21px; }
+.main-address-example { display: inline-flex; flex-wrap: wrap; gap: 4px; margin-top: 18px; padding: 8px 20px; border-radius: 30px; background: #fff; color: #20252a; font-size: 12px; line-height: 19px; font-weight: 650; max-width: 100%; }
+.main-address-example span { font-weight: 400; color: #626872; overflow-wrap: anywhere; }
+.main-phones { width: calc(var(--hero-width) * 315 / 378); margin: 26px calc(var(--hero-width) * 13 / 378) 0 auto; }
+.main-phones figcaption { position: absolute; bottom: 0; width: 100%; }
+.main-community { width: min(378px, calc(100% - 70px)); margin: 96px auto 116px; }
+.main-reptiles { display: block; width: 100%; height: auto; margin-top: 42px; }
+.main-community .main-example { margin: 28px -5px 0; }
+.main-growth { background: #f5f5f5; text-align: center; padding: 120px 0 64px; }
+.main-growth-inner { max-width: 1180px; margin: 0 auto; }
+.main-growth-copy { padding: 0 24px; }
+.main-growth .main-example { width: min(450px, 100%); margin: 24px auto 0; }
+.main-growth .main-example figcaption { margin-top: -20px; position: relative; }
+.main-calendar { text-align: center; padding: 120px 0 116px; }
+.main-calendar > h2, .main-calendar > p { padding: 0 24px; }
+.main-calendar .main-example { width: min(400px, calc(100% - 50px)); margin: 70px auto 0; }
+.main-socials { background: #31ba51; text-align: center; padding-top: 120px; color: #102a18; }
+.main-socials > h2, .main-socials > p { padding: 0 24px; }
+.source-main .main-socials > p { color: #102a18; margin-top: 24px; }
+.main-socials .main-example { width: min(450px, 100%); margin: 24px auto 0; }
+.main-socials figcaption { position: absolute; width: 100%; bottom: 16px; color: #102a18; }
+@media (min-width: 1000px) {
+ .main-hero { --hero-width: min(1104px, calc(100vw - 60px)); display: grid; grid-template-columns: 1fr 1fr; padding-top: 0; }
+ .main-hero::before { bottom: calc(var(--hero-width) * 128 / 1104); border-radius: 50px; }
+ .main-hero-copy { padding: calc(var(--hero-width) * 112 / 1104) 0 0 calc(var(--hero-width) * 108 / 1104); }
+ .main-hero h1 { font-size: clamp(32px, 3vw, 40px); line-height: 1.26; }
+ .main-hero-copy > p { margin-top: 32px; }
+ .main-address-example { margin-top: 28px; }
+ .main-phones { width: calc(var(--hero-width) * 445 / 1104); margin: calc(var(--hero-width) * 122 / 1104) 0 0 calc(var(--hero-width) * 15 / 1104); }
+ .main-community { width: min(1104px, calc(100% - 60px)); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; margin-bottom: 120px; }
+ .main-community h2, .main-growth h2, .main-calendar h2, .main-socials h2 { font-size: 30px; }
+ .main-reptiles { width: 100%; margin-top: 96px; }
+ .main-community .main-example { margin: 104px -5px 0; }
+ .main-growth { padding: 70px 0; }
+ .main-growth-inner { display: grid; grid-template-columns: minmax(0, 790px) minmax(0, 1fr); gap: 28px; align-items: center; }
+ .main-growth-copy { grid-column: 2; grid-row: 1; padding: 0 16px; }
+ .main-growth .main-example { grid-column: 1; grid-row: 1; width: 100%; margin: 0; }
+ .main-calendar { padding: 100px 0 88px; }
+ .main-calendar .main-example { width: min(850px, calc(100% - 60px)); margin-top: 70px; }
+ .main-socials { padding-top: 100px; }
+ .main-socials .main-example { width: 100%; margin-top: 64px; }
+}
+@media (max-width: 600px) { .source-main .management-header { height: 100px; } }
+@media (max-width: 420px) {
+ .main-hero { --hero-width: min(378px, calc(100vw - 40px)); }
+ .main-hero-copy { padding: 0 24px; }
+ .main-hero h1 { font-size: clamp(24px, 6.7vw, 28px); }
+ .source-main h2 { font-size: clamp(20px, 5.8vw, 26px); }
+ .main-community { width: min(378px, calc(100% - 40px)); }
+}
