@@ -419,3 +419,47 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .animal-deletion-pending li { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid #e5e7eb; padding: 12px 0; }
 .animal-deletion-pending li span { min-width: 0; overflow-wrap: anywhere; }
 .animal-deletion-pending button { flex-shrink: 0; }
+
+/* Growth area: source edit/detail weight row, period pills, sparse green chart and gray record rows. */
+.growth-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.growth-animal-name { font-size: 13px; font-weight: 700; overflow-wrap: anywhere; margin-bottom: 16px; }
+.growth-entry { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #e5e7eb; padding: 14px 12px; font-size: 12px; }
+.growth-entry > span { width: 68px; color: #8191a6; }
+.growth-entry small { width: 100%; color: #8191a6; }
+.growth-weight { display: flex; align-items: center; gap: 35px; padding: 16px 10px; font-size: 12px; }
+.growth-weight > span { color: #8191a6; }
+.growth-periods { display: flex; justify-content: center; gap: 5px; margin: 10px 0; }
+.growth-periods button { padding: 7px 9px; border-radius: 10px; background: #f6f6f6; font-size: 12px; }
+.growth-periods [aria-pressed=true] { background: #2cbb50; color: white; }
+.growth-chart { margin: 0 0 12px; }
+.growth-chart svg { display: block; width: 100%; }
+.growth-chart text { font-size: 10px; fill: #7c8580; }
+.growth-chart figcaption { font-size: 10px; color: #7c8580; text-align: center; }
+.growth-empty { padding: 32px 10px; text-align: center; color: #8191a6; font-size: 12px; }
+.growth-add { display: grid; place-items: center; width: 100%; border: 1px solid #e5e5e5; background: #f6f6f6; color: #bbb; height: 40px; border-radius: 12px; margin: 16px 0 5px; }
+.growth-records { list-style: none; padding: 0; margin: 0; }
+.growth-records > li { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #f6f6f6; border-radius: 12px; margin: 5px 0; padding: 12px; font-size: 12px; }
+.growth-records time { color: #718096; }
+.growth-records.growth-editor > li { display: block; padding: 8px; }
+.growth-record-line { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.growth-record-line > label { min-width: 0; margin: 0; }
+.growth-record-line > label:first-child { flex: 1; }
+.growth-record-line > label:nth-child(2) { flex: 2; }
+.animal-edit .growth-record-line input { border: 0; padding: 5px; box-shadow: none; border-radius: 0; background: transparent; width: 100%; min-width: 0; min-height: 34px; font-size: 12px; }
+.animal-edit .growth-record-line > label:first-child input { font-weight: 700; }
+.growth-record-line .icon-button { flex: 0 0 24px; width: 24px; height: 30px; padding: 3px; }
+.growth-more { display: block; width: 100%; margin: 14px 0; font-size: 12px; color: #6d7671; padding: 10px; }
+.growth-note { display: flex; flex-direction: column; gap: 7px; font-size: 11px; color: #8191a6; margin: 18px 0; }
+.growth-editor .growth-note { margin: 5px 0 0; }
+.animal-edit .growth-note textarea { font-size: 12px; border: 0; border-bottom: 1px solid #e5e7eb; border-radius: 0; padding: 6px; background: transparent; width: 100%; resize: vertical; min-height: 30px; }
+.growth-consent { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 12px; }
+.animal-edit .growth-consent input[type=checkbox] { appearance: auto; width: 18px; height: 18px; min-height: 0; padding: 0; margin: 0; flex: 0 0 18px; accent-color: #2cbb50; }
+.growth-private-preview { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.animal-edit .detail-photo { height: auto; aspect-ratio: 1.6; border-radius: 18px; }
+.animal-edit .detail-description { font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.animal-edit .growth-note > span, .animal-edit .growth-consent > span { color: #8191a6; }
+.animal-edit .detail-info dt { color: #8191a6; }
+.animal-edit .detail-info dd { color: #374151; overflow-wrap: anywhere; max-width: 180px; }
+.animal-edit-heading > div { min-width: 0; }
+.animal-edit-heading h2 { min-width: 0; overflow-wrap: anywhere; }
+.animal-edit-heading .icon-button { flex-shrink: 0; }

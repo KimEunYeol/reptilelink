@@ -4,6 +4,7 @@ import type { Session } from '@supabase/supabase-js';
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, CheckCircle2, ExternalLink, Eye, EyeOff, Leaf, LoaderCircle, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
 import { Gecko } from './components/Gecko';
 import { AnimalDelete, PendingAnimalDeletions } from './components/AnimalDelete';
+import { AnimalGrowth, PublicGrowth } from './components/AnimalGrowth';
 import { AnimalEdit } from './components/AnimalEdit';
 import { AnimalCollection } from './components/AnimalCollection';
 import { ManagementShell, ManagementShare } from './components/ManagementShell';
@@ -14,10 +15,10 @@ import { preparePhoto } from './lib/images';
 function Brand() { return <Link className="brand" to="/" aria-label="렙타일링크 홈"><span className="brand-mark"><Sprout size={23}/></span><span>Reptile<span className="brand-light">Link</span><i /></span></Link>; }
 function Spinner() { return <div className="loading" role="status"><LoaderCircle className="spin" size={23}/> 불러오고 있어요</div>; }
 function Notice({ children }: { children: ReactNode }) { return <p className="notice" role="alert">{children}</p>; }
-function Modal({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
+function Modal({ title, children, onClose, narrow = false }: { title: string; children: ReactNode; onClose: () => void; narrow?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => { const element = ref.current; element?.showModal(); return () => element?.close(); }, []);
-  return <dialog ref={ref} className="modal" aria-labelledby="modal-title" onCancel={e => { e.preventDefault(); onClose(); }}><div className="modal-heading"><div><span className="eyebrow">REPTILELINK</span><h2 id="modal-title">{title}</h2></div><button className="icon-button" aria-label="닫기" onClick={onClose}><X/></button></div>{children}</dialog>;
+  useEffect(() => { const previous = document.activeElement as HTMLElement | null; const element = ref.current; element?.showModal(); return () => { element?.close(); previous?.focus(); }; }, []);
+  return <dialog ref={ref} className={narrow ? 'animal-edit' : 'modal'} aria-labelledby="modal-title" onCancel={e => { e.preventDefault(); onClose(); }}><div className={narrow ? 'animal-edit-heading' : 'modal-heading'}><div>{!narrow && <span className="eyebrow">REPTILELINK</span>}<h2 id="modal-title">{title}</h2></div><button className="icon-button" aria-label="닫기" onClick={onClose}><X/></button></div>{narrow ? <div className="animal-edit-body">{children}</div> : children}</dialog>;
 }
 function Photo({ animal, full = false, plain = false }: { animal: Animal; full?: boolean; plain?: boolean }) {
   const [image, setImage] = useState('');
@@ -29,7 +30,7 @@ function AnimalCard({ animal, managed = false, onOpen, onToggle }: { animal: Ani
   return <article className="animal-card"><button className="card-image" onClick={onOpen} aria-label={`${animal.name} 상세 보기`}><Photo animal={animal}/><span className={`sex-pill ${animal.sex}`}>{sexLabels[animal.sex]}</span>{managed && <span className={`visibility-pill ${animal.is_public ? 'visible' : ''}`}>{animal.is_public ? <Eye size={13}/> : <EyeOff size={13}/>} {animal.is_public ? '공개' : '비공개'}</span>}</button><div className="card-content"><div className="card-title"><button onClick={onOpen}><h3>{animal.name}</h3></button><span className={`status-dot ${animal.listing_status}`}/></div><p>{animal.species}</p><div className="card-bottom"><span>{animal.morph || '모프 미입력'}</span>{managed ? <button className="text-button" onClick={onToggle}>{animal.is_public ? '비공개로 전환' : '공개로 전환'}</button> : <ArrowUpRight size={17}/>}</div></div></article>;
 }
 function AnimalDetail({ animal, onClose }: { animal: Animal; onClose: () => void }) {
-  return <Modal title={animal.name} onClose={onClose}><div className="detail-photo"><Photo animal={animal} full/></div><dl className="detail-info"><div><dt>종류</dt><dd>{animal.species}</dd></div><div><dt>모프</dt><dd>{animal.morph || '미입력'}</dd></div><div><dt>성별</dt><dd>{sexLabels[animal.sex]}</dd></div><div><dt>상태</dt><dd>{statusLabels[animal.listing_status]}</dd></div></dl>{animal.description && <p className="detail-description">{animal.description}</p>}</Modal>;
+  return <Modal title={animal.name} onClose={onClose} narrow><div className="detail-photo"><Photo animal={animal} full plain/></div><dl className="detail-info"><div><dt>종류</dt><dd>{animal.species}</dd></div><div><dt>모프</dt><dd>{animal.morph || '미입력'}</dd></div><div><dt>성별</dt><dd>{sexLabels[animal.sex]}</dd></div><div><dt>상태</dt><dd>{statusLabels[animal.listing_status]}</dd></div></dl><PublicGrowth key={animal.id} animalId={animal.id}/>{animal.description && <p className="detail-description">{animal.description}</p>}</Modal>;
 }
 
 function Landing({ signedIn }: { signedIn: boolean }) {
@@ -98,7 +99,8 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
   const location = useLocation(); const design = location.pathname.includes('/design');
   const [creating, setCreating] = useState(false), [editing, setEditing] = useState<Animal | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false), [saved, setSaved] = useState(false);
   const [deleting, setDeleting] = useState<Animal | null>(null);
-  useEffect(() => { setEditing(null); setDeleting(null); }, [location.pathname]);
+  const [growing, setGrowing] = useState<Animal | null>(null);
+  useEffect(() => { setEditing(null); setDeleting(null); setGrowing(null); }, [location.pathname]);
   const [collectionLocked, setCollectionLocked] = useState(false);
   const profile = data.profile!;
   async function togglePage() { setBusy(true); setError(''); try { await rpc('set_profile_public', { p_public: !profile.is_published, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }
@@ -120,12 +122,13 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
       {error && <Notice>{error}</Notice>}
       {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
       {design ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p></section>
-        : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
+        : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting && !growing} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
       {!design && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
     </main>
     {deleting && <AnimalDelete animal={deleting} revision={profile.revision} refresh={refreshCollection} onClose={() => setDeleting(null)}/>}
+    {growing && <AnimalGrowth animal={growing} refresh={refreshCollection} onClose={() => setGrowing(null)}/>}
     {creating && <AnimalForm profile={profile} refresh={refresh} onClose={() => setCreating(false)}/>}
-    {editing && <AnimalEdit animal={editing} revision={profile.revision} renderPhoto={id => <Photo animal={{ ...editing, photos: [{ asset_id: id, sort_order: 0 }] }} full plain/>} reconcile={refreshCollection} onClose={() => setEditing(null)} onSaved={async () => { await refreshCollection(); setEditing(null); setSaved(true); }} onDelete={animal => { setEditing(null); setDeleting(animal); }}/>}
+    {editing && <AnimalEdit animal={editing} revision={profile.revision} renderPhoto={id => <Photo animal={{ ...editing, photos: [{ asset_id: id, sort_order: 0 }] }} full plain/>} reconcile={refreshCollection} onClose={() => setEditing(null)} onSaved={async () => { await refreshCollection(); setEditing(null); setSaved(true); }} onDelete={animal => { setEditing(null); setDeleting(animal); }} onGrowth={animal => { setEditing(null); setGrowing(animal); }}/>}
   </ManagementShell>;
 }
 

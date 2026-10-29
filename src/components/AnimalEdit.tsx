@@ -11,8 +11,8 @@ function fields(animal: Animal): AnimalEditInput {
     birth_date: animal.birth_date ?? null, description: animal.description, listing_status: animal.listing_status };
 }
 
-export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, onSaved, onDelete }: {
-  animal: Animal; revision: number; renderPhoto: (id: string) => ReactNode; reconcile: () => Promise<Dashboard>; onClose: () => void; onSaved: () => Promise<void>; onDelete?: (animal: Animal) => void;
+export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, onSaved, onDelete, onGrowth }: {
+  animal: Animal; revision: number; renderPhoto: (id: string) => ReactNode; reconcile: () => Promise<Dashboard>; onClose: () => void; onSaved: () => Promise<void>; onDelete?: (animal: Animal) => void; onGrowth?: (animal: Animal) => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const initial = useRef(fields(animal));
@@ -147,6 +147,13 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
     } catch (reason) { setError(userMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
+  async function beginGrowth() {
+    if (dirty || conflict || submitting.current || !onGrowth) return;
+    submitting.current = true; setBusy(true);
+    try { const d = await reconcile(), current = d.animals.find(item => item.id === animal.id); if (!current) throw new Error('NOT_FOUND'); onGrowth(current); }
+    catch (reason) { setError(userMessage(reason)); }
+    finally { submitting.current = false; setBusy(false); }
+  }
   const inputProps = (key: keyof AnimalEditInput) => ({ 'aria-invalid': Boolean(invalid[key]),
     'aria-describedby': invalid[key] ? `edit-error-${key}` : undefined });
   const problem = (key: keyof AnimalEditInput) => invalid[key] && <small id={`edit-error-${key}`} className="edit-field-error">{invalid[key]}</small>;
@@ -167,6 +174,7 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
         <label><span>모프</span><input aria-label="모프" value={values.morph} onChange={e => field('morph', e.target.value)} {...inputProps('morph')}/>{problem('morph')}</label>
         <label><span>해칭일</span><input aria-label="생일" type="date" max={seoulDate()} value={values.birth_date ?? ''}
           onChange={e => field('birth_date', e.target.value || null)} {...inputProps('birth_date')}/>{problem('birth_date')}</label>
+        {onGrowth && <div className="growth-entry"><span>체중</span><button type="button" className="text-button" disabled={dirty || conflict || busy} onClick={() => void beginGrowth()}>성장 기록·메모 관리</button>{dirty && <small>편집 내용을 저장하거나 취소한 뒤 이동할 수 있습니다.</small>}</div>}
         <label><span>분양 상태</span><select aria-label="분양 상태" value={values.listing_status}
           onChange={e => field('listing_status', e.target.value as AnimalEditInput['listing_status'])}>
           {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
