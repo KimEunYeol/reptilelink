@@ -1,3 +1,4 @@
+import {useNotificationSummary} from './lib/useNotificationSummary';
 import {AnimalCreate} from './components/AnimalCreate';
 import {PublicView} from './components/PublicPage';
 import {PolicyChecks,PolicyRenewal} from './components/PolicyConsent';
@@ -91,6 +92,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { 
   useEffect(() => { setEditing(null); setDeleting(null); setGrowing(null);setComments(null); }, [location.pathname]);
   const [collectionLocked, setCollectionLocked] = useState(false),[withdrawalLocked,setWithdrawalLocked]=useState(false);
   const profile = data.profile!;
+  const notifications=useNotificationSummary(profile.id,location.key);
   async function togglePage() { setBusy(true); setError(''); try { await rpc('set_profile_public', { p_public: !profile.is_published, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }
   const publicUrl = `${window.location.origin}/u/${profile.slug}`;
   async function copyAddress() {
@@ -98,7 +100,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { 
     try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }
     catch { setError('주소를 직접 복사해주세요.'); }
   }
-  return <ManagementShell basic={basic} locked={collectionLocked||withdrawalLocked} onSignOut={onSignOut}>
+  return <ManagementShell unread={notifications.state} basic={basic} locked={collectionLocked||withdrawalLocked} onSignOut={onSignOut}>
     <main className="management-content">{data.policy?.accepted!==true&&<Notice>이용 안내에 동의해주세요.</Notice>}
       <h1 className="sr-only">{activity ? '통계/알림' : schedules ? '일정 관리' : basic ? '기본 정보' : design ? '디자인 설정' : links ? '링크 관리' : '개체 관리'}</h1>
       <ManagementShare url={publicUrl} copied={copied} onCopy={copyAddress}/>
@@ -109,7 +111,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { 
       </section>
       {error && <Notice>{error}</Notice>}
       {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
-      {activity ? <Activity onLocked={setCollectionLocked}/> : schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} email={email} refresh={refreshCollection} onLocked={setCollectionLocked}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p><AccountWithdrawal expected={profile.revision} disabled={collectionLocked} refresh={refreshCollection} onLocked={setWithdrawalLocked}/></section>
+      {activity ? <Activity key={profile.id} owner={profile.id} onUnread={notifications.accept} onLocked={setCollectionLocked}/> : schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} email={email} refresh={refreshCollection} onLocked={setCollectionLocked}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p><AccountWithdrawal expected={profile.revision} disabled={collectionLocked} refresh={refreshCollection} onLocked={setWithdrawalLocked}/></section>
         : design ? <DesignSettings revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : links ? <ExternalLinks revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting && !growing&&!comments} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
       {!activity && !schedules && !basic && !design && !links && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
     </main>
