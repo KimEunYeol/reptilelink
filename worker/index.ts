@@ -1,11 +1,11 @@
+import {renderPublicPage,publicFailureHtml} from './public-page';
+import type {GrowthView} from '../src/lib/growth';
+import type {CommentPage} from '../src/lib/activity';
 import {collectPageView} from './analytics';
 import {processAccountDeletion} from './account-cleanup';
-import {publicSchedulePeriod} from '../src/lib/schedules';
-import {socialNames,socialPlatforms} from '../src/lib/socials';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { inspectWebp } from './images';
-import { httpsUrl, linkColors, linkTextColor, linkTokens } from '../src/lib/links';
 import type { PublicPage } from '../src/lib/domain';
 
 type Env = {
@@ -172,28 +172,27 @@ export default {
       }
       const publicRoute = path.match(/^\/u\/([a-z0-9-]{3,30})(?:\/animals\/([^/]+))?\/?$/);
       if (publicRoute && request.method === 'GET') {
-        const c = clients(env);
-        const page = await call<PublicPage | null>(c.user, 'public_page', { p_slug: publicRoute[1] });
-        if (!page || (publicRoute[2] && !page.animals.some(a => a.id === publicRoute[2]))) {
+        let c:ReturnType<typeof clients>,page:PublicPage|null;
+        try{c=clients(env);page=await call<PublicPage|null>(c.user,'public_page',{p_slug:publicRoute[1]});}
+        catch{const fallback=await env.ASSETS.fetch(new Request(new URL('/index.html',url)));return new Response(publicFailureHtml(await fallback.text(),503,path+url.search),{status:503,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
+
+        const selected=publicRoute[2]?page?.animals.find(a=>a.id===publicRoute[2]):undefined;
+        let growth:GrowthView|null|undefined,comments:CommentPage|undefined,hidden=false;
+        if(selected){const extra=await Promise.allSettled([call<GrowthView|null>(c.user,'public_animal_growth',{p_animal_id:selected.id,p_period:'month',p_before:null}),call<CommentPage|null>(c.user,'public_animal_comments',{p_animal_id:selected.id})]);if(extra[0].status==='fulfilled')growth=extra[0].value;if(extra[1].status==='fulfilled'){hidden=extra[1].value===null;comments=extra[1].value??undefined;}}
+        if (!page || hidden || (publicRoute[2] && !selected)) {
           const fallback=await env.ASSETS.fetch(new Request(new URL('/index.html',url)));
           let html=await fallback.text();
-          html=html.replace(/<title>.*?<\/title>/,'<title>페이지를 찾을 수 없습니다</title>').replace(/<meta name="description"[^>]*>/,'').replace('</head>','<meta name="robots" content="noindex"></head>').replace('<div id="root"></div>','<div id="root"><main class="not-found"><h1>페이지를 찾을 수 없습니다.</h1><p>공개된 주소인지 확인해주세요.</p><a href="/">렙타일링크로</a></main></div>');
+          html=publicFailureHtml(html,404,path);
           return new Response(html,{status:404,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
         }
         const assetResponse = await env.ASSETS.fetch(new Request(new URL('/index.html', url)));
         let html = await assetResponse.text();
-        const title = `${page.profile.display_name} · 렙타일링크`, description = page.profile.bio || '우리 아이들의 기록을 만나보세요.';
+        const title = `${selected?selected.name+' · ':''}${page.profile.display_name} · 렙타일링크`, description = selected?(selected.description||[selected.species,selected.morph].filter(Boolean).join(' · ')):(page.profile.bio||page.profile.tagline||`${page.profile.display_name}님의 공개 페이지`);
         html = html.replace(/<title>.*?<\/title>/, `<title>${escape(title)}</title>`).replace(/<meta name="description"[^>]*>/, '');
         const representative = publicRoute[2] ? page.animals.find(a => a.id === publicRoute[2])?.photos[0]?.asset_id : page.profile.cover_asset_id || page.profile.avatar_asset_id || page.animals.flatMap(a => a.photos)[0]?.asset_id;
         const imageMeta = representative ? `<meta property="og:image" content="${escape(`${url.origin}/api/image/${representative}/original_display`)}">` : '';
         html = html.replace('</head>', `<meta name="description" content="${escape(description)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(url.origin + path)}">${imageMeta}</head>`);
-        const visibleLinks = (page.links ?? []).filter(l => httpsUrl(l.url) && linkTokens.includes(l.color_token));
-        const linksHtml = visibleLinks.length ? `<section class="public-links" aria-label="공개 외부 링크">${visibleLinks.map(l => `<a class="public-link" target="_blank" rel="noopener noreferrer" href="${escape(httpsUrl(l.url)!)}" style="background-color:${linkColors[l.color_token].background};color:${linkTextColor(l.color_token)}">${escape(l.title)}</a>`).join('')}</section>` : '';
-        const scheduleHtml=(page.schedules??[]).map(r=>`<details><summary><span class="schedule-status ${['SOON','OPEN','ALWAYS','CLOSE'].includes(r.status)?r.status:'CLOSE'}">${escape(r.status)}</span><span class="schedule-summary-title">${escape(r.title)}</span><span class="schedule-summary-date">${escape(publicSchedulePeriod(r))}</span></summary>${r.description?`<p>${escape(r.description)}</p>`:''}</details>`).join('');
-        const scheduleSection=scheduleHtml?`<section class="public-schedules" aria-label="공개 일정">${scheduleHtml}</section>`:'';
-        const socialsHtml=(page.socials??[]).filter(r=>socialPlatforms.includes(r.platform)&&httpsUrl(r.url)).map(r=>`<a href="${escape(httpsUrl(r.url)!)}" target="_blank" rel="noopener noreferrer" aria-label="${socialNames[r.platform]} 바로가기"><img src="/brand/social/${r.platform}.png" width="40" height="40" alt=""></a>`).join('');
-        const socialSection=socialsHtml?`<section class="public-socials" aria-label="공개 SNS">${socialsHtml}</section>`:'';
-        html = html.replace('<div id="root"></div>' , `<div id="root"><main class="public-page"><div class="public-cover theme-${page.profile.theme_token||'green'}">${page.profile.cover_asset_id?`<img src="/api/image/${page.profile.cover_asset_id}/original_display" alt="배경 이미지">`:'<div class="source-cover"><img src="/brand/reptilelink-source.png" alt=""></div>'}</div><div class="public-avatar"><img src="${page.profile.avatar_asset_id?`/api/image/${page.profile.avatar_asset_id}/original_display`:'/brand/profile/avatar-public.png'}" alt="프로필 이미지"></div>${page.profile.tagline?`<p class="public-tagline">${escape(page.profile.tagline)}</p>`:''}<h1>${escape(page.profile.display_name)}</h1>${page.profile.bio?`<p class="public-bio">${escape(page.profile.bio)}</p>`:''}${scheduleSection}${page.animals.map(a => `<article><h2>${escape(a.name)}</h2><p>${escape(a.species)} · ${escape(a.morph)}</p></article>`).join('')}${linksHtml}${socialSection}</main></div>`);
+        html = html.replace('<div id="root"></div>',`<div id="root">${renderPublicPage(page,url,selected,growth,comments)}</div>`);
         html = html.replace('</body>', `<script type="application/json" id="public-bootstrap">${JSON.stringify(page).replace(/</g, '\\u003c')}</script></body>`);
         return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
       }

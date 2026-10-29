@@ -1,10 +1,10 @@
 import {PolicyRenewalLink} from './PolicyRenewalLink';
 import {useEffect,useRef,useState} from 'react';
-import {Clock,Menu,X} from 'lucide-react';
+import {Clock,CalendarDays,Menu,X} from 'lucide-react';
 import {rpc} from '../lib/supabase';
 import {userMessage} from '../lib/domain';
 import {commandMessage,definitiveLinkError} from '../lib/links';
-import {dateRangeProblem,scheduleDraft,scheduleInput,scheduleInputSchema,scheduleItems,scheduleMatches,schedulePeriod,publicSchedulePeriod,scheduleStatus,type PublicSchedule,type PublicSchedules as PublicSnapshot,type Schedule,type ScheduleDraft,type ScheduleItem,type ScheduleSnapshot} from '../lib/schedules';
+import {dateRangeProblem,scheduleDraft,scheduleInput,scheduleInputSchema,scheduleItems,scheduleMatches,schedulePeriod,publicSchedulePeriod,scheduleDetailParts,scheduleStatus,type PublicSchedule,type PublicSchedules as PublicSnapshot,type Schedule,type ScheduleDraft,type ScheduleItem,type ScheduleSnapshot} from '../lib/schedules';
 import {useUnsavedChanges} from '../lib/useUnsavedChanges';
 
 /** Advance the received server instant with a monotonic clock; never trust Date.now for schedule state. */
@@ -13,11 +13,16 @@ function useServerTime(stamp:string|undefined){
  useEffect(()=>{const timer=setInterval(()=>tick(v=>v+1),1000);return()=>clearInterval(timer);},[]);
  return stamp?Date.parse(stamp)+performance.now()-anchor.current.at:null;
 }
-export function PublicSchedules({rows,serverNow,slug}:{rows:PublicSchedule[];serverNow:string|undefined;slug:string}){
- const [snapshot,setSnapshot]=useState<PublicSnapshot>({schedules:rows,server_now:serverNow??''});const now=useServerTime(snapshot.server_now);
+export function PublicSchedules({rows,serverNow,slug,disabled=false}:{disabled?:boolean;rows:PublicSchedule[];serverNow:string|undefined;slug:string}){
+ const [snapshot,setSnapshot]=useState<PublicSnapshot>({schedules:rows,server_now:serverNow??''}),[selected,setSelected]=useState<string|null>(null);const now=useServerTime(snapshot.server_now);const current=snapshot.schedules.find(r=>r.id===selected);
  useEffect(()=>{setSnapshot({schedules:rows,server_now:serverNow??''});},[rows,serverNow]);
  useEffect(()=>{let active=true;const refresh=()=>{if(document.visibilityState==='visible')void rpc<PublicSnapshot|null>('public_schedules',{p_slug:slug}).then(v=>{if(active)setSnapshot(v??{schedules:[],server_now:''});}).catch(()=>{});};document.addEventListener('visibilitychange',refresh);return()=>{active=false;document.removeEventListener('visibilitychange',refresh);};},[slug]);
- return snapshot.schedules.length?<section className="public-schedules" aria-label="공개 일정" lang="ko">{snapshot.schedules.map(r=><details key={r.id}><summary><span className={`schedule-status ${now===null?r.status:scheduleStatus(r,now)}`}>{now===null?r.status:scheduleStatus(r,now)}</span><span className="schedule-summary-title">{r.title}</span><span className="schedule-summary-date"><Clock size={14}/>{publicSchedulePeriod(r)}</span></summary>{r.description&&<p>{r.description}</p>}</details>)}</section>:null;
+ return snapshot.schedules.length?<section className="public-schedules" aria-label="공개 일정" lang="ko">{snapshot.schedules.map(r=><details key={r.id}><summary aria-disabled={disabled} tabIndex={disabled?-1:0} onClick={e=>{e.preventDefault();if(!disabled)setSelected(r.id);}}><span className={`schedule-status ${now===null?r.status:scheduleStatus(r,now)}`}>{now===null?r.status:scheduleStatus(r,now)}</span><span className="schedule-summary-title">{r.title}</span><span className="schedule-summary-date"><Clock size={14}/>{publicSchedulePeriod(r)}</span></summary></details>)}{current&&<PublicScheduleDialog row={current} status={now===null?current.status:scheduleStatus(current,now)} onClose={()=>setSelected(null)}/>}</section>:null;
+}
+
+function PublicScheduleDialog({row,status,onClose}:{row:PublicSchedule;status:string;onClose:()=>void}){
+ const ref=useRef<HTMLDialogElement>(null);useEffect(()=>{const previous=document.activeElement as HTMLElement|null,d=ref.current;d?.showModal();return()=>{d?.close();previous?.focus();};},[]);
+ return <dialog ref={ref} className="animal-edit public-schedule-dialog" aria-labelledby="public-schedule-title" onCancel={e=>{e.preventDefault();onClose();}}><header className="animal-edit-heading"><span className={`schedule-status ${status}`}>{status}</span><h2 id="public-schedule-title">{row.title}</h2><button type="button" className="icon-button" aria-label="일정 닫기" onClick={onClose}><X size={20}/></button></header><div className="animal-edit-body"><p className="public-schedule-label">일시</p>{row.is_always?<p>상시</p>:<div className="public-schedule-times">{scheduleDetailParts(row).map((part,i)=><div key={part.instant}><span aria-hidden="true">{i?'~':''}</span><time dateTime={part.instant}>{part.date}</time><CalendarDays size={18}/><span>{part.time}</span><Clock size={18}/></div>)}</div>}{row.description&&<><h3>상세 내용</h3><p className="schedule-public-description">{row.description}</p></>}</div></dialog>;
 }
 
 function DateFields({values,setValues}:{values:ScheduleDraft;setValues:React.Dispatch<React.SetStateAction<ScheduleDraft>>}){

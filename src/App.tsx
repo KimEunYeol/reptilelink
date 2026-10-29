@@ -1,3 +1,4 @@
+import {PublicView} from './components/PublicPage';
 import {PolicyChecks,PolicyRenewal} from './components/PolicyConsent';
 import {PolicyRenewalLink} from './components/PolicyRenewalLink';
 import {policyAvailable,usePolicy} from './lib/policy';
@@ -5,31 +6,26 @@ import {SourcePage} from './components/SourcePage';
 import {LegalPage,HelpPage,PolicyDialog} from './components/InformationPages';
 import {authIssue,authIssueText,publicReturnPath,pendingPublicReturn,rememberPublicReturn} from './lib/authReturn';
 import {Landing} from './components/Landing';
-import {SourceBrand} from './components/ManagementShell';
-import {recordPageView} from './lib/analytics';
 import {Activity} from './components/Activity';
-import {Comments,ManagedComments} from './components/Comments';
+import {ManagedComments} from './components/Comments';
 import {AccountWithdrawal,AccountDeletionProgress} from './components/AccountWithdrawal';
 import {useUnsavedChanges} from './lib/useUnsavedChanges';
-import {ProfileLikes,ExistingLikeRemoval} from './components/ProfileLikes';
-import {Schedules,PublicSchedules} from './components/Schedules';
+import {Schedules} from './components/Schedules';
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
-import { ArrowUpRight, Check, CheckCircle2, ExternalLink, Eye, EyeOff, LoaderCircle, MessageSquare, Plus, ShieldCheck, Sprout, X } from 'lucide-react';
-import { Gecko } from './components/Gecko';
+import { Check, CheckCircle2, ExternalLink, LoaderCircle, Plus, ShieldCheck, X } from 'lucide-react';
 import { AnimalDelete, PendingAnimalDeletions } from './components/AnimalDelete';
-import { AnimalGrowth, PublicGrowth } from './components/AnimalGrowth';
-import { DesignSettings, PublicSocials } from './components/DesignSettings';
-import { ExternalLinks, PublicLinks } from './components/ExternalLinks';
+import { AnimalGrowth } from './components/AnimalGrowth';
+import { DesignSettings } from './components/DesignSettings';
+import { ExternalLinks } from './components/ExternalLinks';
 import { AnimalEdit } from './components/AnimalEdit';
 import { AnimalCollection } from './components/AnimalCollection';
 import { ManagementShell, ManagementShare } from './components/ManagementShell';
-import { animalSchema, formatBytes, profileSchema, sexLabels, statusLabels, userMessage, type Animal, type Dashboard, type Profile, type PublicPage } from './lib/domain';
+import { animalSchema, formatBytes, profileSchema, userMessage, type Animal, type Dashboard, type Profile } from './lib/domain';
 import { configured, googleAuth, initialAuthIssue, localAuth, rpc, serverRequest, supabase } from './lib/supabase';
 import { preparePhoto } from './lib/images';
 
-function Brand() { return <SourceBrand/>; }
 function Spinner() { return <div className="loading" role="status"><LoaderCircle className="spin" size={23}/> 불러오고 있어요</div>; }
 function Notice({ children }: { children: ReactNode }) { return <p className="notice" role="alert">{children}{typeof children==='string'&&<PolicyRenewalLink message={children}/>}</p>; }
 function Modal({ title, children, onClose, narrow = false }: { title: string; children: ReactNode; onClose: () => void; narrow?: boolean }) {
@@ -41,16 +37,8 @@ function Photo({ animal, full = false, plain = false }: { animal: Animal; full?:
   const [image, setImage] = useState('');
   const asset = animal.photos[0]?.asset_id;
   useEffect(() => { let active = true; setImage(''); if (asset) serverRequest<{ url: string }>(`/api/media/${asset}/${full ? 'original_display' : 'thumbnail'}`).then(data => { if (active) setImage(data.url); }).catch(() => {}); return () => { active = false; }; }, [asset, full]);
-  return image ? <img className="animal-photo" src={image} alt={animal.name} loading="lazy" onError={() => setImage('')}/> : plain ? <div className="collection-photo-placeholder">사진 없음</div> : <div className="animal-placeholder"><Gecko variant={animal.sort_order || 0}/></div>;
+  return image ? <img className="animal-photo" src={image} alt={animal.name} loading="lazy" onError={() => setImage('')}/> : plain ? <div className="collection-photo-placeholder">사진 없음</div> : <div className="animal-placeholder">사진 없음</div>;
 }
-function AnimalCard({ animal, managed = false, onOpen, onToggle,disabled=false }: { animal: Animal; managed?: boolean; onOpen: () => void; onToggle?: () => void;disabled?:boolean }) {
-  return <article className="animal-card"><button className="card-image" disabled={disabled} onClick={onOpen} aria-label={`${animal.name} 상세 보기`}><Photo animal={animal}/>{!managed&&<span className="comment-count"><MessageSquare size={15}/><span>{animal.comment_count??0}</span></span>}<span className={`sex-pill ${animal.sex}`}>{sexLabels[animal.sex]}</span>{managed && <span className={`visibility-pill ${animal.is_public ? 'visible' : ''}`}>{animal.is_public ? <Eye size={13}/> : <EyeOff size={13}/>} {animal.is_public ? '공개' : '비공개'}</span>}</button><div className="card-content"><div className="card-title"><button disabled={disabled} onClick={onOpen}><h3>{animal.name}</h3></button><span className={`status-dot ${animal.listing_status}`}/></div><p>{animal.species}</p><div className="card-bottom"><span>{animal.morph || '모프 미입력'}</span>{managed ? <button className="text-button" onClick={onToggle}>{animal.is_public ? '비공개로 전환' : '공개로 전환'}</button> : <ArrowUpRight size={17}/>}</div></div></article>;
-}
-function AnimalDetail({ animal, onClose,onCount }: { animal: Animal; onClose: () => void;onCount:(n:number)=>void }) {
-  const guard=useRef<(()=>boolean)|null>(null);
-  return <Modal title={animal.name} onClose={()=>{if(guard.current?.()!==false)onClose();}} narrow><div className="detail-photo"><Photo animal={animal} full plain/></div><dl className="detail-info"><div><dt>종류</dt><dd>{animal.species}</dd></div><div><dt>모프</dt><dd>{animal.morph || '미입력'}</dd></div><div><dt>성별</dt><dd>{sexLabels[animal.sex]}</dd></div><div><dt>상태</dt><dd>{statusLabels[animal.listing_status]}</dd></div></dl><PublicGrowth key={animal.id} animalId={animal.id}/>{animal.description && <p className="detail-description">{animal.description}</p>}<Comments animalId={animal.id} closeGuard={guard} onClose={onClose} onCount={onCount}/></Modal>;
-}
-
 function AuthDestination({session,data,error,refresh,desiredPath,issue,handled}:{session:Session|null;data:Dashboard|null;error:string;refresh:()=>Promise<void>;desiredPath?:string|null;issue?:'cancelled'|'failed'|null;handled?:()=>void}) {
   const navigate=useNavigate(),location=useLocation(),decided=useRef(false);
   const failure=authIssue(location.search,location.hash)||issue;
@@ -171,16 +159,6 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut,email }: { 
   </ManagementShell>;
 }
 
-function PublicView() {
-  const [reactionLocked,setReactionLocked]=useState(false);
-  const { slug, id } = useParams(); const [data, setData] = useState<PublicPage | null>(null), [loading, setLoading] = useState(true), [error, setError] = useState(false), [selected, setSelected] = useState<Animal | null>(null);
-  useEffect(() => { let active = true; setSelected(null);setLoading(true); setError(false); const bootstrap = document.getElementById('public-bootstrap'); bootstrap?.remove(); let initial: PublicPage | null = null; if (bootstrap?.textContent) { try { const candidate = JSON.parse(bootstrap.textContent); if (candidate.profile.slug === slug) initial = candidate; } catch { /* Ignore invalid bootstrap and use the authoritative API. */ } }
-    (initial ? Promise.resolve(initial) : rpc<PublicPage | null>('public_page', { p_slug: slug })).then(result => { if (!active) return; setData(result); if (id) { const found = result?.animals.find(a => a.id === id); if (found) setSelected(found); else setError(true); } if(result&&(!id||result.animals.some(a=>a.id===id)))void recordPageView(result.profile.slug); }).catch(() => { if (active) setError(true); }).finally(() => { if (active) setLoading(false); }); return () => { active = false; }; }, [slug, id]);
-  if (loading) return <Spinner/>;
-  if (!data || error) return <div className="not-found"><Sprout size={38}/><h1>페이지를 찾을 수 없어요</h1><p>공개된 주소인지 확인해주세요.</p>{slug&&<ExistingLikeRemoval key={slug} slug={slug}/>}<Link className="button" to="/">홈으로 돌아가기</Link></div>;
-  return <div className="public-shell"><header className="site-header"><Brand/><Link className="text-button" to="/auth/login">나도 시작하기 <ArrowUpRight size={15}/></Link></header><main className="public-page"><ProfileLikes key={data.profile.slug} profile={data.profile} initialCount={data.like_count} onLocked={setReactionLocked}/><section className="public-intro">{data.profile.tagline&&<p className="public-tagline">{data.profile.tagline}</p>}<h1>{data.profile.display_name}</h1>{data.profile.bio&&<p className="public-bio">{data.profile.bio}</p>}</section><PublicSchedules rows={data.schedules ?? []} serverNow={data.server_now} slug={data.profile.slug}/><div className="public-animals">{data.animals.length ? data.animals.map(animal => <AnimalCard key={animal.id} animal={animal} disabled={reactionLocked} onOpen={() => setSelected(animal)}/>) : <p className="public-empty">곧 우리 아이들의 이야기가 시작됩니다.</p>}</div><PublicLinks links={data.links ?? []}/><PublicSocials links={data.socials ?? []}/><div className="public-bottom"><span>GROWING, ONE MOMENT AT A TIME.</span><Brand/></div></main>{selected && <AnimalDetail animal={selected} onClose={() => setSelected(null)} onCount={n=>setData(current=>current?{...current,animals:current.animals.map(a=>a.id===selected.id?{...a,comment_count:n}:a)}:current)}/>}</div>;
-}
-
 export default function App() {
   const [onboardingLocked,setOnboardingLocked]=useState(false),[callbackIssue,setCallbackIssue]=useState(initialAuthIssue);
   const clearCallbackIssue=useCallback(()=>setCallbackIssue(null),[]);
@@ -206,5 +184,5 @@ export default function App() {
     if (onboarding) return <AuthDestination session={session} data={data} error={error} refresh={refresh}/>;
     return <DashboardPage data={data} email={session.user.email} refresh={refresh} refreshCollection={refreshCollection} onSignOut={() => supabase.auth.signOut()}/>;
   };
-  return <Routes><Route path="/" element={<Landing signedIn={Boolean(session)}/>}/><Route path="/auth/login" element={authLoading ? <Spinner/> : <Login session={session} data={data} error={error} refresh={refresh}/>}/><Route path="/auth/callback" element={authLoading ? <Spinner/> : <AuthDestination session={session} data={data} error={error} refresh={refresh} issue={callbackIssue} handled={clearCallbackIssue}/>}/><Route path="/onboarding" element={protectedView(true)}/><Route path="/dashboard/*" element={protectedView(false)}/><Route path="/u/:slug" element={<PublicView/>}/><Route path="/u/:slug/animals/:id" element={<PublicView/>}/><Route path="/help" element={<HelpPage signedIn={Boolean(session)} onSignOut={()=>void supabase.auth.signOut()}/>}/><Route path="/terms" element={<LegalPage privacy={false} signedIn={Boolean(session)} onSignOut={()=>void supabase.auth.signOut()}/>}/><Route path="/privacy" element={<LegalPage privacy signedIn={Boolean(session)} onSignOut={()=>void supabase.auth.signOut()}/>}/><Route path="*" element={<div className="not-found"><h1>페이지를 찾을 수 없어요.</h1><Link to="/">홈으로</Link></div>}/></Routes>;
+  return <Routes><Route path="/" element={<Landing signedIn={Boolean(session)}/>}/><Route path="/auth/login" element={authLoading ? <Spinner/> : <Login session={session} data={data} error={error} refresh={refresh}/>}/><Route path="/auth/callback" element={authLoading ? <Spinner/> : <AuthDestination session={session} data={data} error={error} refresh={refresh} issue={callbackIssue} handled={clearCallbackIssue}/>}/><Route path="/onboarding" element={protectedView(true)}/><Route path="/dashboard/*" element={protectedView(false)}/><Route path="/u/:slug" element={<PublicView signedIn={Boolean(session)}/>}/><Route path="/u/:slug/animals/:id" element={<PublicView signedIn={Boolean(session)}/>}/><Route path="/help" element={<HelpPage signedIn={Boolean(session)} onSignOut={()=>void supabase.auth.signOut()}/>}/><Route path="/terms" element={<LegalPage privacy={false} signedIn={Boolean(session)} onSignOut={()=>void supabase.auth.signOut()}/>}/><Route path="/privacy" element={<LegalPage privacy signedIn={Boolean(session)} onSignOut={()=>void supabase.auth.signOut()}/>}/><Route path="*" element={<div className="not-found"><h1>페이지를 찾을 수 없어요.</h1><Link to="/">홈으로</Link></div>}/></Routes>;
 }

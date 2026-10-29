@@ -41,3 +41,5 @@ export function scheduleMatches(r:Pick<ScheduleInput,'is_always'|'starts_at'|'en
 export function schedulePeriod(r:Pick<ScheduleInput,'is_always'|'starts_at'|'ends_at'>){return r.is_always?'기간설정 없음':`${seoulMinute(r.starts_at!).slice(2).replaceAll('-','.').replace('T',' ')} ~ ${seoulMinute(r.ends_at!).slice(2).replaceAll('-','.').replace('T',' ')}`;}
 
 export function publicSchedulePeriod(r:Pick<ScheduleInput,'is_always'|'starts_at'|'ends_at'>){return r.is_always?'상시':`${seoulMinute(r.starts_at!).slice(2,10).replaceAll('-','.')} ~ ${seoulMinute(r.ends_at!).slice(2,10).replaceAll('-','.')}`;}
+
+export function scheduleDetailParts(r:Pick<ScheduleInput,'is_always'|'starts_at'|'ends_at'>){return r.is_always?[]:[r.starts_at!,r.ends_at!].map(instant=>{const value=seoulMinute(instant);return{instant,date:value.slice(0,10).replaceAll('-','.'),time:value.slice(11)};});}
