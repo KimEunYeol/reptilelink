@@ -1,0 +1,50 @@
+{
+  "issue": 2,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/2",
+  "branch": "codex/design/2-source-screen-audit",
+  "baseSha": "0a02a2f7f42cdff77db76a4046da706a2845a58d",
+  "scope": "기존 design 원본·현재 구현 차이 감사와 화면별 독립 작업 계획 (문서 전용)",
+  "acceptance": [
+    "화면별 PC/모바일/보드설명·현재실행·차이를 사실대로 기록",
+    "원본출처/수제자산·폰트/운영자료상태·D01~08 채택차이를 구분",
+    "남은 공개DTO/초기bootstrap·메인·인증/안내·공개·공통접근성을 독립 이슈/검증기준으로 등록",
+    "런타임/DB스키마 변경없이 현재 생성 QA만 비교/정리·문서검증/PR리뷰/병합/main/보고 후 구현계속"
+  ],
+  "plan": [
+    "원본 PC/모바일/전체보드·기존 인계와 실행화면 조사",
+    "새 QA로390/1440·SSR/공개권한·대표대비 조사/정리",
+    "화면별 작업이슈·7폭/권한/실패/접근성 기준 등록",
+    "감사표/현황/agent/task 정리·문서검증/PR리뷰/명시적병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/메인화면-m.png",
+      "design/메인화면.png",
+      "design/로그인-m.png",
+      "design/로그인.png",
+      "design/회원가입-m.png",
+      "design/회원가입.png",
+      "design/마이페이지-기본정보-m.png",
+      "design/마이페이지-기본정보.png",
+      "design/고객센터-m.png",
+      "design/고객센터.png",
+      "design/링크페이지-m.png",
+      "design/링크페이지-m-1.png",
+      "design/링크페이지.png"
+    ],
+    "notes": "전체보드 모바일우선/동일웹앱 안내·PC공통(0,8400,5000,1000), 메인(0,2800,700,3300), 인증/고객센터/약관(650,1000,1500,4900) 실제확인. 메인녹색히어로/폰예시·개체/댓글·성장·일정·SNS5구간, 인증중앙단일폼/회원가입약관, 고객센터문의폼과완료창, 약관스크롤창. D01Google/비밀번호·SMS제외/D06최초공개후주소잠금/D07초대승인 등기채택차이는유지. 예시회사/연락처/정책본문을실제운영정보로게시하지않음. 감사만수행하며 UI마감으로주장하지않는다.",
+    "review": {
+      "status": "passed",
+      "summary": "원본 PC/모바일/전체보드와390/1440 실행30장/JS없는Worker·기존기능증거를 직접 비교해 차이/출처/채택동작/필요입력을 분류했다. 공개AuthID/메타데이터4열·대비2.520687실재현. 감사/작업분해 검토완료이며 실제UI수정은#36~40으로계속한다. 감사폭과수정시필수7폭을구분하고폰트/Native/정책/부모필드범위를기록."
+    },
+    "evidence": [
+      "artifacts/source-audit-2/*-{390,1440}.png:30 current captures including JS-disabledWorker",
+      "artifacts/source-audit-2/facts.json:scoped anon raw field exposure, actual styles/contrast",
+      "docs/26-source-screen-audit.md and GitHub issues#36,#37,#38,#39,#40",
+      "Existing docs/09~25/task records for completed management feature comparisons"
+    ]
+  }
+}
