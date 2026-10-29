@@ -1,3 +1,4 @@
+import {processAccountDeletion} from './account-cleanup';
 import {publicSchedulePeriod} from '../src/lib/schedules';
 import {socialNames,socialPlatforms} from '../src/lib/socials';
 import { createClient } from '@supabase/supabase-js';
@@ -22,7 +23,7 @@ function clients(env: Env, token?: string) {
 }
 async function call<T>(client: ReturnType<typeof clients>['user'], name: string, args?: Record<string, unknown>) {
   const { data, error } = await client.schema('api').rpc(name, args);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(error.code?.startsWith('PGRST30')?'UNAUTHENTICATED':error.message);
   return data as T;
 }
 async function actor(request: Request, env: Env, required = true) {
@@ -53,6 +54,17 @@ export default {
       if (request.method === 'POST') {
         const origin = request.headers.get('Origin');
         if (origin && origin !== url.origin && origin !== env.APP_ORIGIN) return json({ code: 'ORIGIN_REJECTED' }, 403);
+      }
+      if ((path==='/api/account/delete'||path==='/api/account/cleanup')&&request.method==='POST') {
+        const cleanupToken=request.headers.get('Authorization')?.replace(/^Bearer /,'');
+        if(!cleanupToken)throw new Error('UNAUTHENTICATED');
+        const c=path==='/api/account/cleanup'?await (async()=>{const c=clients(env,cleanupToken);return {...c,id:await call<string>(c.user,'account_cleanup_identity')};})():await actor(request,env);
+        if(path==='/api/account/delete'){
+          const input=z.object({expected:z.number().int().nonnegative().nullable(),request_id:uuid,confirm:z.literal('탈퇴')}).strict().parse(await body(request));
+          await call(c.user,'request_account_deletion',{p_expected:input.expected,p_request_id:input.request_id,p_confirm:input.confirm});
+        }else {z.object({}).strict().parse(await body(request));if(!await call(c.user,'my_account_deletion'))throw new Error('NOT_FOUND');}
+        const token=request.headers.get('Authorization')!.replace(/^Bearer /,'');
+        try{return json(await processAccountDeletion(c.admin,c.id!,token));}catch{return json({deleted:false,cleanup_pending:true,phase:'pending'});}
       }
       const deletion = path.match(/^\/api\/animals\/([^/]+)\/(delete|cleanup)$/);
       if (deletion && request.method === 'POST') {

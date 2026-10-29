@@ -1,3 +1,5 @@
+import {AccountWithdrawal,AccountDeletionProgress} from './components/AccountWithdrawal';
+import {useUnsavedChanges} from './lib/useUnsavedChanges';
 import {ProfileImage} from './components/ProfileImage';
 import {Schedules,PublicSchedules} from './components/Schedules';
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
@@ -51,20 +53,26 @@ function Login({ session }: { session: Session | null }) {
   }
   return <div className="auth-page"><header className="site-header"><Brand/><Link to="/" className="text-button">홈으로</Link></header><main className="auth-card"><div className="auth-illustration"><Gecko/></div><span className="eyebrow">WELCOME TO YOUR LITTLE WORLD</span><h1>반가워요,<br/>함께 기록해볼까요?</h1><p>아이들의 소중한 순간을<br/>나만의 렙타일링크에 모아보세요.</p>{!configured && <Notice>개발 환경 설정이 필요합니다. 로컬 백엔드를 먼저 준비해주세요.</Notice>}{error && <Notice>{error}</Notice>}<button className="button google" disabled={!googleAuth || busy} onClick={async () => { setBusy(true); const { error: authError } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/auth/callback` } }); if (authError) { setError(userMessage(authError)); setBusy(false); } }}><span className="google-g">G</span>Google 계정으로 시작하기</button>{!googleAuth && <small className="muted">Google 로그인 연결 전입니다.</small>}{localAuth && <section className="local-login"><span className="local-badge">LOCAL DEVELOPMENT</span><p>로컬 인증·DB를 사용하는 개발용 계정입니다.</p><button className="button" disabled={busy || !configured} onClick={() => login('breeder-a@reptilelink.test')}>{busy ? <LoaderCircle className="spin" size={18}/> : <Sprout size={18}/>} 테스트 브리더로 로그인</button><button className="text-button" disabled={busy} onClick={() => login('breeder-b@reptilelink.test')}>다른 테스트 계정으로 로그인</button></section>}<div className="auth-trust"><ShieldCheck size={15}/> 내 기록은 내가 선택한 범위에서만 공개됩니다.</div></main></div>;
 }
-function ProfileForm({ profile, refresh, onboarding = false }: { profile: Profile | null; refresh: () => Promise<void>; onboarding?: boolean }) {
+function ProfileForm({ profile, refresh, onboarding = false,onLocked }: { profile: Profile | null; refresh: () => Promise<Dashboard|void>; onboarding?: boolean;onLocked?:(value:boolean)=>void }) {
   const navigate = useNavigate();
   const [slug, setSlug] = useState(profile?.slug || ''), [name, setName] = useState(profile?.display_name || ''), [bio, setBio] = useState(profile?.bio || ''), [accepted, setAccepted] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(''), [saved, setSaved] = useState(false);
+  const [uncertain,setUncertain]=useState(false);
+  const dirty=profile?slug!==profile.slug||name!==profile.display_name||bio!==profile.bio:Boolean(slug||name||bio||accepted),locked=dirty||busy||uncertain;
+  const navigation=useUnsavedChanges(locked,busy);
+  useEffect(()=>{onLocked?.(locked);return()=>onLocked?.(false);},[locked,onLocked]);
+  function accept(p:Profile){setSlug(p.slug);setName(p.display_name);setBio(p.bio);setUncertain(false);setSaved(false);}
+  async function inspect(){if(busy)return false;setBusy(true);setError('');try{const d=await refresh();if(d?.profile)accept(d.profile);else if(!onboarding)throw new Error('NOT_FOUND');return true;}catch(reason){setUncertain(true);setError(userMessage(reason));return false;}finally{setBusy(false);}}
   async function submit(event: FormEvent) {
     event.preventDefault(); setError(''); setSaved(false);
     const parsed = profileSchema.safeParse({ slug, name, bio });
     if (!parsed.success) return setError(parsed.error.issues[0].message);
     if (!profile && !accepted) return setError('테스트용 이용 안내를 확인해주세요.');
-    setBusy(true);
-    try { await rpc('save_profile', { p_slug: parsed.data.slug, p_name: parsed.data.name, p_bio: parsed.data.bio, p_expected: profile?.revision ?? 0, p_publish: profile?.is_published ?? false, p_accept_terms: accepted }); await refresh(); if (onboarding) navigate('/dashboard/animals'); else setSaved(true); }
+    setBusy(true);setUncertain(true);
+    try { await rpc('save_profile', { p_slug: parsed.data.slug, p_name: parsed.data.name, p_bio: parsed.data.bio, p_expected: profile?.revision ?? 0, p_publish: profile?.is_published ?? false, p_accept_terms: accepted }); const d=await refresh();if(d?.profile)accept(d.profile);setUncertain(false); if (onboarding) navigate('/dashboard/animals'); else setSaved(true); }
     catch (reason) { setError(userMessage(reason)); }
     finally { setBusy(false); }
   }
-  return <form className="profile-form" onSubmit={submit}><div className="form-section-title"><span className="form-step">01</span><div><h2>브리더 프로필</h2><p>방문자에게 보여줄 나만의 공간을 만들어주세요.</p></div></div><label>브리더 이름 <span>*</span><input aria-label="브리더 이름" value={name} onChange={e => setName(e.target.value)} placeholder="예: 초록빛 브리딩룸" required/></label><label>내 페이지 주소 <span>*</span><div className="slug-input"><span>/u/</span><input aria-label="내 페이지 주소" value={slug} disabled={Boolean(profile?.first_published_at)} onChange={e => setSlug(e.target.value.toLowerCase())} placeholder="green-room" maxLength={30} required/></div><small>영문 소문자·숫자·하이픈 3~30자. 처음 공개한 뒤에는 변경할 수 없어요.</small></label><label>소개<textarea aria-label="소개" value={bio} onChange={e => setBio(e.target.value)} placeholder="어떤 아이들과 함께하고 있나요?" rows={4}/><small className="character-count">{[...bio].length}/300</small></label>{!profile && <label className="check-label"><input type="checkbox" checked={accepted} onChange={e => setAccepted(e.target.checked)}/><span><Link to="/terms" target="_blank">테스트용 이용 안내</Link>와 <Link to="/privacy" target="_blank">개인정보 안내</Link>를 확인했습니다.</span></label>}{error && <Notice>{error}</Notice>}{saved && <p className="success" role="status"><CheckCircle2 size={16}/> 프로필을 저장했어요.</p>}<button className="button form-submit" disabled={busy}>{busy ? <LoaderCircle className="spin" size={18}/> : null}{onboarding ? '내 공간 만들기' : '적용하기'}<ArrowRight size={17}/></button></form>;
+  return <form className="profile-form" onSubmit={submit}><div className="form-section-title"><span className="form-step">01</span><div><h2>브리더 프로필</h2><p>방문자에게 보여줄 나만의 공간을 만들어주세요.</p></div></div><fieldset disabled={busy||uncertain}><label>브리더 이름 <span>*</span><input aria-label="브리더 이름" value={name} onChange={e => setName(e.target.value)} placeholder="예: 초록빛 브리딩룸" required/></label><label>내 페이지 주소 <span>*</span><div className="slug-input"><span>/u/</span><input aria-label="내 페이지 주소" value={slug} disabled={Boolean(profile?.first_published_at)} onChange={e => setSlug(e.target.value.toLowerCase())} placeholder="green-room" maxLength={30} required/></div><small>영문 소문자·숫자·하이픈 3~30자. 처음 공개한 뒤에는 변경할 수 없어요.</small></label><label>소개<textarea aria-label="소개" value={bio} onChange={e => setBio(e.target.value)} placeholder="어떤 아이들과 함께하고 있나요?" rows={4}/><small className="character-count">{[...bio].length}/300</small></label>{!profile && <label className="check-label"><input type="checkbox" checked={accepted} onChange={e => setAccepted(e.target.checked)}/><span><Link to="/terms" target="_blank">테스트용 이용 안내</Link>와 <Link to="/privacy" target="_blank">개인정보 안내</Link>를 확인했습니다.</span></label>}</fieldset>{error && <Notice>{error}</Notice>}{(dirty||uncertain)&&<button type="button" className="text-button" disabled={busy} onClick={()=>void inspect()}>{uncertain?'저장 상태 확인':'변경 취소'}</button>}{navigation.blocked&&<div data-navigation-prompt><p className="notice" role="alert">적용하지 않은 기본정보가 있습니다.</p><button ref={navigation.stayButton} type="button" className="text-button" onClick={navigation.stay}>계속 수정</button><button type="button" className="text-button" disabled={busy} onClick={async()=>{if(await inspect())navigation.leave();}}>최신 정보 확인 후 이동</button></div>}{saved && <p className="success" role="status"><CheckCircle2 size={16}/> 프로필을 저장했어요.</p>}<button className="button form-submit" disabled={busy||uncertain}>{busy ? <LoaderCircle className="spin" size={18}/> : null}{onboarding ? '내 공간 만들기' : '적용하기'}<ArrowRight size={17}/></button></form>;
 }
 function AnimalForm({ profile, refresh, onClose }: { profile: Profile; refresh: () => Promise<void>; onClose: () => void }) {
   const [values, setValues] = useState({ name: '', species: '크레스티드 게코', morph: '', sex: 'unknown', description: '', listing_status: 'not_listed', is_public: true });
@@ -105,7 +113,7 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
   const [deleting, setDeleting] = useState<Animal | null>(null);
   const [growing, setGrowing] = useState<Animal | null>(null);
   useEffect(() => { setEditing(null); setDeleting(null); setGrowing(null); }, [location.pathname]);
-  const [collectionLocked, setCollectionLocked] = useState(false);
+  const [collectionLocked, setCollectionLocked] = useState(false),[withdrawalLocked,setWithdrawalLocked]=useState(false);
   const profile = data.profile!;
   async function togglePage() { setBusy(true); setError(''); try { await rpc('set_profile_public', { p_public: !profile.is_published, p_expected: profile.revision }); await refresh(); } catch (reason) { setError(userMessage(reason)); await refresh(); } finally { setBusy(false); } }
   const publicUrl = `${window.location.origin}/u/${profile.slug}`;
@@ -114,18 +122,18 @@ function DashboardPage({ data, refresh, refreshCollection, onSignOut }: { data: 
     try { await navigator.clipboard.writeText(publicUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }
     catch { setError('주소를 직접 복사해주세요.'); }
   }
-  return <ManagementShell basic={basic} locked={collectionLocked} onSignOut={onSignOut}>
+  return <ManagementShell basic={basic} locked={collectionLocked||withdrawalLocked} onSignOut={onSignOut}>
     <main className="management-content">
       <h1 className="sr-only">{schedules ? '일정 관리' : basic ? '기본 정보' : design ? '디자인 설정' : links ? '링크 관리' : '개체 관리'}</h1>
       <ManagementShare url={publicUrl} copied={copied} onCopy={copyAddress}/>
       <section className="management-publication" aria-label="페이지 공개 설정">
         <span>{profile.is_published ? '공개 중' : '비공개'}</span>
         {profile.is_published && <Link to={`/u/${profile.slug}`} target="_blank" rel="noopener noreferrer" aria-label="공개 페이지 열기">내 페이지 보기 <ExternalLink size={12}/></Link>}
-        <button className="text-button" disabled={busy || collectionLocked} onClick={togglePage}>{profile.is_published ? '비공개로 전환' : '페이지 공개하기'}</button>
+        <button className="text-button" disabled={busy || collectionLocked||withdrawalLocked} onClick={togglePage}>{profile.is_published ? '비공개로 전환' : '페이지 공개하기'}</button>
       </section>
       {error && <Notice>{error}</Notice>}
       {saved && <p role="status" className="success">개체 정보를 저장했어요.</p>}
-      {schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refresh}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p></section>
+      {schedules ? <Schedules revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : basic ? <section className="management-profile"><ProfileForm key={profile.id} profile={profile} refresh={refreshCollection} onLocked={setCollectionLocked}/><p className="management-usage">사진 저장 공간 {formatBytes(data.usage?.stored_bytes || 0)} / 20 MB · 정리 대기 {formatBytes(data.usage?.reserved_bytes || 0)}</p><AccountWithdrawal expected={profile.revision} disabled={collectionLocked} refresh={refreshCollection} onLocked={setWithdrawalLocked}/></section>
         : design ? <DesignSettings revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : links ? <ExternalLinks revision={profile.revision} refreshDashboard={refreshCollection} onLocked={setCollectionLocked}/> : <AnimalCollection animals={data.animals} revision={profile.revision} active={!editing && !creating && !deleting && !growing} onCreate={() => setCreating(true)} onEdit={animal => { setSaved(false); setEditing(animal); }} refresh={refreshCollection} onLocked={setCollectionLocked} photo={animal => <Photo animal={animal} plain/>}/>}
       {!schedules && !basic && !design && !links && <PendingAnimalDeletions items={data.pending_deletions ?? []} refresh={refreshCollection}/>}
     </main>
@@ -146,8 +154,10 @@ function PublicView() {
 }
 
 export default function App() {
+  const [onboardingLocked,setOnboardingLocked]=useState(false);
   const [session, setSession] = useState<Session | null>(null), [authLoading, setAuthLoading] = useState(true), [data, setData] = useState<Dashboard | null>(null), [error, setError] = useState('');
-  useEffect(() => { let active = true; supabase.auth.getSession().then(({ data: auth }) => { if (active) { setSession(auth.session); setAuthLoading(false); } }); const listener = supabase.auth.onAuthStateChange((_event, current) => { setSession(current); setData(null); setError(''); }); return () => { active = false; listener.data.subscription.unsubscribe(); }; }, []);
+  const identity=useRef<string|null>(null);
+  useEffect(()=>{let active=true;supabase.auth.getSession().then(({data:auth})=>{if(active){identity.current=auth.session?.user.id??null;setSession(previous=>previous?.access_token===auth.session?.access_token?previous:auth.session);setAuthLoading(false);}});const listener=supabase.auth.onAuthStateChange((_event,current)=>{const next=current?.user.id??null;if(identity.current!==next){identity.current=next;setData(null);setError('');}setSession(previous=>previous?.access_token===current?.access_token?previous:current);});return()=>{active=false;listener.data.subscription.unsubscribe();};},[]);
   const refresh = useCallback(async () => { if (!session) { setData(null); return; } try { setData(await rpc<Dashboard>('my_dashboard')); setError(''); } catch (reason) { setError(userMessage(reason)); } }, [session]);
   const refreshCollection = useCallback(async () => {
     if (!session) throw new Error('UNAUTHENTICATED');
@@ -158,10 +168,11 @@ export default function App() {
   const protectedView = (onboarding: boolean) => {
     if (authLoading) return <Spinner/>;
     if (!session) return <Navigate to="/auth/login" replace/>;
-    if (error) return <div className="not-found"><Notice>{error}</Notice><button className="button" onClick={refresh}>다시 불러오기</button></div>;
+    if (error&&!data) return <div className="not-found"><Notice>{error}</Notice><button className="button" onClick={refresh}>다시 불러오기</button></div>;
     if (!data) return <Spinner/>;
-    if (data.account_status !== 'active') return <div className="not-found"><ShieldCheck size={40}/><h1>승인을 기다리고 있어요</h1><p>초대된 계정의 이용 승인이 끝나면 내 공간을 만들 수 있어요.</p><button className="button ghost" onClick={() => supabase.auth.signOut()}>로그아웃</button></div>;
-    if (!data.profile) return onboarding ? <div className="onboarding"><header className="site-header"><Brand/><span className="step-caption">STEP 01 / 02</span></header><main><span className="eyebrow">MAKE IT YOURS</span><h1>우리 아이들의 이야기가<br/>시작될 공간을 만들어봐요.</h1><ProfileForm profile={null} refresh={refresh} onboarding/></main></div> : <Navigate to="/onboarding" replace/>;
+    if (data.account_status==='deleting'||data.account_status==='deleted')return <AccountDeletionProgress data={data} refresh={refreshCollection}/>;
+    if (data.account_status !== 'active') return <div className="not-found"><ShieldCheck size={40}/><h1>승인을 기다리고 있어요</h1><p>초대된 계정의 이용 승인이 끝나면 내 공간을 만들 수 있어요.</p><button className="button ghost" onClick={() => supabase.auth.signOut()}>로그아웃</button><AccountWithdrawal expected={null} refresh={refreshCollection}/></div>;
+    if (!data.profile) return onboarding ? <div className="onboarding"><header className="site-header"><Brand/><span className="step-caption">STEP 01 / 02</span></header><main><span className="eyebrow">MAKE IT YOURS</span><h1>우리 아이들의 이야기가<br/>시작될 공간을 만들어봐요.</h1><ProfileForm profile={null} refresh={refreshCollection} onboarding onLocked={setOnboardingLocked}/><AccountWithdrawal expected={null} disabled={onboardingLocked} refresh={refreshCollection}/></main></div> : <Navigate to="/onboarding" replace/>;
     if (onboarding) return <Navigate to="/dashboard/animals" replace/>;
     return <DashboardPage data={data} refresh={refresh} refreshCollection={refreshCollection} onSignOut={() => supabase.auth.signOut()}/>;
   };

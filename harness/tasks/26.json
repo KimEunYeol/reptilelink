@@ -1,0 +1,44 @@
+{
+  "issue": 26,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/26",
+  "branch": "codex/feat/26-account-withdrawal",
+  "baseSha": "c389ecbc82b5be4b9dd468e364a3fe17a53c8644",
+  "scope": "F-01/F-10 계정 탈퇴 즉시 차단·세션 해지·파일/데이터/인증 계정의 재시도 가능한 정리",
+  "acceptance": [
+    "본인 명시적확인/버전/요청UUID·재전송/익명/타인/중지/프로필없는계정/쓰기중지",
+    "deleting 즉시 본인/공개/새파일/쓰기차단·실제쓰기/예약/완료/탈퇴경합·잠금순서",
+    "공식Auth세션해지·실패재시도/현재DB상태차단·인증삭제마지막/결과유실확인",
+    "모든본인미디어연결해제/임대/실제Storage제거후예산반환·내구성작업/운영스크립트/부분실패",
+    "관련노트/성장/링크/SNS/일정/사용량/프로필/초대·최종Auth정리·다른사용자/미등록파일보존",
+    "원본회색탈퇴카드/기존확인창패턴·미적용편집가드/미확인잠금/7폭/키보드·최소상태DTO",
+    "현재생성QA계정/파일만실제삭제·기존fixture보존·실제Auth/DB/Storage/Worker/경합·CLI/advisors/shadow/전체verify·PR병합/main/보고/방문자후속"
+  ],
+  "plan": [
+    "원본기본정보PC/모바일/전체보드·실제Auth/함수/DB/FK/미디어정리조사",
+    "쓰기계정잠금/탈퇴요청·비공개작업·조회/세션확인/파일·데이터최종정리RPC",
+    "공식AuthAdmin/4파일제한Worker·운영재시도·폐기QA실제권한/상태/경합검사",
+    "원본탈퇴카드/확인·기본폼dirty가드·미확인결과/진행재시도/7폭",
+    "새마이그레이션/진단/shadow·전체verify/훅·PR리뷰/병합/main/보고·방문자단계"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-기본정보.png",
+      "design/마이페이지-기본정보-m.png"
+    ],
+    "notes": "기본정보PC1920/모바일450 하단 회색둥근회원탈퇴카드·복구불가안내/회색탈퇴하기버튼확인. 전체보드 기본정보원본하단(x2650~3650,y2600~4150)과 보드맵·공통PC안내(x0~4300,y8270~9470)/상단일반확인팝업(x1700~4400,y900~1500)실제확인. 독립탈퇴확인/진행화면이없으므로기존중앙확인창/회색안내/버튼만최소확장하고기록. D-01Google정책으로비밀번호/SMS/광고수신원본폼은도입하지않음. 기존편집을먼저해결한뒤본인탈퇴확인.",
+    "review": {
+      "status": "passed",
+      "summary": "원본PC/모바일기본정보하단회색탈퇴카드·보드일반확인창/PC본문규칙과7폭카드/확인창/390진행·완료·미확인화면을대조. 독립탈퇴확인/진행시안부재는기존입력/팝업/회색안내로최소확장. 기존#666회색을이용해텍스트대비4.5이상실제검사. 단일흐름12E2E에서dirty/미확인/Back/키보드/초점/정리재개·비활성/무프로필확인. 주변기본폼/메인차이#2와D-01차이docs21기록."
+    },
+    "evidence": [
+      "artifacts/account-26/card-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/account-26/dialog-{320,360,390,450,768,1440,1920}.png",
+      "artifacts/account-26/{pending,complete,unresolved}-390.png",
+      "tests/e2e/account-withdrawal.spec.ts:12 actual browser flows and computed contrast",
+      "docs/21-account-withdrawal.md"
+    ]
+  }
+}
