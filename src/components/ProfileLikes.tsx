@@ -1,3 +1,4 @@
+import {publicLoginHref} from '../lib/authReturn';
 import {useEffect,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Heart,X} from 'lucide-react';
@@ -48,7 +49,7 @@ function LikeNotice({control:c}:{control:ReturnType<typeof useProfileLike>}){
  return <section className="profile-like-status" aria-label="좋아요 상태">
   {c.identityChanged&&<p className="notice" role="alert">로그인 계정이 변경됐습니다. 이전 계정의 요청을 재전송하지 않도록 화면을 새로 열어주세요.</p>}
   {c.loaded&&(!c.state||c.state.available===false)&&<p className="comment-hint">공개 정보를 조회할 수 없습니다. 본인이 남긴 좋아요만 취소할 수 있습니다.</p>}
-  {c.loginHint&&<p className="comment-hint">{c.state?.signed_in?<Link to="/onboarding">승인·필수 동의를 확인해주세요</Link>:<Link to="/auth/login">로그인하고 좋아요 누르기</Link>}</p>}
+  {c.loginHint&&<p className="comment-hint">{c.state?.signed_in?<Link to="/onboarding">승인·필수 동의를 확인해주세요</Link>:<Link to={publicLoginHref(window.location.pathname)}>로그인하고 좋아요 누르기</Link>}</p>}
   {c.pending&&<><p className="notice" role="alert">좋아요 요청 결과가 확인될 때까지 이동과 다른 조작이 잠깁니다.</p><button type="button" className="text-button" disabled={c.busy||c.identityChanged} onClick={()=>c.expired?void c.inspectExpired():void c.run(c.pending!)}>{c.expired?'최신 좋아요 상태 확인':'같은 좋아요 요청 확인'}</button><PendingLikeNavigation/></>}
   {c.error&&<p className="notice" role="alert">{c.error}</p>}{c.notice&&<p className="comment-hint" role="status">{c.notice}</p>}
   {!c.pending&&<button type="button" className="text-button" disabled={c.busy} onClick={()=>void c.refresh()}>좋아요 다시 확인</button>}

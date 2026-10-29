@@ -1,7 +1,9 @@
+import {authIssue} from './authReturn';
 import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 export const configured = Boolean(url && key);
+export const initialAuthIssue=typeof window==='undefined'?null:authIssue(window.location.search,window.location.hash);
 export const supabase = createClient(url || 'http://127.0.0.1:56321', key || 'configuration-required');
 export const localAuth = import.meta.env.DEV && import.meta.env.VITE_LOCAL_AUTH === 'true'
   && ['localhost', '127.0.0.1'].includes(window.location.hostname)
