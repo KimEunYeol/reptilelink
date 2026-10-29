@@ -9,7 +9,8 @@
     "권한·동의·revision·영수증·경합/실패 원상 유지",
     "삭제 대기 조회/편집 차단·남은 목록 정렬 보존",
     "실제 파일 정리 전 저장/개체 한도 유지·정리 재시도",
-    "미저장/미확인 이동 보호·7개 폭 원본 비교·전체 verify/PR"
+    "미저장/미확인 이동 보호·7개 폭 원본 비교·전체 verify/PR",
+    "쓰기 중지·삭제 후 순서 간격이 있어도 상대 순서 유지 숨기기는 허용, 재공개/실제 재정렬 차단"
   ],
   "plan": [
     "개체 상태·소유자 정리 작업/명령·정렬/RLS·기존 데이터 보존",
@@ -40,11 +41,12 @@
   },
   "verification": {
     "targeted": "36 DB + 8 real browser checks passed; final full verify required before push",
-    "fullSuite": "Required final build+278 checks: 12 harness,11 unit,202 DB,10 media,43 E2E. Actual result/fingerprint stored by npm run verify in .local/harness-verification.json.",
+    "fullSuite": "Required final build+281 checks:12 harness,11 unit,204 DB,10 media,44 E2E; actual report/fingerprint recorded by final npm run verify.",
     "database": "20+55+46+45+36, including ownership/receipts/concurrency, quota before purge, live sorting, tombstone guards, notes cascade, writes pause",
     "browser": "8 new deletion flows, seven widths, cancel/focus, real3-file partial cleanup, lost response/refresh, navigation guard and explicit conflict inspection",
     "migration": "CLI-generated 20261029042650_animal_deletion.sql, --local history matches, shadow diff empty; lint and security advisors no warning; existing original-field hash unchanged",
     "review": "Own job/receipt required for cleanup helpers; actual Storage remove, token lease and physical-file checks reused; no current user data or global cleanup used for QA; final local main and PR state checked outside tracked record",
-    "regressionRepair": "최초 전체 실행은 기존 목록 QA의 SELECT * 복원이 새 생성 열에 값을 넣어 실패했다. 실패 전 trace의 해당 QA 행 하나만 복원하고, 복원 대상에서 생성 열을 제외하며 삭제 전 QA snapshot도 남기도록 보완했다. 같은 목록9개가 모두 통과했다. 이 실패 실행은 최종 통과 증거에서 제외하고 수정/기록을 포함한 전체 verify를 다시 수행한다."
+    "regressionRepair": "최초 전체 실행은 기존 목록 QA의 SELECT * 복원이 새 생성 열에 값을 넣어 실패했다. 실패 전 trace의 해당 QA 행 하나만 복원하고, 복원 대상에서 생성 열을 제외하며 삭제 전 QA snapshot도 남기도록 보완했다. 같은 목록9개가 모두 통과했다. 이 실패 실행은 최종 통과 증거에서 제외하고 수정/기록을 포함한 전체 verify를 다시 수행한다.",
+    "reviewFix": "4408743349: added DB regression failed before fix,38 deletion DB checks and browser gap-hide regression passed after. Compare relative row_number rather than raw sort_order. Preserve prior applied migration; new CLI migration20261029053239. No visual change."
   }
 }

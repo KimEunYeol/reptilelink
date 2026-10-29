@@ -38,6 +38,10 @@ try{
     ['set_animal_public',{p_animal_id:target.id,p_public:true,p_expected:(await dash()).profile.revision}],
     ['reserve_upload',{p_animal_id:target.id}],['reserve_photo_edit',{p_animal_id:target.id}],
     ['save_animal_edit',{p_animal_id:target.id,p_data:fields(target),p_assets:[],p_expected:(await dash()).profile.revision,p_request_id:crypto.randomUUID()}]]){const b=snapshot(),r=await owner.schema('api').rpc(name,parameters);assert.match(r.error?.message??'',/NOT_FOUND/);assert.equal(snapshot(),b);checks++;}
+  localQuery('update private.project_budget set writes_enabled=false where id=1');
+  await call(owner,'apply_animal_collection',{p_items:[{id:neighbor.id,is_public:false}],p_expected:(await dash()).profile.revision,p_request_id:crypto.randomUUID()});assert.equal((await dash()).animals[0].sort_order,0);assert.equal((await dash()).animals[0].is_public,false);checks++;
+  const hidden=snapshot();assert.match((await owner.schema('api').rpc('apply_animal_collection',{p_items:[{id:neighbor.id,is_public:true}],p_expected:(await dash()).profile.revision,p_request_id:crypto.randomUUID()})).error?.message??'',/SERVICE_UNAVAILABLE/);assert.equal(snapshot(),hidden);checks++;
+  localQuery('update private.project_budget set writes_enabled=true where id=1');
   await call(owner,'apply_animal_collection',{p_items:[{id:neighbor.id,is_public:true}],p_expected:(await dash()).profile.revision,p_request_id:crypto.randomUUID()});assert.equal((await dash()).animals[0].sort_order,0);checks++;
   await call(owner,'set_profile_public',{p_public:true,p_expected:(await dash()).profile.revision});const publicData=await call(client(),'public_page',{p_slug:before.profile.slug});assert.equal(publicData.animals.some(a=>a.id===target.id),false);assert.ok(!JSON.stringify(publicData).includes('pending_deletions'));checks++;
   while(created.length<20)await create();

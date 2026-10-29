@@ -63,4 +63,13 @@ test.describe('animal deletion using only newly created local QA records',()=>{
   test('limited deletion remains possible while new writes are paused',async({page})=>{
     const old=h.localQuery('select writes_enabled from private.project_budget where id=1').trim();try{h.localQuery('update private.project_budget set writes_enabled=false where id=1');const d=await confirmation(page);await d.getByRole('button',{name:'삭제하기',exact:true}).click();await expect(d).not.toBeVisible();expect(rowExists()).toBe(false);}finally{h.localQuery(`update private.project_budget set writes_enabled=${old==='t'?'true':'false'} where id=1`);}
   });
+
+  test('while writes are paused, hiding after a pending deletion may compact gaps but republishing remains blocked',async({page})=>{
+    await withPhotos(page,1);const neighbor=await create();const old=h.localQuery('select writes_enabled from private.project_budget where id=1').trim();
+    try{
+      h.localQuery('update private.project_budget set writes_enabled=false where id=1');const d=await confirmation(page);await d.getByRole('button',{name:'삭제하기',exact:true}).click();await expect(d).not.toBeVisible();expect((await dash()).animals[0].sort_order).toBe(1);
+      const card=page.locator(`[data-collection-id="${neighbor.id}"]`),list=page.getByRole('region',{name:'개체 목록 관리'});await card.getByRole('switch').click();await list.getByRole('button',{name:'적용하기',exact:true}).click();await expect(list.getByRole('status')).toContainText('목록을 적용');expect((await dash()).animals[0].is_public).toBe(false);expect((await dash()).animals[0].sort_order).toBe(0);
+      await card.getByRole('switch').click();await list.getByRole('button',{name:'적용하기',exact:true}).click();await expect(list.getByRole('alert')).toContainText('잠시');expect((await dash()).animals[0].is_public).toBe(false);
+    }finally{h.localQuery(`update private.project_budget set writes_enabled=${old==='t'?'true':'false'} where id=1`);}
+  });
 });

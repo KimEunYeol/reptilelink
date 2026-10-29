@@ -19,6 +19,7 @@
 - Read docs/05 and current GitHub issue/PR state before selecting work. General-field editing (#3 / PR #5), collection order/public batch apply (#6 / PR #7), management-shell design alignment (#8 / PR #9), and photo editing/recovery (#10 / PR #11) are merged; do not reimplement them. Animal deletion is tracked in #12; inspect its PR before choosing follow-up work. Production OAuth and free deployment remain unverified.
 - Add new migrations for database changes. Do not replay the initial migration or database/schema.sql against an already migrated database.
 - Update docs/05 with observed results and unresolved gaps. Do not merge main or deploy remotely without user authorization for that step.
+- Active user delegation (2026-10-29): complete the remaining CODEX/local development sequentially, report after each PR/MR, then continue the next stage. This includes reviewing/fixing and explicitly merging each verified PR, followed by a clean main checkout; do not ask the same merge permission again. Follow docs/14-codex-sequential-plan.md. This delegation excludes external console configuration/deployment, paid work, parallel agents, and unverifiable completion claims.
 
 ## Agentic development contract
 
