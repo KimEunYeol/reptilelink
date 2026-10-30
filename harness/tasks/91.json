@@ -1,0 +1,35 @@
+{
+  "issue": 91,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/91",
+  "branch": "codex/docs/91-production-final-handoff",
+  "baseSha": "1514373143bb4f69c581ca5e4c786454515555be",
+  "scope": "실제 운영/복구 증거·한계와 WSL/Windows 진입 안내 현행화",
+  "acceptance": [
+    "URL/source/version과 실제 Google/정책/사진/복구·미검증을 구분한다.",
+    "과거 검증/실패 증거와 기존 데이터/.git/비용0원 규칙을 보존한다.",
+    "수동 백업/키분리/최신journal·잔여#62를 인계한다.",
+    "docs-only/직접리뷰/정확HEAD PR병합 뒤 Windows 파일/해시/연결을 확인한다."
+  ],
+  "plan": [
+    "#69 병합 뒤 최신main 독립 docs 브랜치에서 시작한다.",
+    "실제 결과를 docs48에 모으고 시작/실행/호스팅 안내를 연결한다.",
+    "문서검사/리뷰/PR/명시병합 후 Windows README·실행기만 반영·감사한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "문서/진입 안내만 변경; 제품UI/디자인/런타임 변경 없음"
+  },
+  "results": {
+    "scope": "docs-only; no runtime/build/deploy/config changes",
+    "fullBaseline": {
+      "head": "cf88364d4f811432db7bb8a824b8813012d4743c",
+      "completedAt": "2026-10-30T15:35:05.148Z",
+      "fingerprint": "85f59991b74cdfc91e8c26045dcb4123a0c550b944f5f3200abffb0bd2510c63"
+    },
+    "actual": "owner Google/consent/private animal+photo/relogin/six views; dedicated remote Google/files/API/copy withdrawal401; source preserved",
+    "limits": "controlled target lease; exact old signedURL/source withdrawal integration/other-member full flows/CPU/rights/Cloudflare teardown remain62",
+    "windows": "before inventory/hash exact3 entries recorded; apply after WSL merge and validate; .git preserved",
+    "review": "latest-HEAD direct review before push, not independent approval"
+  }
+}

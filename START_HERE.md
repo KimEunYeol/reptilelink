@@ -1,5 +1,7 @@
 # VS Code WSL에서 이어서 시작하기
 
+**[최종 운영·백업 인계](docs/48-live-operations-handoff.md)**부터 읽는다. https://reptilelink.netlify.app에서 실제 본인 Google 로그인·개체/사진 저장·재접속을 확인했다. 다른 계정은 초대·승인이 필요하다. 아래 기능 마감 당시 미완료 표시는 역사 기록이며 후속 작업은 docs48과 이슈62의 실제 남은 범위를 따른다.
+
 GPT 데스크톱에서 외부 설정·원본 최종 비교·출시 준비를 이어가려면 먼저 [데스크톱 재개·개발현황 인계](docs/40-gpt-desktop-handoff.md)를 읽는다. 복사할 시작 지시문과 접근 불가 시 전달할 자료, 미수행 이슈62의 순서가 들어 있다.
 
 기준 저장소는 **Ubuntu-24.04의 `/home/eykim/projects/reptilelink`**다. Windows/OneDrive 진입 폴더에는 최신 README·WSL 실행기·기존 `.git`만 유지한다. 코드·문서·빌드·테스트·배포 CLI 작업은 이 WSL 저장소에서 수행한다.
@@ -23,7 +25,7 @@ WSL CLI의 ChatGPT 로그인은 준비 시 확인했다. 확장의 로그인 화
 
 ## 3. 현재 작업을 재개하기
 
-현재 운영 준비는 docs/40과 docs/41, 열린 이슈62를 따른다. prompts/first-task.md는 완료된 이슈3/PR5의 당시 작업 계약이며 새 착수 지시가 아니다.
+현재 실제 상태는 docs/48, 후속 검증은 docs/40·41과 열린 이슈62를 따른다. prompts/first-task.md는 완료된 이슈3/PR5의 당시 작업 계약이며 새 착수 지시가 아니다.
 
 ```text
 AGENTS.md와 docs/40-gpt-desktop-handoff.md, docs/41-desktop-execution-checklist.md 및 이슈62를 읽고 현재 미수행 항목을 확인해. 기존 기능을 재구현하지 말고 WSL에서 승인된 운영 준비를 순차 진행해. 코드 수정은 이슈·최신 main의 독립 브랜치·검증·PR 절차를 따라. 추가 지출은 0원이야.

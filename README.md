@@ -4,9 +4,9 @@
 
 - GitHub: https://github.com/KimEunYeol/reptilelink (비공개)
 - 기준 작업 디렉토리: WSL `/home/eykim/projects/reptilelink`
-- 현재 구현: **제품 기능·로컬 운영도구 개발 마감**(PR #63, build + 1,421개 검사 통과 기록). 실제 최신 상태는 [개발현황](docs/05-implementation-status.md)과 GitHub 이력을 확인한다.
-- 최신 호스팅 계약: **Netlify Free 단독 앱 + Supabase DB/Auth/Storage**. 770은 문서 참고·홈페이지 문의처에만 사용한다. 연결 PR82의 build+1472 검사를 통과했고 [실제 운영 주소](https://reptilelink.netlify.app)에 WSL 로컬 빌드를 공개 배포했다. Google 로그인·정책/실제 회원·원격복구 검증은 남아 있다. 무료 한도/실제 검증과 남은 단계는 [Netlify 운영 준비](docs/46-netlify-single-host.md)를 따른다.
-- 운영 OAuth·정책/권리·실제 회원·원격 복구는 [이슈 #62](https://github.com/KimEunYeol/reptilelink/issues/62)에서 실제 결과를 추적한다. 계획이나 로컬 통과를 운영 완료로 표시하지 않는다.
+- 현재 상태: **Google 로그인 후 운영 관리페이지 실사용 확인 완료**. 본인 계정 승인·필수동의·비공개 공간·개체/사진 저장·재접속과 관리 화면 6개 접근을 확인했다.
+- 운영 주소: **[reptilelink.netlify.app](https://reptilelink.netlify.app)**. Netlify Free 단독 앱 + Supabase Free DB/Auth/Storage다. 770.kr은 운영 도메인·DNS와 무관하다.
+- 실제 Google Production·정책 게시·원격 복구/복사본 탈퇴·수동 백업과 남은 범위는 **[최종 운영 인계](docs/48-live-operations-handoff.md)**와 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)를 따른다. 전체1,484개 검증 source와 실제 배포 version을 구분한다.
 
 ## VS Code · Codex에서 이어서 개발
 
