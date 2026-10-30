@@ -1,5 +1,7 @@
 # VS Code WSL에서 이어서 시작하기
 
+GPT 데스크톱에서 외부 설정·원본 최종 비교·출시 준비를 이어가려면 먼저 [데스크톱 재개·개발현황 인계](docs/40-gpt-desktop-handoff.md)를 읽는다. 복사할 시작 지시문과 접근 불가 시 전달할 자료, 미수행 이슈62의 순서가 들어 있다.
+
 기준 저장소는 **Ubuntu-24.04의 `/home/eykim/projects/reptilelink`**다. Windows/OneDrive 폴더에는 초기 문서와 준비 파일이 있으므로 실제 개발은 이 WSL 저장소에서 이어간다.
 
 ## 1. 프로젝트 열기
