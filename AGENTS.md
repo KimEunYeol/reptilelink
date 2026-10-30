@@ -46,3 +46,9 @@
 - Work in the canonical WSL checkout. Windows folder cleanup is limited to the approved README/launcher-only result, preserving its .git and any unique evidence in ignored WSL records.
 - Create a dedicated Free Supabase project in Seoul after current zero-cost/slot checks; preserve gain-music-club. Use workers.dev, with no domain purchase or DNS changes.
 - Operator materials are not yet supplied. Do not invent/publish production policies or publicly deploy the app before confirmed policy/contact/asset-rights materials. Continue independent preparation; record actual results in issue62.
+
+## Current launch clarification (2026-10-30)
+
+- Latest user direction: 770.kr is reference material only, never the service domain. Its pending Cloudflare custom-domain association was removed; do not change its DNS or use its subdomains. No domain purchases. Use a free provider hostname containing reptilelink and no dev for the eventual public frontend.
+- Use 770_official@naver.com for service and Google support contact. Do not substitute the logged-in Gmail address. The corresponding Google account/eligible project access and Netlify Free account are pending user sign-in.
+- docs45 records actual backend hosting versus incomplete final-domain/OAuth/member release. Candidate policy documents are not published or confirmed operator identity. Keep admission paused until actual policy/auth prerequisites are resolved.
