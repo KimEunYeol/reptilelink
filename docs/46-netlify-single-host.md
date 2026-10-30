@@ -2,13 +2,23 @@
 
 앱 호스팅은 **Netlify Free 하나**로 구성한다. Supabase의 전용 서울 프로젝트 `suuemuqwjwbddbjevvmg`는 기존 DB·Auth·private Storage로 유지한다. Cloudflare 준비 기록은 docs45의 당시 증거이며, Netlify 교체 검증 후 운영 요청 경로에서 제외한다. 770.kr은 문서 참고에만 사용하며 DNS·도메인과 무관하다. 홈페이지 문의처는 `770_official@naver.com`, Google 내부 설정은 사용자 본인 계정이다.
 
+## 최신 실제 상태 (#83, 2026-10-30 KST)
+
+- #80/PR81: 시계 격리 source fdae4c8의 전체1421 통과·명시 병합 main5a806d2·clean/tree07160c5 일치. #79/PR82: 최종 source1d069a의 build+1472(19/77/1121/34/221) 전체 통과(17:52:55KST), 정확 HEAD/16파일/mergeability 확인·명시 병합 main dc9e09b·clean/tree3cf4340 일치.
+- 사용자 CLI 로그인 완료 후 실제 계정 Free·300중 사용0·accumulate_overages=false·pro_trial=false·기존사이트0을 확인했다. 이름 reptilelink, site id c2125a54-71be-478c-9a9b-4d24a87783fd, 주소 https://reptilelink.netlify.app을 생성했다. **주소 등록 완료·앱은 아직 미게시**다. Git 연결/클라우드 빌드/도메인 구매/770 DNS 변경은 없다.
+- Free 실제 권한에서 env_var_secrets=true, env_var_scopes=false를 확인했다. 포함된 비밀 환경변수 기능을 쓰되 유료 세부 Functions-only 범위나 플랜 변경을 요청하지 않는다.
+- Supabase 서버키와 새 HMAC를 해당 Netlify production secret으로 보내려는 명령은 자동 승인 검토가 민감정보의 Netlify 목적지 전송이 구체적으로 승인되지 않았다는 이유로 거절했다. **명령 전체가 실행되지 않아 키를 조회·전송하지 않았다.** 해당 데이터/목적지를 명시해 사용자 승인을 요청 중이며 우회하지 않는다.
+- 독립 공개값 전용 WSL production 빌드는31파일·fixture=false/Google=false·로컬 환경 해시 보존·공개 변수 허용목록/서버키 패턴 부재 검사를 통과했다. 이 빌드는 서버 비밀값을 읽지 않았고 아직 외부 업로드하지 않았다. Google client 생성 직전 확인과 실제 운영주체명/개인정보 담당자명·정책 확정도 대기다.
+- 모든 실제 테스트 뒤 새 로컬 암호화 백업/최신 journal과 격리 복구를 완료했다. 32테이블·28실파일128184B·28decode·networknone/Cronoff·원시/ledger 접근 거절/RLS를 확인했다. 기존 파일과 분리 키를 보존했으며 원격 복구 #69를 대체하지 않는다.
+- 현재 doctor는 서비스·loopback·실제 Storage/백업 인증 통과, DB는 영수증714건 대기로 attention이다. 18:02KST 관측에서 마지막 정상 Cron은17:17:00.030 종료, 가장 오래된 현재 영수증 정리 자격은17:17:00.231이었다. 이전 오래된 대기는 없어졌고 새 자격은 Cron 이후다. 계정·개체·사진 정리 대기는0. 다음 정규 Cron은18:17 예정이며 관측 전 성공으로 표시하지 않는다. 전역 cleanup/reset은 없다.
+
 ## 비용 조건과 실제 계정
 
 2026-10-30 로그인한 Netlify `gimeunyeol` 팀에서 Free, 300/300 credits, 저장된 결제수단 없음, 기존 프로젝트 0개를 관측했다. [공식 요금표](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/)의 Free는 월 $0·300 credits 고정 한도이며 자동 충전을 제공하지 않는다. 한도 초과 시 사이트가 일시 중지될 수 있다. **초과 과금 방지와 무중단 가동은 다른 조건**이며, 무료 한도가 무제한 트래픽을 보장하지 않는다.
 
 생산 배포 1회 15 credits, 전송 1GB 20 credits, 요청 10,000회 2 credits인 현재 공식 기준을 배포 직전에 실제 잔여량과 대조한다. 카드·체험판·업그레이드·유료 부가 기능·AI·자동 충전은 추가하지 않는다. Supabase도 Free를 유지한다. 약관·플랜이 이후 변경되면 재확인하며 현재 조건을 영구 요금 보장으로 표현하지 않는다.
 
-최종 주소는 소유권 확인 뒤 `reptilelink`를 포함한 무료 `netlify.app` 주소로 확정한다. `reptilelink.netlify.app`은 아직 미예약 후보이며 실제 이름 충돌 확인 전 확보했다고 쓰지 않는다. 도메인 구매·770 연결은 하지 않는다.
+최종 주소는 소유권 확인 뒤 `reptilelink`를 포함한 무료 `netlify.app` 주소로 확정한다. `reptilelink.netlify.app` 이름은 실제 생성으로 확보했으며 앱 업로드/운영 검증 완료와는 구분한다. 도메인 구매·770 연결은 하지 않는다.
 
 ## 연결부와 빌드
 
@@ -41,4 +51,4 @@
 6. 확정 정책의 새 불변 버전·published·동의/재동의, 초대/승인·실제 Google 성공/취소/오류·로그아웃·회원/사진/탈퇴·소규모 성능을 별도 실제 증거로 확인한다. 사용자 실사용 계정을 탈퇴 시험에 쓰지 않는다.
 7. Netlify가 교체 역할을 실제로 수행함을 확인한 뒤 렙타일링크의 Cloudflare 준비 호스트를 운영 경로에서 제외한다. 다른 서비스와 Supabase는 보존한다. 배포 commit/version/URL·Free 사용량과 남은 항목을 #62에 기록한다.
 
-현재 Netlify CLI 인증·최종 이름 확보/배포, Google 웹 클라이언트 생성/provider 연결, 운영자 신원/정책 확정·회원 개방/실제 원격 회원 검증은 별도 미완료다. #69 원격 백업·Free 복구 프로젝트 시험도 미완료이며 로컬 28파일 복구 성공으로 대체하지 않는다. 최종 출시 결정은 사용자에게 남긴다.
+Netlify CLI 인증과 이름 확보는 완료했다. 앱 배포/실제 Netlify 검증, Google 웹 클라이언트 생성/provider 연결, 운영자 신원/정책 확정·회원 개방/실제 원격 회원 검증은 별도 미완료다. #69 원격 백업·Free 복구 프로젝트 시험도 미완료이며 로컬 28파일 복구 성공으로 대체하지 않는다. 최종 출시 결정은 사용자에게 남긴다.

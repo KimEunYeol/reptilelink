@@ -470,3 +470,9 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 사용자는 앱 호스팅을 하나로 제한하고 비용 안전성을 요청했다. 공식 Free의 300 credits 고정 한도·자동 충전 불가와 실제 gimeunyeol 팀 Free/300잔여/결제수단 없음을 확인해 Netlify 단독으로 진행한다. Supabase는 기존 DB/Auth/Storage를 유지하며 770은 도메인에서 제외한다. 기존 Worker 기능 코드를 수정하지 않고 Netlify 서버 환경·정적 continuation 어댑터/경로·로컬 ESM 번들만 연결했다. 실제 loopback DB/Storage의 51검사와 CC0 게코 실사진 변환/업로드/탈퇴 후 파일 제거, 로컬 Netlify 패키징·실제 Deno 5검사가 통과했다. 전체 고정 verify·최신 HEAD 리뷰/PR·명시 병합은 해당 실제 보고서로 확인한다. docs46에 공식 요금과 한도 시 중지, 실행 방법·실패 수정·원격 검증 한계를 기록한다. Netlify CLI/이름 확보·실제 게시, OAuth/provider·확정 정책/원격 회원·#69 운영 백업/복구는 아직 미완료다.
 
 #80/PR81은 고정 sourcefdae4c8의 build+1421 전체 검사(2026-10-30T08:32:04.163Z), 최신diff 직접 리뷰·원격3파일/정확HEAD/mergeability 확인·명시 squash로 마감했다. 이슈80 종료·clean main5a806d2와 검증 tree07160c5 일치를 재확인했다. #79는 이 기반으로 rebase했고 Free의 환경변수 세부 범위가 유료라는 점을 기본 범위/production context·공개 빌드 검사로 명확히 했다. README/docs40의 최신 진입점과 미게시 개인정보 후보의 호스팅 설명도 Netlify 기준으로 보완했다. 원래 실패 기록은 유지하며 #79 새 전체 검증 결과로 완료 여부를 판단한다.
+
+## 2026-10-30 Netlify 연결 병합·주소 확보·최신 인계 (#83)
+
+#79/PR82 source1d069a의 build+1472 전체 검사(17:52:55KST)·정확HEAD/16파일/mergeability/직접리뷰·명시 squash·이슈종료/clean main dc9e09b와 검증 tree3cf4340 일치를 확인했다. CLI 인증 뒤 실제 Free/300사용0·초과누적false·시험판없음·기존사이트0을 확인해 reptilelink.netlify.app을 확보했으나 아직 앱 업로드는 없다. 서버키/HMAC의 Netlify 전송은 자동 승인 검토가 명시적 민감정보 목적지 승인 부족으로 거절해 실행되지 않았고 사용자 확인을 요청 중이다. 공개값 production31파일 빌드·fixture/Google false·환경해시 보존은 독립 통과했다.
+
+새 암호 백업/최신journal·32테이블28실파일128184B/28decode/networknone/Cronoff/권한 격리복구가 통과했다. doctor는 Storage/백업/서비스 통과·계정/개체/사진 작업0이며 마지막 정상 Cron 직후 자격이 생긴 영수증714건으로 attention이다. 전역 cleanup/reset은 없다. docs39/41/42의 역사 관측과 docs46 최신 상태를 구분하고 Windows 안내를 현행 WSL 진입점으로 전달한다. 이 문서 검사는 앞선 전체 검사를 대체하지 않으며 Google/정책/실제 회원·#69 원격 복구/최종 출시는 미완료다.

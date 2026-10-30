@@ -1,5 +1,8 @@
 # 무료 운영 기반 준비 결과 (#68)
 
+최신 실행 상태는 [Netlify 단독 호스팅](46-netlify-single-host.md)과 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)를 따른다. 아래 과거 시각의 관측/명령은 당시 기록이며 현재 대상에 그대로 재실행하지 않는다. 앱은 Netlify Free 하나로 전환하고 Supabase는 유지한다.
+
+reptilelink.netlify.app 이름은 확보했지만 앱은 아직 미업로드다. 아래 workers.dev Auth 설정은 이전 준비값이며 실제 Netlify 서버/콜백 확인 후에만 바꾼다. 서버 키의 Netlify 전달은 명시적 목적지 승인을 요청 중이며 거절된 명령은 실행되지 않았다.
 2026-10-30 KST 관측 기록이다. 전체 출시 작업은 [이슈 #62](https://github.com/KimEunYeol/reptilelink/issues/62), 자료 양식과 실행 순서는 [docs/41](41-desktop-execution-checklist.md)에서 관리한다. 운영자료·Google OAuth·공개 배포·원격 복구는 아직 미완료다.
 
 ## 확인한 운영 기반
