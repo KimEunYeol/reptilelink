@@ -20,7 +20,7 @@ const expired=(command:Command)=>likeRequestExpired(command.started,performance.
 export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconcile:()=>Promise<Dashboard>;onClose:()=>void}){
   const dialog=useRef<HTMLDialogElement>(null),urls=useRef<string[]>([]),sending=useRef(false),command=useRef<Command|null>(null);
   const [values,setValues]=useState<Values>(defaults),[photos,setPhotos]=useState<PhotoDraft[]>([]),[parents,setParents]=useState<ParentDraft>(()=>parentDraft({father:null,mother:null}));
-  const [busy,setBusy]=useState(false),[attempted,setAttempted]=useState(false),[error,setError]=useState(''),[progress,setProgress]=useState(''),[inspection,setInspection]=useState<Dashboard|null>(null);
+  const [busy,setBusy]=useState(false),[attempted,setAttempted]=useState(false),[photosEditable,setPhotosEditable]=useState(false),[error,setError]=useState(''),[progress,setProgress]=useState(''),[inspection,setInspection]=useState<Dashboard|null>(null);
   const [invalid,setInvalid]=useState<Record<string,string>>({});
   const uploaded=useRef(new Map<string,string>()),allocated=useRef(new Set<string>()),parentUploads=useRef(new Map<string,ParentUpload>());
   const dirty=attempted||photos.length>0||parentDraftKeys(parents).some(Boolean)||JSON.stringify(values)!==JSON.stringify(defaults);
@@ -49,6 +49,23 @@ export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconc
     try{await settle();const latest=await reconcile();setInspection(latest);setError('현재 저장 목록을 확인했습니다. 등록된 개체는 삭제하지 않고 목록에서 이어서 확인할 수 있습니다.');}
     catch(reason){setError(userMessage(reason));}finally{sending.current=false;setBusy(false);}
   }
+  async function preparePhotosAgain(){
+    const c=command.current;
+    if(sending.current||!c?.created||c.saveSent||c.save||c.publishSent)return;
+    sending.current=true;setBusy(true);setError('');
+    try{
+      if(expired(c))throw Error('REQUEST_EXPIRED');
+      const latest=await reconcile(),found=latest.animals.find(a=>a.id===c.created!.id);
+      if(latest.account_status!=='active'||!latest.profile||!found)throw Error('NOT_FOUND');
+      // Only rebase an unchanged, still-private creation with no bound photos.
+      // A different editor's changes must be reviewed in its existing editor.
+      if(found.is_public||!matches(found,c))throw Error('VERSION_CONFLICT');
+      await cleanupSelfUploads(uploaded.current,new Set());
+      c.created.revision=latest.profile.revision;
+      setPhotosEditable(true);setInspection(null);
+      setError('사진 입력을 유지했습니다. 사진을 확인·수정한 뒤 같은 개체에서 저장해주세요.');
+    }catch(reason){setError(userMessage(reason));}finally{sending.current=false;setBusy(false);}
+  }
   async function discard(leaving=false){
     if(sending.current)return;sending.current=true;setBusy(true);setError('');
     try{
@@ -61,7 +78,7 @@ export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconc
   async function submit(event:FormEvent){
     event.preventDefault();if(sending.current)return;
     if(!command.current){const parsed=animalRegistrationSchema.safeParse(values);if(!parsed.success){setInvalid(Object.fromEntries(parsed.error.issues.map(issue=>[String(issue.path[0]),issue.message])));setError(parsed.error.issues[0].message);return;}setInvalid({});command.current={data:parsed.data,id:crypto.randomUUID(),expected:profile.revision,started:performance.now(),wallStarted:Date.now(),createSent:false};setAttempted(true);}
-    const c=command.current;sending.current=true;setBusy(true);setError('');setInspection(null);
+    const c=command.current;setPhotosEditable(false);sending.current=true;setBusy(true);setError('');setInspection(null);
     try{
       if(expired(c))throw Error('REQUEST_EXPIRED');
       if(!c.created){setProgress('개체 정보를 비공개로 저장하고 있어요.');c.createSent=true;c.created=await rpc<{id:string;revision:number}>('create_animal',createArgs(c));}
@@ -85,8 +102,8 @@ export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconc
   return <dialog ref={dialog} className="animal-edit animal-create" aria-labelledby="animal-create-title" onCancel={event=>{event.preventDefault();if(!busy)void discard();}}>
     <header className="animal-edit-heading"><h2 id="animal-create-title">개체 추가</h2><button type="button" className="icon-button" aria-label="등록 닫기" disabled={busy} onClick={()=>void discard()}><X size={20}/></button></header>
     <form className="animal-edit-body" noValidate onSubmit={submit}>
-      <AnimalPhotoDraft photos={photos} disabled={busy||attempted} onChange={setPhotos} renderPhoto={()=>null} rememberUrl={url=>urls.current.push(url)} inputLabel="개체 사진" multiple sourcePlaceholder/>
-      <ParentPhotoDraft draft={parents} disabled={busy||attempted} onChange={(role,photo)=>setParents(old=>({...old,[role]:photo}))} renderPhoto={()=>null} rememberUrl={url=>urls.current.push(url)}/>
+      <AnimalPhotoDraft photos={photos} disabled={busy||(attempted&&!photosEditable)} onChange={setPhotos} renderPhoto={()=>null} rememberUrl={url=>urls.current.push(url)} inputLabel="개체 사진" multiple sourcePlaceholder/>
+      <ParentPhotoDraft draft={parents} disabled={busy||(attempted&&!photosEditable)} onChange={(role,photo)=>setParents(old=>({...old,[role]:photo}))} renderPhoto={()=>null} rememberUrl={url=>urls.current.push(url)}/>
       <fieldset className="edit-sex" disabled={busy||attempted}><legend>성별</legend>{(['male','female','unknown']as const).map(sex=><label key={sex}><input type="radio" name="create-sex" checked={values.sex===sex} onChange={()=>field('sex',sex)}/>{sexLabels[sex]}</label>)}</fieldset>
       <fieldset className="edit-fields" disabled={busy||attempted}><legend className="sr-only">개체 일반 정보</legend>
         <label><span>이름</span><input aria-label="개체 이름" {...inputProps('name')} value={values.name} onChange={e=>field('name',e.target.value)}/>{problem('name')}</label>
@@ -101,9 +118,10 @@ export function AnimalCreate({profile,reconcile,onClose}:{profile:Profile;reconc
       {busy&&<p className="edit-photo-hint" role="status">{progress}</p>}{error&&<p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/></p>}
       {attempted&&error&&<button type="button" className="text-button" disabled={busy} onClick={()=>void inspect()}>저장 상태 확인</button>}
       {inspection&&<div className="edit-conflict" aria-label="현재 저장 목록"><p>현재 개체 {inspection.animals.length}개</p><ul>{inspection.animals.map(a=><li key={a.id}>{a.name} · {a.is_public?'공개':'비공개'}</li>)}</ul></div>}
+      {inspection&&command.current?.created&&!command.current.saveSent&&!command.current.save&&!command.current.publishSent&&!expired(command.current)&&<button type="button" className="text-button" disabled={busy} onClick={()=>void preparePhotosAgain()}>사진 입력 유지·다시 준비</button>}
       {inspection&&command.current?.createRejected&&!command.current.created&&<button type="button" className="text-button" disabled={busy} onClick={()=>{command.current=null;setAttempted(false);setInspection(null);setError('입력을 유지했습니다. 현재 목록을 검토한 뒤 저장해주세요.');}}>입력 유지·새 요청 준비</button>}
       {navigation.blocked&&<div data-navigation-prompt><p className="notice" role="alert">입력과 저장 상태를 확인한 뒤 이동해주세요.</p><button ref={navigation.stayButton} type="button" className="text-button" onClick={navigation.stay}>계속 확인</button><button type="button" className="text-button" disabled={busy} onClick={()=>void discard(true)}>저장 상태 확인 후 이동</button></div>}
-      <footer className="edit-actions"><button className="button" aria-label="개체 등록하기" disabled={busy}>{busy?'저장 중':attempted?'같은 등록 요청 확인':'저장'}</button><button type="button" className="button ghost" disabled={busy} onClick={()=>void discard()}>취소</button></footer>
+      <footer className="edit-actions"><button className="button" aria-label="개체 등록하기" disabled={busy}>{busy?'저장 중':attempted&&!photosEditable?'등록 확인':'저장'}</button><button type="button" className="button ghost" disabled={busy} onClick={()=>void discard()}>취소</button></footer>
     </form>
   </dialog>;
 }
