@@ -1,0 +1,40 @@
+{
+  "issue": 52,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/52",
+  "branch": "codex/feat/52-encrypted-backup-restore",
+  "baseSha": "74764c1a877ea85c198db141787e586d21f49b41",
+  "scope": "로컬 AES-256-GCM 암호화 DB·실제Storage 바이트 백업/최신탈퇴상태 journal·7일보관·동일PG버전 격리복구와 실제권한/파일검증",
+  "acceptance": [
+    "반복가능읽기 exported snapshot으로 앱DB/스키마·migration/hash/Storage목록을같은시점에수집·실제바이트/등록ready해시검증·누락/변조실패; 복사오류는완료파일게시금지",
+    "Auth비밀번호/세션/MFA/OAuth/DBJWT설정/역할비밀번호/환경키는제외·최소UUID앵커·실제역할/회원권/ACL/RLS를복구하고외부로그인복구를주장하지않음",
+    "기본백업/별도키0700디렉터리와0600파일·소유자/심볼릭링크/범위검사·Git/웹밖·공격경로/한도/잘못된키·인증태그검사뒤에만SQL실행",
+    "최소private탈퇴UUID/요청·완료시각·기준epoch와별도인증암호화최신journal; 백업후실제탈퇴QA 재활성화/본문/파일복원없음; 없는/오래된기록은실패·미내보낸탈퇴복구를주장하지않음",
+    "이미캐시된PG17.11.0.006만·고유UUID/소유label·networknone/포트없음/읽기전용루트/tmpfs·Cron사전off·실제개발DB/기존볼륨초기화없음·자신의격리컨테이너만정리",
+    "7일이내만복구허용·검증한자체생성암호화파일만정리·실제새QA백업→탈퇴→최신journal→격리복구→소유자/타인/익명/raw/RLS·현재상태·실제사진해시/디코드 확인",
+    "새CLI migration/실DB/lint/advisors/shadow·실제실패/복구/보관테스트·고정전체verify/정확HEAD리뷰/명시병합/cleanmain/보고후53진단/인계"
+  ],
+  "plan": [
+    "공식PG17/Supabase/NodeCrypto지침·실제확장/권한/비밀영역·경로/입력한도 계약과최소내구탈퇴기록확정",
+    "명세/데이터→탈퇴ledger/epoch·기존단일Cron정리→CLI migration/실제회귀",
+    "인증암호화·소유경로/키/7일정리와일관된snapshot/역할·선택데이터·실제파일/최신journal CLI 구현",
+    "동일캐시이미지격리복구·최신중지/탈퇴재적용·실제권한/파일·변조/잘못된키/누락/실패정리 검증",
+    "실제기본백업/복구·문서/하네스·전체검증/리뷰/병합/main/53계속"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "references": [],
+    "notes": "기존웹UI/Worker표시/원본97PNG를바꾸지않는로컬운영CLI·DB내구기록/격리복구작업이다. 새관리화면/창/그림을만들지않고운영연결점만문서화한다.",
+    "review": {
+      "status": "passed",
+      "summary": "UI·design 원본 변경 없음. 로컬 CLI의 최소 메타데이터 출력만 추가."
+    },
+    "evidence": [
+      "로컬 실제 ledger13/격리복구27·암호/경로/보관 단위4 통과, 실제32테이블/28파일/28디코드 및 새QA사진/백업후탈퇴·역할전체대조",
+      "CLI migration20261030020039/schema·20261030020114/seedCron, lint/advisors 이상없음·shadow차이없음",
+      "docs/38-encrypted-backup-restore.md 계약/실제실패·수정·키·최신journal·검증/서비스재연결 경계; 최종 고정 전체verify/정확HEAD리뷰는 PR 증거",
+      "첫 전체220/221의 사진편집 QA afterEach CLEANUP_PENDING 실패→자기자산만 정리·QA clock_timestamp/5분 경계로 보완, 운영UI/lease 변경없음·표적/전체 재검증"
+    ],
+    "reason": "웹UI/정적자산 변경 없이 로컬 운영 CLI·DB 내구 기록/격리 복구만 추가하며 원본97PNG를 보존한다."
+  }
+}

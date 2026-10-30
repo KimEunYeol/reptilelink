@@ -516,3 +516,10 @@ api.reserve_self_photo(animal,request)는 기존 reserve_photo_edit 예산/3장/
 private.mutation_receipts의기존24h expires_at/actor-request PK·Auth cascade와인덱스를유지한다. 프로젝트receipt_limit 기본100000(0은신규중지)·신규INSERT softguard를 추가하며 기존행재확인과 delete_account 내구요청은 예외다. SELECT 기반제한은공유전역카운터/추가잠금없이동시작은초과가가능하고 실제행크기/쿼리비용을측정해기록한다. 새로운unknowncancel만 private.action_buckets의upload_cancel/3600초120회로제한하고47h정리는기존경로를재사용한다.
 
 서비스전용 영수증500행정리는 expires_at<now()-1h·진행private.account_deletions(user_id)없음·관련media_assets.cleanup_after 유효기간보존을확인하고SKIPLOCKED로삭제한다. 기존단일Cron에루프/분리COMMIT을추가한다. 신규함수는emptysearch_path·PUBLIC/anon/authenticated실행회수·service_role만허용하며 실제역할/경합/예약610건/기존자료보존을검사한다. 클라이언트명령시계는같은캡처객체의WeakMap으로보관하고별도영구/무제한UUID저장소를만들지않는다.
+
+
+## 백업용 최소 탈퇴 기록 (#52)
+
+private.account_withdrawals(user_id UUID PK,requested_at timestamptz,completed_at timestamptz nullable)는Auth FK없이탈퇴수용/완료의최소기록을보존한다. private.recovery_settings의단일epoch/시작시각은이기록이보장되는백업시점을표시한다. RLS를켜고일반/익명/회원직접접근을허용하지않는다. 요청수용과완료가각기같은트랜잭션으로기록되며기존진행작업은최초도입시백필한다. 완료후7일·진행작업없음일때기존영수증500행정리루프안에서기록도제한배치정리하며Cron배출종료조건에반영한다. 기존마이그레이션은수정하지않고새CLI파일로기록한다.
+
+백업Auth데이터는UUID/is_anonymous식별앵커만포함하고비밀번호/실제Auth이메일·provider identity/metadata·세션/토큰·MFA/OAuth는포함하지않는다. 앱내정상프로필/개인정보데이터는인증암호화된백업대상이며공개하지않는다. Storage는현재버킷/객체의최소권한메타데이터·실제파일과앱등록해시를별도로묶고,격리파일은원본경로를파일시스템명으로사용하지않는해시이름으로복구한다. 실제역할/소유권·ACL/RLS를유지하며provider비밀/DB설정·로그인재구성은별도경계다.
