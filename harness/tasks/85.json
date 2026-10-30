@@ -1,0 +1,33 @@
+{
+  "issue": 85,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/85",
+  "branch": "codex/docs/85-deployed-netlify-status",
+  "baseSha": "959e2549c4628805c37f522b5486d2d19fe56983",
+  "scope": "실제 Netlify 공개 배포와 승인 완료·Free 실제 잔여/올바른 Auth URL·로컬 보존·남은 외부 항목을 문서에 현행화",
+  "acceptance": [
+    "실제 source/version/공개URL·production secret/공개 설정 승인 완료를 과거 대기와 구분한다.",
+    "HTTP20/7폭 게스트 검증과 full1472·실제 회원/CPU/원격복구 미검증을 분리한다.",
+    "billing UI285/300·Free$0·카드없음과 API stale used0·배지 유지/한도 중지를 기록한다.",
+    "Auth URL2필드 적용/다른15필드 동일, 정상 Cron 후 신규 대기·로컬 서비스/journal/28파일 복구를 증거대로 기록한다.",
+    "Windows 기존3항목/해시·WSL 링크와 비밀값 제외를 확인하고 docs-only·직접 리뷰·PR/정확HEAD 병합/main으로 마감한다."
+  ],
+  "plan": [
+    "실제 deploy/UI/Auth/로컬/Windows 증거와 문서의 과거 상태를 대조한다.",
+    "README/AGENTS/체크리스트/진행기록을 최신 실행과 남은 항목으로 갱신한다.",
+    "문서만 docs-only와 최신HEAD 직접 리뷰·PR/정확HEAD 명시 병합·cleanmain/tree 확인을 수행한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "문서/task만 변경하며 제품 UI/DB/런타임/테스트/설정은 변경하지 않는다."
+  },
+  "results": {
+    "deployment": "main959e254/version6ae461b7fe048afa4a082df9 production ready/Public; Previews Private; CLI local --no-build upload",
+    "runtime": "unchanged from full1472 source1d069a; anonymous HTTP20 and7width14views passed; actual member/CPU unverified",
+    "cost": "fresh billing UI Free$0/no card/285of300 remaining; production deploy15; stale API capability used0 not authoritative",
+    "auth": "2 exact Netlify URL fields applied, other15 remote-only fields identical; Google disabled",
+    "local": "normal18:17 Cron cleared old714; newer eligibility after18:20; dev:all restored loopback services; freshjournal/isolated32tables28files recovery passed",
+    "windows": "exact README/launcher/.git; both delivered SHA256 hashes unchanged; all4 WSL entry documents exist; .git preserved",
+    "remaining": "Google client action-time confirmation; actual operator/privacy names/final policies/rights; real OAuth/member/withdrawal/CPU; remote backup69; temporary Cloudflare retirement"
+  }
+}

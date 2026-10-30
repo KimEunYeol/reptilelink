@@ -2,6 +2,8 @@
 
 착수일: 2026-10-27. 최종 로컬 검증 기록: 아래 날짜별 항목 참조. 작성한 명세·제안값을 기준으로 개발을 진행하라는 사용자 요청에 따라 D-01~D-08을 구현 기준으로 채택했다.
 
+최신 외부 관측 #85: https://reptilelink.netlify.app 공개 배포(main959e254/version6ae461b7), 승인 후 production secret·공개/미리보기 분리·HTTP20/7폭·Supabase 복귀 URL 적용을 완료했다. Free$0/카드없음/잔여285/300이다. Google client/정책·실제 회원/원격복구는 미완료이며 [상세 실행 증거](46-netlify-single-host.md)를 따른다. 아래 시각별 실패와 미배포 서술은 당시 기록으로 보존한다.
+
 ## 현재 구현 범위
 
 | 항목 | 상태 |
@@ -476,3 +478,7 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 #79/PR82 source1d069a의 build+1472 전체 검사(17:52:55KST)·정확HEAD/16파일/mergeability/직접리뷰·명시 squash·이슈종료/clean main dc9e09b와 검증 tree3cf4340 일치를 확인했다. CLI 인증 뒤 실제 Free/300사용0·초과누적false·시험판없음·기존사이트0을 확인해 reptilelink.netlify.app을 확보했으나 아직 앱 업로드는 없다. 서버키/HMAC의 Netlify 전송은 자동 승인 검토가 명시적 민감정보 목적지 승인 부족으로 거절해 실행되지 않았고 사용자 확인을 요청 중이다. 공개값 production31파일 빌드·fixture/Google false·환경해시 보존은 독립 통과했다.
 
 새 암호 백업/최신journal·32테이블28실파일128184B/28decode/networknone/Cronoff/권한 격리복구가 통과했다. doctor는 Storage/백업/서비스 통과·계정/개체/사진 작업0이며 마지막 정상 Cron 직후 자격이 생긴 영수증714건으로 attention이다. 전역 cleanup/reset은 없다. docs39/41/42의 역사 관측과 docs46 최신 상태를 구분하고 Windows 안내를 현행 WSL 진입점으로 전달한다. 이 문서 검사는 앞선 전체 검사를 대체하지 않으며 Google/정책/실제 회원·#69 원격 복구/최종 출시는 미완료다.
+
+## #85 실제 Netlify 공개 배포 기록
+
+PR82 source1d069a 전체1472 통과 → 명시 병합 dc9e09b → 문서 PR84 main959e254의 동일 runtime을 WSL production 빌드/수동 no-build 배포했다. version6ae461b7fe048afa4a082df9/18:22KST, Production Public/Previews Private·실제 URL HTTP20/7폭14뷰가 통과했다. Supabase Site URL/정확 callback2필드만 변경하고 다른15필드 동일을 확인했다. 실제 청구화면 Free$0·카드없음·15사용/285잔여이며 capability used0은 실제 잔여 근거가 아니다. Google/정책·회원/원격 CPU·#69 복구는 미완료다. 상세/실패/승인 해소·로컬 정상 Cron/서비스 복구·journal/28파일은 docs46에 기록했다. 본 변경은 문서/task만이며 docs-only 검사는 런타임 전체검사나 실제 회원 검증을 대체하지 않는다.
