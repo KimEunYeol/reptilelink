@@ -190,7 +190,7 @@ test.describe('collection apply using real local QA identities',()=>{
     expect((await dash()).profile!.revision).toBe(before+2);
   });
 
-  test('failed cancellation keeps an unresolved state even when the local draft matches old props',async({page})=>{
+  test('failed cancellation freezes the original draft and keeps the unresolved navigation interlock',async({page})=>{
     const target=original.find(a=>!a.is_public)!;
     const before=(await dash()).profile!.revision;
     await card(page,target).getByRole('switch').click();
@@ -199,7 +199,10 @@ test.describe('collection apply using real local QA identities',()=>{
     await expect(list(page).getByRole('alert')).toContainText('연결');
     await list(page).getByRole('button',{name:'변경 취소',exact:true}).click();
     await expect(list(page).getByRole('alert')).toContainText('실제 저장 상태를 확인하지 못했습니다');
-    await card(page,target).getByRole('switch').click(); // Now locally equals stale props, while the DB is public.
+    const frozenToggle=card(page,target).getByRole('switch');
+    await expect(frozenToggle).toBeDisabled();
+    await frozenToggle.dispatchEvent('click'); // Even a synthetic click cannot rewrite an unresolved draft.
+    await expect(frozenToggle).toHaveAttribute('aria-checked','true');
     await expect(list(page).getByRole('status')).toContainText('실제 저장 상태를 아직 확인하지 못했습니다');
     await expect(card(page,target).getByRole('button',{name:`${target.name} 상세 보기`,exact:true})).toBeDisabled();
     await page.getByRole('link',{name:'기본 정보',exact:true}).click();
