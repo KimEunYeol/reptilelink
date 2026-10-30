@@ -1,0 +1,44 @@
+{
+  "issue": 70,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/70",
+  "branch": "codex/fix/70-mobile-avatar-layout",
+  "baseSha": "3cfb2ae0cc4297365fb945fe52f84e16d6c1d122",
+  "scope": "원본 PC/m의 프로필 미리보기 오른쪽 등록·삭제/설명 배치를 모바일에서도 유지하는 CSS와 실제7폭 회귀",
+  "acceptance": [
+    "450px 원본 및 PC와 같은 미리보기 오른쪽 컨트롤/설명 관계를 모바일에서도 유지한다.",
+    "320~1920의7폭에서 이미지/버튼/설명이 겹치거나 넘치지 않으며 좁은폭은 같은컨트롤 크기/간격만 줄인다.",
+    "배경컨트롤/저장·권한·업로드 동작과 원본97PNG/로컬DB·자료를 보존한다.",
+    "기존7폭 미디어회귀의 bounding box로 red→green을 확인하고 관련실제Storage/키보드/복구·고정전체verify/리뷰/PR/명시병합/main을 완료한다."
+  ],
+  "plan": [
+    "원본PC/m·보드디자인열/공통설명과 실제450/PC캡처를 확인하고 기존 CSS의761px 분기를 원인으로 대조한다.",
+    "실제7폭에서 미리보기/버튼/설명 위치를 검사하는 회귀를 먼저 재현한 뒤 동일원본의 옆배치를 기본으로 적용한다.",
+    "표적/미디어 실제회귀·7폭 원본직접비교·고정전체검사 후 정확HEAD리뷰/PR·명시병합·cleanmain/보존진단으로 보고한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-디자인수정.png",
+      "design/마이페이지-디자인수정-m.png"
+    ],
+    "notes": "원본450px 모바일과1920px PC에서 프로필미리보기 오른쪽에 등록/삭제·정사각형자동조정 안내가 있다. 보드 디자인열(1950,1200,1200,4400)을 실제 확대하고 PC공통(0,8400,5000,1000)의 메인외본문은모바일동일크기/레이아웃 설명을 직접 읽었다. 기존CSS min-width761px에서만 옆배치한 것이 모바일차이 원인이다. 새로운패턴없이 같은컨트롤 크기/간격만 좁은폭에 맞춘다.",
+    "review": {
+      "status": "passed",
+      "summary": "원본450px/PC와 실제320·450·1440 캡처를 직접 비교했다. 미리보기 오른쪽에 등록/삭제와 안내를 유지하고,320px에서는 같은 컨트롤의 크기/간격만 줄인다.7폭 위치 검사·가로넘침0·적용 전 업로드0회와 실제Storage/키보드/복구26흐름이 통과했다. 폰트/자산권리와 전체팝업·원격출시는 별도 미완료다."
+    },
+    "evidence": [
+      "artifacts/profile-layout-70/avatar-{320,360,390,450,768,1440,1920}.png:원본옆배치/7폭 실제캡처",
+      ".local/profile-70-red.log:기존CSS의320px옆배치검사실패",
+      ".local/profile-70-green.log:같은7폭회귀수정후통과",
+      ".local/profile-70-related-final.log:실제Storage/복구/공통26흐름통과"
+    ]
+  },
+  "results": {
+    "targeted": "Old CSS red, new CSS green at seven widths",
+    "related": "26 passed (1.3m); initial unrelated reservation test failure traced to host wall-clock rollback, documented in docs44",
+    "full": "Final fixed-HEAD npm run verify required before push; actual report/PR is authoritative",
+    "data": "No DB/RPC/schema/design assets or remote configuration changes; existing command-expiry guard retained"
+  }
+}
