@@ -523,3 +523,8 @@ private.mutation_receipts의기존24h expires_at/actor-request PK·Auth cascade�
 private.account_withdrawals(user_id UUID PK,requested_at timestamptz,completed_at timestamptz nullable)는Auth FK없이탈퇴수용/완료의최소기록을보존한다. private.recovery_settings의단일epoch/시작시각은이기록이보장되는백업시점을표시한다. RLS를켜고일반/익명/회원직접접근을허용하지않는다. 요청수용과완료가각기같은트랜잭션으로기록되며기존진행작업은최초도입시백필한다. 완료후7일·진행작업없음일때기존영수증500행정리루프안에서기록도제한배치정리하며Cron배출종료조건에반영한다. 기존마이그레이션은수정하지않고새CLI파일로기록한다.
 
 백업Auth데이터는UUID/is_anonymous식별앵커만포함하고비밀번호/실제Auth이메일·provider identity/metadata·세션/토큰·MFA/OAuth는포함하지않는다. 앱내정상프로필/개인정보데이터는인증암호화된백업대상이며공개하지않는다. Storage는현재버킷/객체의최소권한메타데이터·실제파일과앱등록해시를별도로묶고,격리파일은원본경로를파일시스템명으로사용하지않는해시이름으로복구한다. 실제역할/소유권·ACL/RLS를유지하며provider비밀/DB설정·로그인재구성은별도경계다.
+
+
+## 로컬 진단 데이터 경계 (#53)
+
+새 테이블/저장소/정책/백그라운드 작업은 만들지 않는다. doctor는 기존 private 예산/보관/탈퇴/삭제·단일Cron 실행기록·정책모드의 집계값과 앱 테이블 총크기, 최소 Storage 크기/등록ready파일 대응을 읽는다. 사용자 이름/이메일/UUID·본문/경로·세션/키/SQL은 출력하지 않으며 숫자·불리언·고정진단코드만 반환한다. 진단 실패 회귀는 새 임시 경로/자체QA·한시적주입 입력 또는 실제 로컬 응답만 사용하고 기존 사용자/볼륨을 초기화하지 않는다.

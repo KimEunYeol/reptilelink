@@ -119,9 +119,10 @@ function check(mode) {
   return context;
 }
 
-function start([type, issue, slug]) {
+function start(args) {
+  const [type, issue, slug] = args;
   const branch = `codex/${type}/${issue}-${slug}`;
-  assert(branchPattern.test(branch), 'Usage: npm run task:start -- <feat|fix|chore|docs|design> <issue> <slug>');
+  assert(args.length === 3 && Number.isSafeInteger(Number(issue)) && /^[1-9]\d*$/.test(issue??'') && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug??'') && branchPattern.test(branch), 'Usage: npm run task:start -- <feat|fix|chore|docs|design> <issue> <slug>');
   assert(!git(['status', '--porcelain']), 'Preserve existing changes; task:start requires a clean working tree.');
   execFileSync('git', ['fetch', 'origin', 'main'], { cwd: root, stdio: 'inherit' });
   const baseSha = git(['rev-parse', 'origin/main']);

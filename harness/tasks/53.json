@@ -1,0 +1,33 @@
+{
+  "issue": 53,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/53",
+  "branch": "codex/chore/53-local-doctor-handoff",
+  "baseSha": "c1e04b85882fb57d56f3c8e15a4ceb4f4c236f41",
+  "scope": "비밀 노출 없는 loopback 로컬 운영 진단·실제 예산/Cron/보관/백업 점검과 장애/데스크톱 인계 마감",
+  "acceptance": [
+    "읽기전용 CLI가 구성/유효포트/DB·실제Storage 예산·쓰기/가입/통계 상태·단일 Cron/최근성공·정리 backlog·현재동의/백업무결성/신선도/7일보관을 최소메타데이터로 보고",
+    "실패·미확인을 통과로 표시하지 않으며 잘못된원격URL·비밀파일권한·비밀VITE변수·백업변조/오래된journal·미완료작업/정지상태를 실제 또는 격리QA로 검증",
+    "외부OAuth/Cloudflare/운영Supabase 콘솔·secret·무료계정/WorkerCPU/전송량·운영문서/연락처/권리·배포/도메인만 사용자 데스크톱 issue/체크리스트로 인계",
+    "design 원본97개·기능별task/닫힌issue/병합PR와 실제main을 대조하고 로컬미완료 해소·고정 전체verify/정확HEAD리뷰·명시병합/이슈종료·cleanmain/최종보고"
+  ],
+  "plan": [
+    "현재main c1e04b8의 백업/기능·미완료·진단SQL/외부경계 감사→명세/로컬진단 계약",
+    "읽기전용doctor 구현·실제 실패/복구/최소출력·자기QA 정리/보관테스트",
+    "운영runbook·데스크톱체크리스트/이슈와 현재상태문서/하네스 갱신",
+    "고정전체verify→정확HEAD 리뷰/보완→명시병합/main/이슈/검증트리·최종진단/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "로컬 진단 CLI·운영 문서만 변경하며 제품 UI나 원본97PNG는 변경하지 않는다.",
+    "review": {
+      "status": "passed",
+      "summary": "제품 UI/Worker 표시/정적자산·원본97PNG 변경 없음. 읽기전용 로컬 CLI·하네스 인자검증·운영 문서만 마감."
+    },
+    "evidence": [
+      "실제 진단15·단위3·기존하네스12/암호4 통과; loopback/API/Storage28실바이트·SHA·키/보관/현재journal·자기QA탈퇴주의→복구·최소출력 검증",
+      "task:start 누락/추가/잘못된issue·unsafe정수 인자 실제Git 무변경 거절; 외부전용이슈62/운영docs39·현재상태문서 정합성",
+      "최종 고정 npm run verify(19/77/1069/34/221)·정확HEAD리뷰·명시병합/main/이슈·검증트리는 실제PR/로컬보고서 기준"
+    ]
+  }
+}

@@ -99,3 +99,7 @@ npm run local:cleanup
 ## 필수 안내 로컬 미리보기 (#46)
 
 local:start는 신규 schema migration 이후 loopback에 local-policy-preview를 실행한다. 별도 준비는 npm run local:policy-preview다. 기존 설정/동의/버전을 덮어쓰지 않고 최초 로컬 설정만 만든다. 일반 쓰기에 현재 동의가 필요하며 기존 회원은 /onboarding에서 확인한다. 운영 자료나 게시를 준비한 명령이 아니며 새 migration만 적용한 원격은 미준비 상태다. [문서 버전/재동의·운영 입력점](31-policy-version-renewal.md)을 따른다.
+
+## 운영 상태 확인 (#53)
+
+`npm run local:doctor`는 현재 loopback·비공개설정·실제DB/Storage바이트/예산·단일Cron/정리대기·preview정책과 암호백업/최신journal을 읽기전용 점검한다. attention은 실패/미확인/중지/대기를 뜻한다. [장애·데스크톱 인계](39-local-operations-handoff.md), [암호백업/격리복구](38-encrypted-backup-restore.md)를 따른다. 초기 reset 안내는 기존 데이터가 있는 개발환경의 일상 작업이 아니며 사용하지 않는다.
