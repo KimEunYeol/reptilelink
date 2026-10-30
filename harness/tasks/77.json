@@ -1,0 +1,38 @@
+{
+  "issue": 77,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/77",
+  "branch": "codex/chore/77-public-launch",
+  "baseSha": "78e90291f8bdc0e8bd8fde30ad14b945906b0a00",
+  "scope": "770참고자료·정책후보/CC0검증사진과동일Worker의실제Pages게시·도메인철회/미완료인계 문서화",
+  "acceptance": [
+    "770은문서참고로만사용하고도메인연결철회/DNS미변경·활성origin제외와0원보존을실제확인한다.",
+    "원문/해시·쇼핑몰/ooo불일치와후보정책/신원미확정을구분하고확정되지않은본문을published로등록하지않는다.",
+    "CC0원본출처/권리/해시·실제decode/7폭선택취소와운영Storage미검증을구분한다.",
+    "동일검증mainPages게시·productionsecret분리/7폭·익명경계/CPU5표본·Google중지와최종호스트/OAuth·회원/복구미완료를증거로기록한다.",
+    "문서/task만검증하고최신diff리뷰/PR·명시병합/cleanmain으로기반준비를마감하되전체출시완료로표시하지않는다."
+  ],
+  "plan": [
+    "실제계정/CLI·참고문서/CC0사진/공식문서를대조하고변경하는사용자계약을현재기준으로기록한다.",
+    "동일Worker/자산의격리Pages실행/production게시·경계/7폭/소규모CPU와사진초안검증을수행하고실패원인을보존한다.",
+    "770연결철회/미완료Netlify/Google계정·정책/원격복구를구분한문서를검증·리뷰/PR·명시병합/cleanmain으로남긴다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "이번저장소변경은자료/운영문서만이며 제품UI/원본97PNG·공개DTO/DBschema/기능코드를바꾸지않는다. 동일검증Worker/정적assets를생성물로Pages에연결하며 별도실제운영검증을한다."
+  },
+  "results": {
+    "runtimeSource": "unchanged from verified main78e9029; prior full1421 passed",
+    "deployment": "13a7de4d-b6a5-47a5-b113-201c6c9d2d9b, backend hosting only",
+    "anonymous": "7HTTP boundaries/7widths; Googledisabled/fixture0/revoked770Origin403",
+    "cpu": "5anonymous samples 0,2,0,6,0ms; not member/load proof",
+    "remaining": [
+      "Hosting choice/Netlify site name and real Free usage",
+      "Google OAuth using user own account; Naver email website inquiry only",
+      "operator identity/confirmed policies",
+      "production member/Storage/withdrawal",
+      "issue69 remote backup/restore"
+    ],
+    "verification": "docs-only; actual local artifacts and remote checks recorded in docs45"
+  }
+}

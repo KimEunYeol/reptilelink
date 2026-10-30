@@ -452,3 +452,8 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 ## 2026-10-30 PR74 완료·최종 데스크톱 준비 기록 (#75)
 
 #70/PR74는 고정 sourcef16a76d 전체build1421개(19/77/1070/34/221) 통과·최신diff 직접리뷰/미해결0·원격정확HEAD/7파일/mergeability확인·명시적squash·이슈종료·clean main9477a49/검증트리d438985일치로 완료했다. 최신main의 격리production빌드/Worker dry-run·환경해시/비밀번들부재도 재확인했다.15:29 새암호백업/최신journal·32테이블28실파일128184B/28디코드/권한·networknone/Cronoff 복구통과.15:30 doctor는 정상Cron15:17 이후15:28 정리자격이생긴 영수증1건대기로attention이며 전역cleanup/reset은없다. Windows최종3항목/전달해시일치와 구형캡처4개보존을 재확인했다. 이번75는 START_HERE의 구형Windows문구와 docs41/42/44의 실제결과만 문서전용으로 맞춘다. docs-only검사는 앞선고정전체기능검사를 대체하지않는다. #62 실제체크리스트는갱신했고 운영자료·정책/권리·실제Google/OAuth·공개배포/성능·#69원격백업/복구는미완료로유지한다.
+
+
+## 2026-10-30 실제 공개 호스팅 기반과 최신 주소 계약 (#77)
+
+최신사용자지시로770은문서참고에한정하고서비스도메인에서제외했다. Cloudflare대기연결삭제/빈목록·770origin403과기존DNS미변경을확인했다. 동일검증main78e9029 런타임을PagesAdvancedMode production13a7de4d에게시하고7폭·익명권한/숨김404/인증캐시/fixture0·미구성Google비활성/문의처설정을검증했다.5익명실제tailCPU0~6ms통과는회원/사진/부하성능검증과구분한다. CC0웹사진source/license/SHA·실제decode/7폭초안취소/업로드0을확인했다. docs45/참고정책후보에실제증거와오류/제한을기록한다. 저장소변경은문서/task뿐이므로docs-only로검증하고이전기능1421검사와구분한다. dev없는무료reptilelink사용자주소/Netlify로그인·사용자본인Google계정의OAuth/정책published/실제회원·사진/원격복구는#62/#69에서미완료다.
