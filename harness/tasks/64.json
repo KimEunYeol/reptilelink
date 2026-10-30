@@ -1,0 +1,22 @@
+{
+  "issue": 64,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/64",
+  "branch": "codex/docs/64-gpt-desktop-handoff",
+  "baseSha": "dd373860e07b31aa453bc7b5e608a1444bb022ce",
+  "scope": "GPT 데스크톱 재개용 독립 문서·최신 개발현황/기능검증 기준·접근/자료전달·시작 지시문·후속작업/증거/권한·기존 문서 연결",
+  "acceptance": [
+    "실제 main/병합PR63·열린62·기능검사1421·새 읽기전용진단의 관측시점/주의상태를 구분해 기록",
+    "완료기능/로컬인프라·미수행외부설정과 자료/권리·접근가능성/최소자료·그대로전달할 시작지시문·단계별결과양식을 하나의독립문서로 작성",
+    "START_HERE/현재현황/기존운영인계/이슈62에 연결하고 원본97PNG/제품/DB/키/볼륨 변경 없이 문서검증/정확HEAD리뷰/명시병합/main/보고"
+  ],
+  "plan": [
+    "실제저장소/GitHub·현재진단·OpenAI 공식접근권한문서 확인",
+    "docs40 시작문서/현황/후속단계·증거양식·접근경계/코드재작업절차 작성 및현재상태/기존진입점 연결",
+    "문서링크/하네스docs-only검증→커밋/PR·리뷰/보완·명시병합/이슈종료·cleanmain/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "문서/작업기록만 변경하며 제품UI/원본97PNG/DB·실제자료를 바꾸지 않는다."
+  }
+}
