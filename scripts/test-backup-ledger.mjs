@@ -1,0 +1,30 @@
+import assert from'node:assert/strict';import{createAccount,finishAccount,call,admin}from'./account-qa.mjs';import{localQuery}from'./local-utils.mjs';
+const users=[],synthetic=[],jobs=[];let checks=0;const make=async()=>{const a=await createAccount();users.push(a);return a;};
+const list=ids=>'ARRAY['+ids.map(id=>`'${id}'::uuid`).join(',')+']::uuid[]';
+const count=ids=>Number(localQuery(`select count(*)from private.account_withdrawals where user_id=any(${list(ids)})`).trim());
+try{
+ const a=await make(),pending=await make();const epoch=localQuery('select journal_epoch from private.recovery_settings where id=1').trim();assert.match(epoch,/^[a-f0-9-]{36}$/);checks++;
+ assert.equal(localQuery("select has_table_privilege('anon','private.account_withdrawals','select')or has_table_privilege('authenticated','private.account_withdrawals','select')or has_table_privilege('authenticated','private.recovery_settings','select')or has_function_privilege('authenticated','private.prune_account_withdrawals(uuid[])','execute')").trim(),'f');checks++;
+ const args={p_expected:(await call(a.c,'my_dashboard')).profile.revision,p_request_id:crypto.randomUUID(),p_confirm:'탈퇴'};await call(a.c,'request_account_deletion',args);
+ const requested=localQuery(`select requested_at from private.account_withdrawals where user_id='${a.id}'`).trim();assert.ok(requested);assert.equal(localQuery(`select completed_at is null from private.account_withdrawals where user_id='${a.id}'`).trim(),'t');checks++;
+ await call(a.c,'request_account_deletion',args);assert.equal(localQuery(`select requested_at from private.account_withdrawals where user_id='${a.id}'`).trim(),requested);assert.equal(count([a.id]),1);checks++;
+ const early=await admin.schema('api').rpc('complete_account_deletion',{p_actor:a.id});assert.equal(early.error?.message,'CLEANUP_PENDING');assert.equal(localQuery(`select completed_at is null from private.account_withdrawals where user_id='${a.id}'`).trim(),'t');checks++;
+ await finishAccount(a);assert.equal(localQuery(`select count(*)from auth.users where id='${a.id}'`).trim(),'0');assert.equal(localQuery(`select count(*)from private.account_deletions where user_id='${a.id}'`).trim(),'0');const completed=localQuery(`select completed_at from private.account_withdrawals where user_id='${a.id}'`).trim();assert.ok(completed);checks++;
+ await call(admin,'complete_account_deletion',{p_actor:a.id});assert.equal(localQuery(`select completed_at from private.account_withdrawals where user_id='${a.id}'`).trim(),completed);checks++;
+ await call(pending.c,'request_account_deletion',{p_expected:(await call(pending.c,'my_dashboard')).profile.revision,p_request_id:crypto.randomUUID(),p_confirm:'탈퇴'});
+ localQuery(`update private.account_withdrawals set completed_at=now()-interval '8 days'where user_id='${pending.id}'`);assert.equal(localQuery(`select private.prune_account_withdrawals(${list([pending.id])})`).trim(),'0');assert.equal(count([pending.id]),1);checks++;
+ const recent=crypto.randomUUID(),old=crypto.randomUUID(),unfinished=crypto.randomUUID();synthetic.push(recent,old,unfinished);localQuery(`insert into private.account_withdrawals(user_id,requested_at,completed_at)values('${recent}',now()-interval '8 days',now()-interval '6 days 23 hours 59 minutes'),('${old}',now()-interval '8 days',now()-interval '7 days 1 minute'),('${unfinished}',now()-interval '8 days',null)`);assert.equal(localQuery(`select private.prune_account_withdrawals(${list([recent,old,unfinished])})`).trim(),'1');assert.equal(count([recent,unfinished]),2);checks++;
+ const batch=Array.from({length:610},()=>crypto.randomUUID());synthetic.push(...batch);const seed=()=>localQuery(`insert into private.account_withdrawals(user_id,requested_at,completed_at)select id,now()-interval '9 days',now()-interval '8 days'from unnest(${list(batch)})id on conflict(user_id)do nothing`);seed();assert.equal(localQuery(`select private.prune_account_withdrawals(${list(batch)})`).trim(),'500');assert.equal(count(batch),110);checks++;
+ seed();assert.equal(count(batch),610);checks++;
+ const stored=localQuery("select command from cron.job where jobname='reptilelink-activity-retention'").trim();assert.equal(stored.match(/COMMIT;/g).length,4);assert.ok(stored.includes("(result->>'withdrawals')::integer < 500"));
+ const command=stored.replace('cleanup_actor uuid := NULL;',`cleanup_actor uuid := '${a.id}'::uuid;`).replace('result := private.prune_mutation_receipts(cleanup_actor);',`result := private.prune_mutation_receipts(cleanup_actor)||jsonb_build_object('withdrawals',private.prune_account_withdrawals(${list(batch)}));`).replaceAll("'","''");
+ const job=Number(localQuery(`select cron.schedule('qa-withdraw-ledger-${crypto.randomUUID()}','10 seconds','${command}')`).trim());jobs.push(job);let success=false;
+ for(let i=0;i<100;i++){const state=localQuery(`select status from cron.job_run_details where jobid=${job} order by runid limit 1`).trim();if(state==='succeeded'){success=true;break;}if(state==='failed')throw Error('Owned ledger scheduled test failed');await new Promise(r=>setTimeout(r,200));}
+ localQuery(`select cron.unschedule(${job})`);assert.ok(success);assert.equal(count(batch),0);assert.equal(count([recent,unfinished,pending.id]),3);assert.equal(localQuery(`select count(*)from cron.job_run_details where jobid=${job}`).trim(),'1');checks++;
+ assert.equal(localQuery('select journal_epoch from private.recovery_settings where id=1').trim(),epoch);checks++;
+ console.log(`Passed ${checks} backup-ledger DB/Cron checks: private roles, first/replayed withdrawal timestamps, actual Auth removal/durable completion, pending and7day boundaries,500-row batch and first actual scheduled610 with scoped preservation.`);
+}finally{
+ for(const job of jobs)localQuery(`select cron.unschedule(jobid)from cron.job where jobid=${job};delete from cron.job_run_details where jobid=${job}`);
+ for(const a of users)await finishAccount(a);
+ const owned=[...synthetic,...users.map(a=>a.id)];if(owned.length)localQuery(`delete from private.account_withdrawals where user_id=any(${list(owned)})`);
+}

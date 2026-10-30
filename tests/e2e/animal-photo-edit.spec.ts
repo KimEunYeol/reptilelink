@@ -34,7 +34,7 @@ test.describe('photo editing with real local QA Storage',()=>{
   test.afterEach(async()=>{
     await reset();const admin=h.localAdmin();
     // Only assets created by this execution on the dedicated QA animal. No user/old fixture cleanup.
-    for(const id of [...assetIds()].filter(id=>!beforeAssets.has(id))){h.localQuery(`update private.media_assets set cleanup_after=now()-interval '1 second' where id='${id}' and profile_id='${actor}'`);const m=await admin.schema('api').rpc('cleanup_manifest',{p_asset_id:id,p_actor:actor});expect(m.error).toBeNull();if(m.data?.length)expect((await admin.storage.from('animal-media').remove(m.data)).error).toBeNull();expect((await admin.schema('api').rpc('finish_cleanup',{p_asset_id:id})).error).toBeNull();}
+    for(const id of [...assetIds()].filter(id=>!beforeAssets.has(id))){h.localQuery(`update private.media_assets set cleanup_after=clock_timestamp()-interval '5 minutes' where id='${id}' and profile_id='${actor}'`);const m=await admin.schema('api').rpc('cleanup_manifest',{p_asset_id:id,p_actor:actor});expect(m.error).toBeNull();if(m.data?.length)expect((await admin.storage.from('animal-media').remove(m.data)).error).toBeNull();expect((await admin.schema('api').rpc('finish_cleanup',{p_asset_id:id})).error).toBeNull();}
   });
   test.afterAll(async()=>{if(!original)return;let d=await dash();expect((await owner.schema('api').rpc('set_animal_public',{p_animal_id:original.id,p_public:original.is_public,p_expected:d.profile!.revision})).error).toBeNull();d=await dash();expect((await owner.schema('api').rpc('set_profile_public',{p_public:profilePublic,p_expected:d.profile!.revision})).error).toBeNull();});
 
