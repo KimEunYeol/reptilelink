@@ -1,0 +1,45 @@
+{
+  "issue": 71,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/71",
+  "branch": "codex/fix/71-unresolved-collection-lock",
+  "baseSha": "8aa630e6e270fb0374197ddd5daf671e465ca236",
+  "scope": "미확인/만료된 개체목록 적용의 공개·정렬·드래그 및 이벤트핸들러 잠금 유지와 조회완료 뒤 회귀 강화",
+  "acceptance": [
+    "일반 dirty 편집은 허용하되 busy 또는 unresolved에서는 공개/정렬/drag로 원래초안과요청body를바꿀수없다.",
+    "같은명령재시도·취소조회·최신목록의명시적선택은유지하고 실패조회/단순조회성공은잠금을풀지않는다.",
+    "2개체 회귀에서503조회완료 후 스위치/정렬/드래그 잠금·원래초안/한요청·명시적선택후해제를확인한다.",
+    "원본패턴을유지하고DB/공개DTO/외부환경변경없이표적red→green/전체verify/리뷰/PR/명시병합/main을확인한다."
+  ],
+  "plan": [
+    "필수기능/데이터계약·원본PC/m·보드설명과실패trace를확인하고실패응답완료뒤2개체회귀를먼저재현한다.",
+    "미확인상태의컨트롤/drag/변경핸들러를잠그고동일명령확인·명시적최신선택흐름을보존한다.",
+    "관련collection/receipt회귀·원본상태/7폭증거·고정전체검사와리뷰/PR/명시병합·cleanmain을확인한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-디자인수정-m.png"
+    ],
+    "notes": "원본 PC/m의 단일열 카드·공개스위치/정렬·하단적용 구분 및 보드 PC공통(0,8400,5000,1000)의 모바일동일본문 설명을 직접 확인했다. 보드 개체관리 설명은 x5200~7200/y1250~6600이며 원본 카드/화살표/적용 패턴을 유지한다. 미확인 조회실패는 docs10/명세F03의 기존 notice/잠금 패턴을 따른다. 새 화면/배치/그림은 없다.",
+    "review": {
+      "status": "passed",
+      "summary": "개체관리 원본PC/m와 기존 notice/disabled 패턴을 확인하고 실패조회 후 동결 캡처390/1440을 직접 비교했다. 배치/문구/카드와 하단 적용은 유지되며 스위치·정렬·drag만 미확인 동안 비활성이다.7폭 넘침0; 폰트/자산권리와 원격출시 판단은 별도 미완료."
+    },
+    "evidence": [
+      "artifacts/collection-71/frozen-{320,360,390,450,768,1440,1920}.png:7폭 실제동결/넘침0",
+      ".local/collection-71-red.log:기존코드의강화된503완료후잠금검사실패",
+      ".local/collection-71-green.log:같은회귀수정후통과",
+      ".local/collection-71-related.log:목록/영수증24브라우저흐름통과"
+    ]
+  },
+  "results": {
+    "targeted": "red reproduced at finished503, then green",
+    "related": "24 passed (59.5s)",
+    "full": "Final fixed-HEAD npm run verify is required before push; actual report/PR is authoritative",
+    "data": "Only owned QA rows touched; no DB/RPC/schema/source design or remote configuration changes"
+  }
+}

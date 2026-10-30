@@ -437,3 +437,8 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 전용 Supabase Free 서울 suuemuqwjwbddbjevvmg에 main5838c5d의37 migration을 원래버전으로 적용/대조했다.32테이블 RLS·private WebP버킷·단일Cron·Hook/비공개권한·가입/provider차단과 정책unconfigured를 실제 확인했고 쓰기/가입/통계는 출시전중지로 유지한다. 기존 gain-music-club/로컬DB/사진/키를 보존했다. Cloudflare Free/이메일확인/CLI·예상workers.dev와 프로젝트0·요청0을 확인하고 격리production build/Worker dry-run·fixture버튼제거를 확인했다. 운영자료·실제Google/OAuth·공개배포/원격CPU·복구는 미완료다. 상세 결과/설정/재개는 docs42, 자료양식은 docs41을 따른다.
 
 고정전체verify는 build+1420개 통과/브라우저1개 실패(220/221)로 종료했다. 만료 목록의 최신조회실패 뒤 공개스위치가 활성인 기존 결함 #71을 우선 수정하고, 원본450px 대조에서 발견한 모바일아바타 버튼배치 #70도 독립 수정한다. 이 기록은 전체통과나출시완료가 아니다. 실패로그/trace/full report를 비공개 보존하고 문서 변경만 docs-only 검사한다. 운영 백업도구/실제원격복구는 독립 #69로 남겨 로컬28파일 격리실험과 구분한다.
+
+
+## 미확인 목록 초안 잠금 보완 (#71)
+
+#68의 실패를 2개체/503조회 완료 뒤 검사로 먼저 재현했다. busy/conflict/unresolved에서 공개·정렬·drag와 change/move 핸들러를 잠그고 같은 명령 확인/명시적 최신 선택/성공한 취소 조회는 유지한다. 기존 취소 회귀의 미확인 초안 원복 전제도 실제 동결/합성클릭거절로 보완했다. 표적 red→green과 목록/영수증 브라우저24개,320~1920의7폭 넘침0·동결 상태의 원본 패턴 비교가 통과했다. 고정 전체 검사/정확HEAD리뷰/PR/병합은 최종 실제 보고서를 따르며 검증 전 전체통과로 표시하지 않는다. 상세는 docs43이다.

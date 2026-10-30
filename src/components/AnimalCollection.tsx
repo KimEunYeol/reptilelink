@@ -29,6 +29,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
   const drag = useRef<string | null>(null);
   const dirty = JSON.stringify(draft) !== JSON.stringify(initial.current);
   const locked = dirty || busy || conflict || unresolved;
+  const frozen = busy || conflict || unresolved;
 
   useEffect(() => { onLocked(locked); return () => onLocked(false); }, [locked, onLocked]);
   useEffect(() => {
@@ -39,9 +40,12 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
     }
   }, [animals, revision, busy, unresolved]); // Only replace a clean, resolved draft with current props.
 
-  function change(next: CollectionItem[]) { setDraft(next); setSaved(false); setError(''); }
+  function change(next: CollectionItem[]) {
+    if (frozen || submitting.current) return;
+    setDraft(next); setSaved(false); setError('');
+  }
   function move(from: number, to: number) {
-    if (busy || from < 0 || from >= draft.length || to < 0 || to >= draft.length || from === to) return;
+    if (frozen || submitting.current || from < 0 || from >= draft.length || to < 0 || to >= draft.length || from === to) return;
     const id = draft[from].id;
     change(moveCollection(draft, from, to)); setPage(Math.floor(to / 10));
     requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-collection-id="${id}"]`)?.focus());
@@ -116,10 +120,10 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
         const index = currentPage * 10 + offset, animal = catalog.find(a => a.id === item.id);
         if (!animal) return null;
         return <article key={item.id} className="collection-card" data-collection-id={item.id} tabIndex={-1} aria-label={`${animal.name} 목록 항목`}
-          draggable={!busy} onDragStart={event => {
-            if ((event.target as HTMLElement).closest('.collection-tools')) { event.preventDefault(); return; }
+          draggable={!frozen} onDragStart={event => {
+            if (frozen || submitting.current || (event.target as HTMLElement).closest('.collection-tools')) { event.preventDefault(); return; }
             drag.current = item.id; event.dataTransfer.setData('text/plain', item.id); event.dataTransfer.effectAllowed = 'move';
-          }} onDragEnd={() => { drag.current = null; }} onDragOver={event => { if (!busy) event.preventDefault(); }} onDrop={event => {
+          }} onDragEnd={() => { drag.current = null; }} onDragOver={event => { if (!frozen && !submitting.current) event.preventDefault(); }} onDrop={event => {
             event.preventDefault(); const id = drag.current; drag.current = null;
             if (id) move(draft.findIndex(a => a.id === id), index);
           }}>
@@ -128,10 +132,10 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
               <span>{[animal.species,animal.morph,animal.description].filter(Boolean).join(' / ')}</span></span>
           </button>
           <div className="collection-tools">
-            <button type="button" role="switch" className="collection-switch" aria-label={`${animal.name} 공개`} aria-checked={item.is_public} disabled={busy}
+            <button type="button" role="switch" className="collection-switch" aria-label={`${animal.name} 공개`} aria-checked={item.is_public} disabled={frozen}
               onClick={() => change(draft.map(a => a.id === item.id ? { ...a, is_public: !a.is_public } : a))}><span/><span className="sr-only">{item.is_public ? '공개':'비공개'}</span></button>
-            <div><button type="button" aria-label={`${animal.name} 위로`} disabled={busy || index === 0} onClick={() => move(index,index-1)}><ArrowUp size={21}/></button>
-              <button type="button" aria-label={`${animal.name} 아래로`} disabled={busy || index === draft.length-1} onClick={() => move(index,index+1)}><ArrowDown size={21}/></button></div>
+            <div><button type="button" aria-label={`${animal.name} 위로`} disabled={frozen || index === 0} onClick={() => move(index,index-1)}><ArrowUp size={21}/></button>
+              <button type="button" aria-label={`${animal.name} 아래로`} disabled={frozen || index === draft.length-1} onClick={() => move(index,index+1)}><ArrowDown size={21}/></button></div>
           </div>
         </article>;
       })}
