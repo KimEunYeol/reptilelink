@@ -4,28 +4,27 @@
 
 - GitHub: https://github.com/KimEunYeol/reptilelink (비공개)
 - 기준 작업 디렉토리: WSL `/home/eykim/projects/reptilelink`
-- 현재 구현: **첫 사용자 흐름의 로컬 Auth·DB·사진·공개 페이지**
-- 운영 배포·Google OAuth 연결은 아직 수행하지 않았다. 유료 서비스·결제수단·클라우드 리소스도 활성화하지 않았다.
+- 현재 구현: **제품 기능·로컬 운영도구 개발 마감**(PR #63, build + 1,421개 검사 통과 기록). 실제 최신 상태는 [개발현황](docs/05-implementation-status.md)과 GitHub 이력을 확인한다.
+- 운영 OAuth·정책/권리 확인·실제 배포·원격 복구는 [이슈 #62](https://github.com/KimEunYeol/reptilelink/issues/62)에서 실제 결과를 추적한다. 계획이나 로컬 통과를 운영 완료로 표시하지 않는다.
 
 ## VS Code · Codex에서 이어서 개발
 
-[시작 안내](START_HERE.md)와 [첫 작업 프롬프트](prompts/first-task.md)를 사용한다. 공식 WSL/Codex 확장은 설치되어 있으며 설정·인계 기록은 [IDE 안내](docs/06-vscode-codex-setup.md)에 있다.
+[시작 안내](START_HERE.md) → [데스크톱 인계](docs/40-gpt-desktop-handoff.md) → [운영 실행·자료 체크리스트](docs/41-desktop-execution-checklist.md)를 사용한다. [첫 작업 계약](prompts/first-task.md)은 완료된 기능의 역사 기록이다. 공식 WSL/Codex 확장은 설치되어 있으며 설정·인계 기록은 [IDE 안내](docs/06-vscode-codex-setup.md)에 있다.
 
 개발은 [이슈 → main 기준 브랜치 → 로컬 검증 → PR](docs/07-agentic-workflow.md) 절차를 따른다. 새 clone은 `npm run harness:install`로 로컬 훅을 설치한다. 디자인은 [design 원본](design/README.md)의 설명과 화면을 함께 따르며 [디자인 계약](docs/08-design-contract.md)에 없는 새 시각 방향을 만들지 않는다. `npm run verify`가 전체 로컬 검증의 진입점이다.
 
 ## 로컬 실행
 
-WSL에서 Node 24와 실행 중인 Docker Engine이 필요하다.
+WSL에서 Node 24와 실행 중인 Docker Engine이 필요하다. 먼저 `git status --short --branch`와 `npm run local:doctor`로 상태를 확인한다. 기존 앱/Worker가 응답하면 중복 실행하지 않는다. 아래는 서비스가 꺼진 경우의 시작 순서다.
 
 ```bash
 cd ~/projects/reptilelink
-npm ci
 npm run local:start
-npm run local:seed
 npm run build
 npm run dev:all
 ```
 
+- 새 checkout에서만 먼저 `npm ci`, 로컬 fixture가 없는 경우에만 `npm run local:seed`를 실행한다. 일반 재시작에서 DB reset·초기 SQL 재실행은 하지 않는다.
 - 개발 앱: http://localhost:5173
 - 빌드 앱·공개 HTML·Worker API: http://localhost:8787
 - 로컬 Supabase API: http://127.0.0.1:56321

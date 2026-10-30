@@ -7,6 +7,10 @@
 - 후속 실행 이슈: [#62 실제 무료 운영·OAuth·콘솔·운영자료/권리·출시 검증](https://github.com/KimEunYeol/reptilelink/issues/62).
 - 이번 인계 문서 이슈: [#64](https://github.com/KimEunYeol/reptilelink/issues/64). 문서 작성은 외부 설정·배포를 실행한 것으로 기록하지 않는다.
 
+## 현재 승인된 실행 계획
+
+2026-10-30 사용자는 Windows 진입 폴더 정리와 전용 Free Supabase/무료 workers.dev 기반 외부 설정·배포·검증까지 승인했다. 실행 순서·운영자료 양식·자료 대기는 [docs/41](41-desktop-execution-checklist.md)을 따른다. 아래 기존 인계와 과거 관측값은 보존하며, 이 승인/문서 변경은 실제 외부 완료 증거가 아니다.
+
 ## 1. 개발현황
 
 | 영역 | 완료한 CODEX 범위 | 데스크톱에서 남은 확인 |

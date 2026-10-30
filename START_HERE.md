@@ -10,7 +10,7 @@ WSL 터미널에서:
 
 ```bash
 cd ~/projects/reptilelink
-code . START_HERE.md prompts/first-task.md
+code . START_HERE.md docs/40-gpt-desktop-handoff.md docs/41-desktop-execution-checklist.md
 ```
 
 VS Code 왼쪽 아래에 `WSL: Ubuntu-24.04`가 보여야 한다. 터미널의 `pwd`는 `/home/eykim/projects/reptilelink`, `command -v node`는 Linux 경로여야 한다.
@@ -21,12 +21,12 @@ Codex 사이드바가 자동으로 열린다. 보이지 않으면 `Ctrl+Shift+P`
 
 WSL CLI의 ChatGPT 로그인은 준비 시 확인했다. 확장의 로그인 화면까지 실제 새 작업을 실행해 검증한 것은 아니므로 IDE에서 재로그인을 요구하면 직접 완료한다. 전역 설정·인증 파일을 복사하거나 덮어쓰지 않았다.
 
-## 3. 첫 메시지 보내기
+## 3. 현재 작업을 재개하기
 
-Codex에 아래 문장을 보낸다. 전체 작업 지시는 파일에 저장되어 있다.
+현재 운영 준비는 docs/40과 docs/41, 열린 이슈62를 따른다. prompts/first-task.md는 완료된 이슈3/PR5의 당시 작업 계약이며 새 착수 지시가 아니다.
 
 ```text
-AGENTS.md와 docs/07-agentic-workflow.md, prompts/first-task.md를 읽고 진행해. 기능 이슈를 먼저 만들고 최신 main에서 새 브랜치로 시작해. 디자인은 design/ 원본의 설명과 PC·모바일 화면을 확인하고 그대로 따라. 로컬 검증 후 main 대상 PR까지 만들고 중간보고해. 추가 지출은 0원이야.
+AGENTS.md와 docs/40-gpt-desktop-handoff.md, docs/41-desktop-execution-checklist.md 및 이슈62를 읽고 현재 미수행 항목을 확인해. 기존 기능을 재구현하지 말고 WSL에서 승인된 운영 준비를 순차 진행해. 코드 수정은 이슈·최신 main의 독립 브랜치·검증·PR 절차를 따라. 추가 지출은 0원이야.
 ```
 
 개체 일반 정보 수정(#3 / PR #5), 목록 순서·공개 일괄 적용(#6 / PR #7), 관리 공통 영역 정비(#8 / PR #9), 사진 교체·삭제·복구(#10 / PR #11)는 main에 병합됐다. 개체 삭제(#12 / PR #13)도 main에 병합됐다. 성장 기록·비공개 메모·공개 동의(#14 / PR #15)도 main ded76b7에 병합됐다. 외부 링크(#16 / PR #17)도 main3c6773e에 병합됐다. SNS(#18 / PR #19)도 main966d0c3에 병합됐다. 일정(#20 / PR #21)도 main d9087bf에 병합됐다. 프로필 텍스트·SNS 단일 적용(#22 / PR #23)도 main d7d24e2에 병합됐다. 프로필/배경 이미지·테마(#24 / PR #25)도 main c389ecb에 병합됐다. 계정 탈퇴·정리 #26 / PR #27도 main f876752에 병합됐다. 댓글·신고 #28 / PR #29도 main6ff2d2b에 병합됐다. 프로필 좋아요 #30 / PR #31도 main79e5436에 병합됐다. 받은 알림/읽음 #32 / PR #33도 main984e82e에 병합됐다. 실제 조회수 #34 / PR #35도 main0a02a2f에 병합됐다. 원본 차이 감사 #2 / PR #41은 main352b596에 병합됐다. 공개 경계 #36 / PR #43은 main0b2b6c4에 병합됐다. 삭제대기 탈퇴 보완 #42 / PR #44는 maindf800b7에 병합됐다. 메인/공통 #37 / PR #45는 main88fdc6f에 병합됐다. 인증/기본정보/안내 #38 / PR47은 main49f92ea에 병합됐다. 동의버전/재동의 #46 / PR48은 main35655f6에 병합됐다. 공개#39/PR50은 main8095cef에 병합됐다. 사용자승인부모/입양일#49/PR54은 main12b308a에 병합됐다. 공통#40/PR55는 main24d4027에 병합됐다. 공개초점#58/PR59는 main660b099에 병합됐다. 사진복구#56/PR57은 maincf1721f에 병합됐다. 요청영수증/만료#51/PR60은 main74764c1에 병합됐다. 백업/격리복구#52/PR61은 mainc1e04b8에 병합됐고 실제 기본 백업·28파일 격리복구도 통과했다. 마지막 운영진단/인계#53의 실제PR/검증보고서와 docs/39를 확인한다. 로컬 미리보기만 local:policy-preview로 준비하며 실제 운영 문서/게시는 데스크톱 입력이다. 항상 docs/05와 실제 GitHub 이슈/PR을 먼저 확인해 완료된 기능을 중복 구현하지 않는다. 이후 단계도 독립 이슈/브랜치로 진행한다. 외부 OAuth·Cloudflare 웹 콘솔 설정은 사용자가 지정한 데스크톱 단계다.
