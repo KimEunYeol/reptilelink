@@ -5,7 +5,7 @@
 - GitHub: https://github.com/KimEunYeol/reptilelink (비공개)
 - 기준 작업 디렉토리: WSL `/home/eykim/projects/reptilelink`
 - 현재 구현: **제품 기능·로컬 운영도구 개발 마감**(PR #63, build + 1,421개 검사 통과 기록). 실제 최신 상태는 [개발현황](docs/05-implementation-status.md)과 GitHub 이력을 확인한다.
-- 최신 호스팅 계약: **Netlify Free 단독 앱 + Supabase DB/Auth/Storage**. 770은 문서 참고·홈페이지 문의처에만 사용한다. 무료 한도/실제 검증과 남은 단계는 [Netlify 운영 준비](docs/46-netlify-single-host.md)를 따른다.
+- 최신 호스팅 계약: **Netlify Free 단독 앱 + Supabase DB/Auth/Storage**. 770은 문서 참고·홈페이지 문의처에만 사용한다. 연결 PR82의 build+1472 검사는 통과했고 reptilelink.netlify.app 이름을 확보했지만 아직 앱 미게시다. 무료 한도/실제 검증과 남은 단계는 [Netlify 운영 준비](docs/46-netlify-single-host.md)를 따른다.
 - 운영 OAuth·정책/권리 확인·실제 배포·원격 복구는 [이슈 #62](https://github.com/KimEunYeol/reptilelink/issues/62)에서 실제 결과를 추적한다. 계획이나 로컬 통과를 운영 완료로 표시하지 않는다.
 
 ## VS Code · Codex에서 이어서 개발

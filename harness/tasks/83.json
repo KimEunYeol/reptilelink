@@ -1,0 +1,31 @@
+{
+  "issue": 83,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/83",
+  "branch": "codex/docs/83-current-netlify-handoff",
+  "baseSha": "dc9e09b7f58350399eabbe8962be4fc6677c5a9f",
+  "scope": "검증된 Netlify 연결·확보 주소/0원 계정·승인 대기·최신 로컬 복구와 Windows 진입 안내 현행화",
+  "acceptance": [
+    "PR81/full1421·PR82/full1472와 정확HEAD 병합/clean main/tree 일치를 실제 결과로 기록한다.",
+    "등록 주소와 미게시 앱·거절되어 미실행인 서버키 전송/Google·운영주체 대기를 구분하고 민감값을 포함하지 않는다.",
+    "새 로컬32테이블28실파일/최신journal·격리복구/doctor714영수증-Cron 시각과 계정/개체/사진 대기0을 그대로 기록하고 원격 복구로 대체하지 않는다.",
+    "Windows 정확3항목과 원래/전달해시·현재 WSL 문서 존재를 확인하고 기존.git/원본/키/DB를 보존한다.",
+    "문서/task만 docs-only 검증·직접 리뷰·PR/정확HEAD 명시 병합/main으로 마감한다."
+  ],
+  "plan": [
+    "실제 검증·계정·주소·거절/백업/Cron 증거를 대조해 현행/역사를 구분한다.",
+    "WSL 안내와 체크리스트/상태를 갱신하고 Windows 두 진입파일만 원래해시 검사 후 전달한다.",
+    "docs-only와 최신diff 리뷰·PR/명시 병합/clean main을 확인하고 실제 미완료는 #62/#69에 남긴다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "문서/task와 Windows 진입 안내만 변경하며 제품 UI/원본/DB/런타임 코드를 바꾸지 않는다."
+  },
+  "results": {
+    "runtime": "unchanged from PR82 source1d069a/full1472; docs-only is not runtime verification",
+    "windows": "exact README/launcher/.git; before/after hashes and4 WSL documents verified; .git retained",
+    "localRecovery": "32tables/28files128184B/28decoded; networknone/Cronoff/RLS/raw-denial; fresh encrypted backup/latest journal",
+    "doctor": "attention:714 receipts eligible after last successful hourly Cron; account/animal/media pending0; no global cleanup",
+    "remaining": "Netlify server-key/HMAC destination consent; Google client creation confirmation; actual operator/policy; app upload/real members/remote recovery"
+  }
+}

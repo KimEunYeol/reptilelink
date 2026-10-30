@@ -1,5 +1,6 @@
 # 로컬 운영 진단과 데스크톱 인계 (#53)
 
+최신 실행 상태는 [Netlify 단독 호스팅](46-netlify-single-host.md)과 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)를 따른다. 아래 과거 시각의 관측/명령은 당시 기록이며 현재 대상에 그대로 재실행하지 않는다. 앱은 Netlify Free 하나로 전환하고 Supabase는 유지한다.
 새 GPT 데스크톱 대화의 첫 문서는 [재개·개발현황 인계](40-gpt-desktop-handoff.md)다. 이 문서는 상세 운영 참고서이며, #53/PR63은 최종1421개·정확ba89e32 재리뷰/보완 뒤 maindd37386으로 병합·종료됐다. 아래 착수/실패/재검증 서술은 당시 기록이다.
 
 #52/PR61은 build1402개·정확2d96f6f 코드리뷰completed/지적0·명시적 squash 병합·이슈종료·clean main c1e04b8/검증트리22e30bf 일치로 완료했다. 같은 main에서 독립53을 시작했다. 추가지출0원·단일에이전트·기존5계정/파일/볼륨 보존, 제품 UI/design 원본97PNG 변경 없음이다.
