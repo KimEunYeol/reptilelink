@@ -1,5 +1,15 @@
 # GPT 데스크톱 작업 재개·개발현황 인계
 
+## 현재 실제 운영 (2026-10-31 KST, #91)
+
+**[실제 운영·백업 인계](48-live-operations-handoff.md)**를 먼저 읽는다. 운영 주소는 https://reptilelink.netlify.app이다. 실제 본인 Google 로그인·초대/승인·v1 필수동의·비공개 공간·개체/사진 저장·새로고침/재로그인과 관리 화면 6개 접근을 확인했다. Google OAuth 앱은 Production이며 초대 Hook·승인·10명 한도를 유지한다.
+
+별도 Free 복구본의 실제 Google·실파일·API 재연결과 승인된 복사본 탈퇴·파일 제거·기존 토큰401을 확인했다. 복사된 cleanup 기한1개는 target에서만 통제 만료했다. 만료 전 동일 signed URL과 실제 source 회원의 post-backup 탈퇴/journal 통합은 미검증이다. 복구 Google와 가입은 다시 닫고 임시 서버를 종료했으며 원본은 보존했다.
+
+공개 문의 770_official@naver.com/개인정보 담당자 고경윤과 내부 Google 관리를 구분한다. 770.kr은 운영 도메인·DNS와 무관하다. 실제 Free/카드 없음/270/300 잔여를 확인했고 추가 지출은 0원이다. 수동 일일 백업·7일 보관·별도 키·변경 후/복구 직전 최신 journal은 docs47/48을 따른다. 자동 데몬은 없다. 모든 타회원 흐름·CPU·브랜드 권리·임시 Cloudflare 철거·사용자의 최종 출시 판단은 #62에 남긴다.
+
+아래 이전 시점의 미완료·수치·실패 기록은 당시 관측이며 현재 상태와 구분한다.
+
 작성일: 2026-10-30 KST. 기능 개발 기준 main은 `dd373860e07b31aa453bc7b5e608a1444bb022ce`([PR #63](https://github.com/KimEunYeol/reptilelink/pull/63) 병합)다. 이후 문서 변경의 main SHA는 달라질 수 있으므로 재개할 때 현재 원격 main을 확인한다. 이 문서는 새 GPT 데스크톱 대화에 프로젝트를 인계하기 위한 시작점이며, 기존 구현을 다시 개발하는 요청이 아니다.
 
 - 저장소: [KimEunYeol/reptilelink](https://github.com/KimEunYeol/reptilelink) — 비공개, 승인된 GitHub 연결로 접근한다.

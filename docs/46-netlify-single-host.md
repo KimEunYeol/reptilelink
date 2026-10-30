@@ -1,8 +1,20 @@
 # Netlify Free 단독 호스팅 전환 (#79)
 
-앱 호스팅은 **Netlify Free 하나**로 구성한다. Supabase의 전용 서울 프로젝트 `suuemuqwjwbddbjevvmg`는 기존 DB·Auth·private Storage로 유지한다. Cloudflare 준비 기록은 docs45의 당시 증거이며, Netlify 교체 검증 후 운영 요청 경로에서 제외한다. 770.kr은 문서 참고에만 사용하며 DNS·도메인과 무관하다. 홈페이지 문의처는 `770_official@naver.com`, Google 내부 설정은 사용자 본인 계정이다.
+앱 호스팅은 **Netlify Free 하나**로 구성한다. Supabase의 전용 서울 프로젝트 `suuemuqwjwbddbjevvmg`는 기존 DB·Auth·private Storage로 유지한다. Cloudflare 준비 기록은 docs45의 당시 증거이며, 현재 운영 요청 경로에서 제외했다. 770.kr은 문서 참고에만 사용하며 DNS·도메인과 무관하다. 홈페이지 문의처는 `770_official@naver.com`, Google 내부 설정은 사용자 본인 계정이다.
 
-## 최신 실제 공개 배포 (#85, 2026-10-30 KST)
+## 현재 실제 운영 (2026-10-31 KST, #91)
+
+현재 배포는 main71f9bc3d4046c6a0bbcba1edbb99d6bfae9c4c81/version6ae4a79b1485f6e33851bd3f, 게시시각2026-10-30T14:20:14.444Z다. 아래 첫 배포 이력과 구분한다.
+
+**[실제 운영·백업 인계](48-live-operations-handoff.md)**를 먼저 읽는다. 운영 주소는 https://reptilelink.netlify.app이다. 실제 본인 Google 로그인·초대/승인·v1 필수동의·비공개 공간·개체/사진 저장·새로고침/재로그인과 관리 화면 6개 접근을 확인했다. Google OAuth 앱은 Production이며 초대 Hook·승인·10명 한도를 유지한다.
+
+별도 Free 복구본의 실제 Google·실파일·API 재연결과 승인된 복사본 탈퇴·파일 제거·기존 토큰401을 확인했다. 복사된 cleanup 기한1개는 target에서만 통제 만료했다. 만료 전 동일 signed URL과 실제 source 회원의 post-backup 탈퇴/journal 통합은 미검증이다. 복구 Google와 가입은 다시 닫고 임시 서버를 종료했으며 원본은 보존했다.
+
+공개 문의 770_official@naver.com/개인정보 담당자 고경윤과 내부 Google 관리를 구분한다. 770.kr은 운영 도메인·DNS와 무관하다. 실제 Free/카드 없음/270/300 잔여를 확인했고 추가 지출은 0원이다. 수동 일일 백업·7일 보관·별도 키·변경 후/복구 직전 최신 journal은 docs47/48을 따른다. 자동 데몬은 없다. 모든 타회원 흐름·CPU·브랜드 권리·임시 Cloudflare 철거·사용자의 최종 출시 판단은 #62에 남긴다.
+
+아래 이전 시점의 미완료·수치·실패 기록은 당시 관측이며 현재 상태와 구분한다.
+
+## 첫 공개 배포 당시 기록 (#85, 2026-10-30 18:22 KST)
 
 - 운영 주소는 **https://reptilelink.netlify.app**이다. main959e2549c4628805c37f522b5486d2d19fe56983의 로컬 production 산출물을 공식 CLI27.16.0의 deploy --no-build --prod로 업로드했다. 배포 version6ae461b7fe048afa4a082df9, published2026-10-30T09:22:04.036Z(18:22KST), production ready/실제 Edge Functions 포함을 확인했다. Git 연결·Actions·클라우드 빌드는 없다. 최초 --context 병용은 로컬 옵션검사에서 거절됐고 옵션을 바로잡아 배포했다.
 - 사용자가 해당 Supabase 서버키/새 HMAC의 Netlify production secret 전달을 명시 승인한 뒤 완료했다. 앞선 자동검토 거절은 승인 전 미실행 기록이며 현재 차단 사유가 아니다. 두 값은 production만/is_secret=true이고 실제 값이 공개31파일에 없음을 검사했다. 로컬 환경파일 해시는 보존했다. 키·세션·토큰·HMAC 값을 로그/Git/브라우저에 싣지 않았다.

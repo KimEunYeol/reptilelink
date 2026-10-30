@@ -1,5 +1,13 @@
 # Reptilelink working rules
 
+## Current verified live state (2026-10-31, issue91)
+
+- Read docs/48-live-operations-handoff.md first; docs47 governs production recovery. Older dated pending Google/policy/member/recovery notes below are observation-time history and are superseded by this actual evidence, while safety/workflow rules remain active.
+- Live https://reptilelink.netlify.app /main71f9bc3/version6ae4a79b. Real owner Google invite/approval/user-approved v1 consent/private animal/photo persistence/relogin and six management views verified. User explicitly approved Google Production publish and continuous invite-hook-limited signup; keep Google-only/approval/10-profile/RLS gates and do not ask these resolved approvals again.
+- Public inquiry 770_official@naver.com/privacy contact 고경윤 are separate from the user's internal Google account. 770.kr is never a service domain/DNS target. Policies v1 are published immutable versions; future changes require a new reviewed version and supplied facts.
+- Real identity/two files/API were restored into the dedicated Free recovery project and the separately approved disposable copy was withdrawn/removed, old request token401 checked in memory, source data and fresh source login preserved. Target copied upload lease was controlled-expired. Exact unexpired signed URL/source-real-user post-backup withdrawal integration remain unverified. Recovery Google/signup are off and the temporary server on port4178 is stopped.
+- Keep Netlify Free alone/Supabase Free/no card/no paid/trial/no Actions/cloud builds. Billing270/300 is observation-time evidence. Manual daily backup/7-day retention/separate key/latest journal; no daemon. All-member/full remote flow/CPU/rights/temporary Cloudflare teardown and user's final release decision remain issue62.
+
 - Canonical checkout: WSL `~/projects/reptilelink`. Run tools, installs, builds and tests in WSL.
 - Additional spending must remain zero. Never enable paid plans, trials, metered products, payment methods, AI APIs, cloud builds or GitHub Actions without an explicit change to this constraint.
 - Read docs/01-functional-spec.md and docs/02-data-model.md before changing domain behavior.

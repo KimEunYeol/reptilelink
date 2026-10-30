@@ -2,29 +2,29 @@
 
 2026-10-30 KST 사용자 승인 계획의 실행 기준이다. 실제 개발은 WSL `/home/eykim/projects/reptilelink`에서만 수행한다. [데스크톱 인계](40-gpt-desktop-handoff.md)의 과거 관측값과 현재 결과를 구분한다. 코드·DB·운영 도구 변경은 독립 이슈/최신 main 브랜치/전체검사/리뷰/PR로 진행하고, 문서만 바꾸면 docs-only 검사를 사용한다.
 
-## 현재 확정값과 자료 대기
+## 현재 실제 운영 (2026-10-31 KST, #91)
 
-- 추가 지출0원·단일 에이전트·기존 데이터/키/타 서비스 보존. 결제/체험/유료API/Actions/클라우드 빌드 금지.
-- 기존 gain-music-club은 보존했다. 전용 Supabase Free 서울 suuemuqwjwbddbjevvmg를 생성하고 원래37 migration·RLS/private bucket/Hook·단일 Cron을 구성했다. 운영 가입·쓰기·통계는 중지다.
-- 앱 호스팅은 Netlify Free 하나를 선택했다. 실제 Free/카드 없음과 CLI 인증을 확인하고 https://reptilelink.netlify.app에 공개 배포했다. 사용자 명시 승인 후 production secret 저장과 Production Public/Previews Private를 완료했다. 실제 결제화면 잔여285/300(생산배포15), 자동충전 불가다. Cloudflare 임시 호스트는 Netlify 교체 검증 후 운영 경로에서 제외한다. 770은 문서 참고만 허용하며 도메인/DNS와 무관하다. 도메인 구매는 하지 않는다.
-- 홈페이지 문의 770_official@naver.com, 사용자 본인 Google 계정의 내부 사용, 770 약관 참고와 CC0 웹 검증사진 사용은 지정됐다. 미게시 정책 후보를 준비했고 실제 운영주체/개인정보 담당자명과 최종 확인·실제 Google 로그인 검증은 대기다. 770의 회사 신원이나 preview 본문을 운영자료로 복제하지 않는다.
-- 실제 외부 설정/배포는 사용자 승인 범위에 포함된다. 자료/접근이 필요한 해당 단계만 대기하며, 계획 승인이나 문서 작성으로 완료 처리하지 않는다.
+**[실제 운영·백업 인계](48-live-operations-handoff.md)**를 먼저 읽는다. 운영 주소는 https://reptilelink.netlify.app이다. 실제 본인 Google 로그인·초대/승인·v1 필수동의·비공개 공간·개체/사진 저장·새로고침/재로그인과 관리 화면 6개 접근을 확인했다. Google OAuth 앱은 Production이며 초대 Hook·승인·10명 한도를 유지한다.
 
-## 실행 순서와 완료 증거
+별도 Free 복구본의 실제 Google·실파일·API 재연결과 승인된 복사본 탈퇴·파일 제거·기존 토큰401을 확인했다. 복사된 cleanup 기한1개는 target에서만 통제 만료했다. 만료 전 동일 signed URL과 실제 source 회원의 post-backup 탈퇴/journal 통합은 미검증이다. 복구 Google와 가입은 다시 닫고 임시 서버를 종료했으며 원본은 보존했다.
 
-| 단계 | 수행/완료 증거 | 현재 상태 |
+공개 문의 770_official@naver.com/개인정보 담당자 고경윤과 내부 Google 관리를 구분한다. 770.kr은 운영 도메인·DNS와 무관하다. 실제 Free/카드 없음/270/300 잔여를 확인했고 추가 지출은 0원이다. 수동 일일 백업·7일 보관·별도 키·변경 후/복구 직전 최신 journal은 docs47/48을 따른다. 자동 데몬은 없다. 모든 타회원 흐름·CPU·브랜드 권리·임시 Cloudflare 철거·사용자의 최종 출시 판단은 #62에 남긴다.
+
+아래 이전 시점의 미완료·수치·실패 기록은 당시 관측이며 현재 상태와 구분한다.
+
+## 실행 결과와 남은 범위
+
+| 단계 | 실제 완료 | 남은 범위 |
 |---|---|---|
-| 1 안내/Windows 정리 | 현행 README/시작안내/구형계약의 역사표시, 비공개 파일해시·고유증거 보존·Windows README/실행기/.git만 잔존 | 실제 파일검사 통과: README/실행기/.git 잔존, 캡처4개 해시보존; PR67 병합/최종 3항목·해시 재확인 |
-| 2 로컬 보존/진단 | 실제 Git/doctor·Cron/정리대기 원인·새 암호화 백업/최신journal/격리check 결과 | 새 로컬 암호화 백업/최신journal·32테이블/28파일128184B·28decode·networknone/Cronoff 복구/백업인증 통과; 18:17 정상 Cron이 앞선714건 정리, 이후 신규 영수증 대기만 attention; 서비스 dev:all 복구·상세 docs46 |
-| 3 원본 비교/권리 | 보드설명·원본 PC/m·같은 상태/폭의 실행캡처·차이 이슈·자산별 권리 | 9화면7폭 구조검사/대표원본 비교; 차이 #70/PR74 수정·7폭/전체검사 통과; 권리/전체상태 미확인 |
-| 4 무료 자원/DB | 계정/조직·Free/슬롯/비용·project ref·migration 이력·RLS/private bucket/예산/단일Cron·Hook·가입차단 | Free 전용project/37 migration·32 RLS테이블·private bucket/단일Cron·Hook 구성 확인; 상세 docs42 |
-| 5 정책/OAuth | 확정 새 불변정책/published·실제초대/승인·Google callback/앱복귀 분리·성공/취소/오류/로그아웃/재동의 | 후보/문의 지정 완료; Google client 생성 직전 확인·운영주체명/정책 확정·실제 OAuth 검증 대기 |
-| 6 운영 빌드/배포 | 검증main SHA·production 빌드·원격secret/공개VITE 분리·fixture비활성·배포version/URL | Netlify PR82/full1472·공개31파일 실제키 부재·승인 후 production secret/공개 배포 완료; main959e254/version6ae461b7·상세 docs46 |
-| 7 운영 기능/성능 | 소유자/타인/익명·사진·공개HTML/메타/404·탈퇴Auth/Storage 실물정리·CPU/전송량실측 | Netlify 실제 URL HTTP20/7폭14뷰/넘침0·게스트 경계 통과; health왕복80~84ms는CPU 아님, 실제 회원/CPU 검증 미완료 |
-| 8 원격 백업/복구 | 전용 도구·대상ref확인·암호화DB/실파일·별도키·최신journal·격리Free복구의Auth/Storage/API/권한 | 독립 #69 생성, 도구미구현·원격미검증 |
-| 9 출시판단 | 모든 증거·남은차이·rollback/운영책임/주기·사용자 결정 | 대기; 이슈62 유지 |
-
-실제 결과는 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)에 KST 시각·환경·대상/commit/version·수행/미수행·가린 증거·비용·다음 작업을 기록한다. 이 표는 실행 체크리스트이며 실시간 상태보드가 아니다. 링크된 이슈의 최신 결과를 우선한다.
+| 안내/Windows | 초기 정리 PR67·고유 증거 보존·정확한 README/실행기/.git 세 항목; #91 현행 연결 | 수정 전후 해시·연결 감사는 WSL 비공개 기록 |
+| 로컬 보존 | 기존 자료·32테이블/28실파일 암호화 백업/격리 복구·정상 Cron 확인, 전역 cleanup 없음 | 최종 doctor attention은 원인별 기록 |
+| 디자인/권리 | 원본97PNG 설명·PC/m 대표 비교·9화면7폭, #71/#70 수정 | 모든 상태·브랜드 권리 확인 |
+| Free/DB | 전용 서울 Supabase/37 migration·32 RLS테이블/private bucket/단일Cron·초대Hook | 실제 무료 한도 지속 확인 |
+| 정책/OAuth | v1 immutable/published/본문 일치·본인 동의·Google Production·실제 초대/승인/재로그인 | 타실회원·오류/취소/재동의 전체 조합 |
+| 배포 | Netlify main71f9bc3/version6ae4a79b; Google=true/fixture=false; 운영공개/preview비공개 | 배포마다 검증·Free 조건 확인 |
+| 실사용/성능 | 비공개 개체1·사진2파일 저장/조회·6관리화면·익명 경계·대표7폭 | 원격 기능 전수·타회원·CPU/전송량 |
+| 백업/복구 | #69 도구/전체검사·실제 Google/파일/API 원격 복구·승인 복사본 탈퇴/토큰401 | source 회원 post-backup탈퇴/journal 통합·만료전 동일signedURL |
+| 운영/출시 | 기본 사용자·일일 수동 백업/7일·별도 키·최신 journal·자동 데몬 없음 | 증거/잔여 검토 후 사용자 최종 출시 결정 |
 
 ## 운영자료 입력 양식
 
@@ -45,7 +45,7 @@
 ## 설정 계약과 검증 경계
 
 - Google redirect URI는 전용 Supabase Auth callback이다. 최종 Supabase Site URL/허용복귀 URL은 https://reptilelink.netlify.app과 그 /auth/callback을 목표로 한다. 실제 새 서버 검증 후 해당2필드만 적용했고 사후차이0/다른15필드 동일을 확인했다. 와일드카드 복귀 URL은 추가하지 않는다.
-- 브라우저에는 VITE_SUPABASE_URL/PUBLISHABLE_KEY·확정 VITE_SUPPORT_EMAIL·VITE_LOCAL_AUTH=false만 전달한다. Google flag는 실제 provider 준비 후에만 true로 하며 현재 공개 빌드는 false다. 기존 로컬 환경 파일은 보존한다.
+- 브라우저에는 VITE_SUPABASE_URL/PUBLISHABLE_KEY·확정 VITE_SUPPORT_EMAIL·VITE_LOCAL_AUTH=false만 전달한다. 현재 공개 빌드는 실제 provider 검증 후 Google=true이며 fixture=false다. 기존 로컬 환경 파일은 보존한다.
 - 서버 SUPABASE_SECRET_KEY/새 ANALYTICS_HMAC_KEY는 사용자의 목적지 명시 승인 후 Netlify production secret으로 저장하고 공개31파일에 실제값 부재를 확인했다. 앞선 자동검토 거절 명령은 미실행이었고 후속 승인으로 해소됐다. Free의 env_var_secrets=true/env_var_scopes=false를 확인했으며 유료 전환은 없다. URL/publishable key/APP_ORIGIN은 실제 운영 대상과 맞추고 로컬 키/환경 파일을 통째로 복사하지 않는다.
 - migration은 승인한 최신main의 이력을 비교해 미적용 항목만 적용한다. 전체 schema.sql/로컬auth/테스트사진/preview본문을 운영에 복제하지 않는다. 신규 대상은 외부접근 전 RLS/Hook/쓰기·가입제한을 확인한다.
 - 검증은 초대없음/대기/승인·소유자/타인/익명, OAuth 오류/복귀/재동의·주요관리흐름·공개HTML/404/서명사진·캐시/탈퇴실물정리를 포함한다. 소규모 CPU/egress 측정과 실제 무료 계정 확인을 분리한다.
@@ -57,4 +57,4 @@ Windows/OneDrive는 최신 안내와 실행기만 유지하고 `.git`은 보존�
 
 파일별 원래 해시·크기·삭제/보존판단과 semantic diff는 WSL `.local/windows-cleanup-66`의 비공개 기록이다. 삭제 때 실제 절대경로·reparse/link와 최신해시를 검사하고 정해진 목록 밖은 건드리지 않는다. 원본97PNG/실제DB/Storage/백업·키는 삭제 대상이 아니다.
 
-실제 2026-10-30 운영 준비 관측값과 초기검사 실패/후속71·70의 수정·전체통과/병합 결과는 [docs42](42-production-readiness.md)를 따른다. 운영 백업/원격 복구는 독립 [이슈69](https://github.com/KimEunYeol/reptilelink/issues/69)로 미완료 상태다.
+실제 2026-10-30 운영 준비 관측값과 초기검사 실패/후속71·70의 수정·전체통과/병합 결과는 [docs42](42-production-readiness.md)를 따른다. 운영 백업/원격 복구의 실제 결과와 한계는 [이슈69](https://github.com/KimEunYeol/reptilelink/issues/69) 및 [최종 인계](48-live-operations-handoff.md)를 따른다.
