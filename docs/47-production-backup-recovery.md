@@ -4,6 +4,8 @@
 
 ## 현재 수행 증거와 남은 검증
 
+아래 항목은 실계정 연결 이전의 초기 구현 관측이다. 이후 실제 로그인·정책 게시 상태는 마지막 최신 기반·실회원 절을 따른다.
+
 - 기존 은열 Free 조직의 실제 생성 견적 월$0과 계정 plan free를 확인했다. 복구 대상의 Auth0/Storage0/앱테이블0을 읽기 전용으로 확인한 뒤 가입/Google을 비활성화했다. 고정 main의 원래37 migration을 별도 ref로 dry-run/순서대로 적용했고 source link를 보존했다. schema.sql/fixture/preview seed를 적용하지 않았다.
 - 운영 source에 TLS verify-full과 공식 Supabase CA를 사용해 읽기 전용 repeatable-read exported snapshot을 만들고 schema·앱 데이터·Auth users/identities·메타데이터를 같은 snapshot으로 수집했다. source 사용자/사진0의 백업·최신journal을 별도 키로 인증 암호화·재인증했다.
 - 별도 원격 대상에 빈 source의32테이블을 복구하고 RLS/원시권한거절/세션0·가입/쓰기/통계/Cron중지를 확인했다. 아직 실제 Google 회원/실제 원격 사진/브라우저 재연결 증거는 없다.
