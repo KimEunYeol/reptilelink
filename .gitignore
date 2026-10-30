@@ -14,3 +14,6 @@ artifacts/
 *.log
 *.tsbuildinfo
 .local/
+
+# Netlify CLI state and generated edge bundles (never publish credentials).
+.netlify/

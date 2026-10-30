@@ -19,7 +19,7 @@ Google 인증의 계정식별자·이메일 및 제공되는 기본프로필 정
 
 5. 수탁 서비스와 처리 위치
 Supabase Pte. Ltd.의 인증·DB·사진 Storage를 사용합니다. 핵심 데이터는 선택한 AWS 서울(ap-northeast-2) 리전에 저장되며, Supabase 운영·지원·보안 메타데이터는 해당 업체의 글로벌 지원/미국 관계사·EU 로그 처리와 Storage CDN을 통해 국외에서 처리될 수 있습니다. 세부 범위와 보유 기준은 https://supabase.com/legal/privacy-resources/data-residency-and-transfers-faq 및 해당 DPA/개인정보 정책을 따릅니다.
-Cloudflare, Inc.는 HTTPS·페이지/서버 실행·자산 전달·보안을 제공하며 글로벌 네트워크에서 요청과 관련 메타데이터를 처리합니다. Google은 Google 계정 로그인과 기본 인증정보 제공을 처리합니다. 이들 서비스의 실제 처리지역·사업자 운영로그 보유는 각 제공업체 정책을 적용합니다: https://www.cloudflare.com/privacypolicy/ , https://policies.google.com/privacy . 서비스 이용 시 HTTPS로 필요한 정보가 전달됩니다. 국외처리나 인증 제공을 원하지 않으면 가입을 진행하지 않거나 문의처에 처리정지/탈퇴를 요청할 수 있으며 관련 인증·서비스 이용이 제한됩니다.
+Netlify, Inc.는 HTTPS·페이지/서버 실행·자산 전달·보안을 제공하며 미국을 포함한 글로벌 네트워크와 수탁업체를 통해 요청·관련 메타데이터를 처리할 수 있습니다. 고객 데이터의 처리 계약은 https://www.netlify.com/pdf/netlify-dpa.pdf , 업체의 개인정보 안내는 https://www.netlify.com/privacy/ 를 참고합니다. Google은 Google 계정 로그인과 기본 인증정보 제공을 처리합니다. 이들 서비스의 실제 처리지역·사업자 운영로그 보유는 각 제공업체 정책을 적용합니다: https://www.netlify.com/privacy/ , https://policies.google.com/privacy . 서비스 이용 시 HTTPS로 필요한 정보가 전달됩니다. 국외처리나 인증 제공을 원하지 않으면 가입을 진행하지 않거나 문의처에 처리정지/탈퇴를 요청할 수 있으며 관련 인증·서비스 이용이 제한됩니다.
 이 문서는 확인하지 않은 업체별 국외이전 조건·세부 보유기간을 확정한 것으로 간주하지 않습니다. 신규회원 수집을 시작하기 전 운영자가 실제 계약/설정에 맞는 세부 이전 고지를 확인해야 합니다.
 
 6. 브라우저 보관과 보호

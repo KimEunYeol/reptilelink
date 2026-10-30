@@ -1,0 +1,50 @@
+# Build in WSL, then deploy with the pinned CLI and --no-build. No Git/cloud builds.
+[build]
+  publish = "dist"
+  edge_functions = ".netlify/edge-functions-generated"
+
+[dev]
+  framework = "#static"
+  publish = "dist"
+  port = 4176
+  autoLaunch = false
+
+# Edge functions run first; handled API/public/auth requests never become this SPA fallback.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# These private/auth/public gates execute before SPA fallback and never opt into caching.
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/api/*"
+
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/u/*"
+
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/auth/*"
+
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/onboarding"
+
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/onboarding/*"
+
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/dashboard"
+
+[[edge_functions]]
+  function = "reptilelink"
+  path = "/dashboard/*"

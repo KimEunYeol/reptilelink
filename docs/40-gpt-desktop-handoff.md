@@ -9,7 +9,9 @@
 
 ## 현재 승인된 실행 계획
 
-2026-10-30 사용자는 Windows 진입 폴더 정리와 전용 Free Supabase/무료 workers.dev 기반 외부 설정·배포·검증까지 승인했다. 실행 순서·운영자료 양식·자료 대기는 [docs/41](41-desktop-execution-checklist.md)을 따른다. 아래 기존 인계와 과거 관측값은 보존하며, 이 승인/문서 변경은 실제 외부 완료 증거가 아니다.
+최신 사용자 지시는 **Netlify Free 단독 앱 호스팅 + 기존 Supabase DB/Auth/Storage**다. 770.kr은 문서 참고만 허용하며 서비스 도메인/DNS에 사용하지 않는다. 무료 제공 주소에는 reptilelink를 포함하고 dev는 넣지 않는다. 홈페이지 문의는770_official@naver.com, Google 내부 설정은 사용자 본인 계정을 사용한다. 카드·유료/체험·자동 충전·클라우드 빌드·Actions·병렬 에이전트는 사용하지 않는다.
+
+실행 순서와 남은 자료는 [docs41](41-desktop-execution-checklist.md), 최신 단독 호스팅 계약·실제 검사/실패·Free 제약은 [docs46](46-netlify-single-host.md), 실제 배포·회원/복구 완료 여부는 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)를 확인한다. 아래 과거 관측과 기능 마감 이력은 당시 증거로 보존하며 현재 최종 운영 완료로 해석하지 않는다.
 
 ## 1. 개발현황
 

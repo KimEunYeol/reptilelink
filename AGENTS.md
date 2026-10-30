@@ -44,11 +44,15 @@
 
 - The user explicitly approved docs/41 execution through external configuration/deployment/verification at zero additional cost. This supersedes the older desktop-excluded scope for this plan only; verified PR merges remain authorized.
 - Work in the canonical WSL checkout. Windows folder cleanup is limited to the approved README/launcher-only result, preserving its .git and any unique evidence in ignored WSL records.
-- Create a dedicated Free Supabase project in Seoul after current zero-cost/slot checks; preserve gain-music-club. Use workers.dev, with no domain purchase or DNS changes.
-- Operator materials are not yet supplied. Do not invent/publish production policies or publicly deploy the app before confirmed policy/contact/asset-rights materials. Continue independent preparation; record actual results in issue62.
+- Create a dedicated Free Supabase project in Seoul after current zero-cost/slot checks; preserve gain-music-club. Use Netlify Free alone for the final app host as clarified below, with no domain purchase or DNS changes; the earlier Cloudflare preparation is historical.
+- The user supplied 770.kr as document reference, the website inquiry address and permission for web verification photos. Candidate policies and a CC0 photo are prepared; operator identity/final policy and rights details remain unconfirmed. Do not invent facts or publish unconfirmed candidates. Continue independent preparation; record actual results in issue62.
 
 ## Current launch clarification (2026-10-30)
 
 - Latest user direction: 770.kr is reference material only, never the service domain. Its pending Cloudflare custom-domain association was removed; do not change its DNS or use its subdomains. No domain purchases. Use a free provider hostname containing reptilelink and no dev for the eventual public frontend.
-- Latest email clarification: 770_official@naver.com is the website inquiry address only. Google project/OAuth administration uses the user's own currently signed-in Google account; a Google account for the Naver address is not required. Netlify browser login is complete; hosting choice (Netlify-only or Netlify + Cloudflare) is pending user preference.
+- Latest email clarification: 770_official@naver.com is the website inquiry address only. Google project/OAuth administration uses the user's own currently signed-in Google account; a Google account for the Naver address is not required. The user wants one hosting provider and zero spending risk: use Netlify Free alone for the app, keeping the existing Supabase DB/Auth/Storage. The observed Free account has a hard credit limit, no auto recharge and no saved card; do not enable paid features. Netlify browser login is complete; WSL CLI authentication and final hostname ownership must be verified separately.
 - docs45 records actual backend hosting versus incomplete final-domain/OAuth/member release. Candidate policy documents are not published or confirmed operator identity. Keep admission paused until actual policy/auth prerequisites are resolved.
+
+- Current hosting adapter/runbook and observed Free limits are in [docs/46-netlify-single-host.md](docs/46-netlify-single-host.md). Earlier Cloudflare preparation is historical, not the chosen final architecture. Retire its production path only after the Netlify replacement is verified.
+
+- Netlify Free environment variables use the default scopes; granular Functions-only scope and paid Secrets Controller are not assumed. Use production contextual values, explicit public-only Vite inputs and no cloud builds/Forms/proxy/snippet injection. Verify server values are absent from public assets.

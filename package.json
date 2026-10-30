@@ -14,7 +14,7 @@
     "test:harness": "node --test tests/harness.test.mjs && node tests/backup-safety.test.mjs && node tests/local-doctor.test.mjs",
     "verify": "node scripts/harness.mjs verify",
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node scripts/build-netlify.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
     "test": "vitest run tests/domain.test.ts tests/growth.test.ts tests/links.test.ts tests/socials.test.ts tests/schedules.test.ts tests/design.test.ts tests/activity.test.ts tests/likes.test.ts tests/analytics.test.ts tests/authReturn.test.ts tests/support.test.ts tests/publicPage.test.ts tests/parents.test.ts tests/commandWindow.test.ts",
     "test:e2e": "playwright test",
@@ -22,7 +22,7 @@
     "local:stop": "supabase stop",
     "local:env": "node scripts/local-env.mjs",
     "local:seed": "node scripts/local-seed.mjs",
-    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs && node scripts/test-animal-growth.mjs && node scripts/test-growth-race.mjs && node scripts/test-external-links.mjs && node scripts/test-social-links.mjs && node scripts/test-schedules.mjs && node scripts/test-profile-design.mjs && node scripts/test-profile-media.mjs && node scripts/test-account-deletion.mjs && node scripts/test-comments.mjs && node scripts/test-comments-limits.mjs && node scripts/test-activity-races.mjs && node scripts/test-activity-ops.mjs && node scripts/test-activity-retention.mjs && node scripts/test-activity-batches.mjs && node scripts/test-profile-likes.mjs && node scripts/test-like-races.mjs && node scripts/test-notifications.mjs && node scripts/test-notification-races.mjs && node scripts/test-analytics.mjs && node scripts/test-analytics-worker.mjs && node scripts/test-analytics-races.mjs && node scripts/test-analytics-retention.mjs && node scripts/test-public-boundary.mjs && node scripts/test-policy.mjs && node scripts/test-policy-races.mjs && node scripts/test-animal-parents.mjs && node scripts/test-notification-summary.mjs && node scripts/test-self-photo-recovery.mjs && node scripts/test-receipt-retention.mjs && node scripts/test-backup-ledger.mjs && node scripts/test-backup-restore.mjs && node scripts/test-local-doctor.mjs",
+    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs && node scripts/test-animal-growth.mjs && node scripts/test-growth-race.mjs && node scripts/test-external-links.mjs && node scripts/test-social-links.mjs && node scripts/test-schedules.mjs && node scripts/test-profile-design.mjs && node scripts/test-profile-media.mjs && node scripts/test-account-deletion.mjs && node scripts/test-comments.mjs && node scripts/test-comments-limits.mjs && node scripts/test-activity-races.mjs && node scripts/test-activity-ops.mjs && node scripts/test-activity-retention.mjs && node scripts/test-activity-batches.mjs && node scripts/test-profile-likes.mjs && node scripts/test-like-races.mjs && node scripts/test-notifications.mjs && node scripts/test-notification-races.mjs && node scripts/test-analytics.mjs && node scripts/test-analytics-worker.mjs && node scripts/test-analytics-races.mjs && node scripts/test-analytics-retention.mjs && node scripts/test-public-boundary.mjs && node scripts/test-policy.mjs && node scripts/test-policy-races.mjs && node scripts/test-animal-parents.mjs && node scripts/test-notification-summary.mjs && node scripts/test-self-photo-recovery.mjs && node scripts/test-receipt-retention.mjs && node scripts/test-backup-ledger.mjs && node scripts/test-backup-restore.mjs && node scripts/test-local-doctor.mjs && npm run test:netlify",
     "worker:preview": "wrangler dev --local --ip 127.0.0.1 --port 8787",
     "dev:all": "node scripts/dev.mjs",
     "local:cleanup": "node scripts/local-cleanup.mjs",
@@ -32,7 +32,8 @@
     "local:policy-preview": "node scripts/local-policy-preview.mjs",
     "test:backup": "node tests/backup-safety.test.mjs",
     "local:backup": "node scripts/backup-restore.mjs",
-    "local:doctor": "node scripts/local-doctor.mjs"
+    "local:doctor": "node scripts/local-doctor.mjs",
+    "test:netlify": "node scripts/test-netlify-host.mjs"
   },
   "repository": {
     "type": "git",
@@ -61,6 +62,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
+    "esbuild": "0.28.2",
     "supabase": "2.122.0",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",

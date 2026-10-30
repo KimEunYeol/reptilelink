@@ -1,0 +1,41 @@
+{
+  "issue": 79,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/79",
+  "branch": "codex/chore/79-netlify-single-host",
+  "baseSha": "5a806d246066f96e8ff5ffca9fbcabaab80fd5f5",
+  "scope": "Netlify Free 단독 호스팅의 기존 Worker 어댑터·WSL 번들/경로와 실제 로컬 Auth/DB/Storage 회귀, 운영 전환 절차",
+  "acceptance": [
+    "기존Worker/공개DTO/DBschema/화면/원본이미지를유지하고Netlify표준Request/Response·서버환경·ASSETSnext만연결한다.",
+    "기존/api,/u,/auth,/onboarding,/dashboard·SPAfallback/캐시·404·Origin/인증/소유/사진실물검사와공유메타가같은호스트에서동작한다.",
+    "NetlifyFree300credit고정한도/자동충전불가/신용카드없음과실제이름소유를확인하며비용0원·로컬빌드/업로드만사용한다.",
+    "로컬전용안전제한/기존자료를보존하고의미있는실제로컬Auth/DB/Storage·기존전체verify/최신diff리뷰·PR/정확HEAD병합/main을검증한다.",
+    "최종Netlify단독운영검증후Cloudflare를운영경로에서제외하고Google/정책/실회원/원격복구미완료를실제증거와구분한다."
+  ],
+  "plan": [
+    "공식NetlifyEdge/API/라우팅/Free고정한도와실제Free계정을확인하고기존Worker/데이터계약을대조한다.",
+    "얇은Netlify어댑터/정적fallback·타입검사와실제임시로컬계정/사진을사용한호스트회귀를연결한다.",
+    "어댑터회귀/로컬Netlify컴파일·전체고정검증/정확HEAD리뷰·PR/명시병합한뒤확보한Free주소로WSL산출물을업로드하고실제경계/공유URL/성능을확인한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "UI/WorkerHTML템플릿/원본자산은변경하지않고같은Worker모듈을새호스팅의표준요청/서버환경/정적자산continuation에연결한다. 화면재설계나새시각패턴이아니다."
+  },
+  "results": {
+    "targeted": "51 adapter checks passed; repeated with CC0 web gecko and real local Storage bytes/withdrawal removal",
+    "compiler": "pinned Netlify CLI 27.16.0 offline local build/eszip packaging passed; initial extensionless import failure fixed by ESM bundle",
+    "deno": "5 actual vendor Deno checks passed with real loopback DB and mocked platform context",
+    "existingData": "baseline Storage count retained; only disposable QA identities/files cleaned",
+    "fullVerification": "Required on fixed source; authoritative result is .local/harness-verification.json and PR execution evidence, not this field",
+    "review": "Direct diff review: unchanged worker/domain/schema/UI; server bundle outside dist; runtime server env; exact existing esbuild pinned; Free scope and candidate provider docs clarified; actual Netlify runtime remains a separate check",
+    "remaining": [
+      "WSL Netlify CLI login and final free hostname ownership/deployment",
+      "Google client/provider and operator policy confirmation",
+      "deployed member/Storage/withdrawal checks and issue69 remote backup/restore"
+    ],
+    "firstFullVerification": "source2d24f9a failed E2E220/221 due trace-confirmed host wall rollback -1339ms; preserved evidence; not passed",
+    "dependency": "issue80/PR81 sourcefdae4c8 full1421 passed and merged main5a806d2/tree07160c5; rebased onto latest main",
+    "freeScopes": "Free defaults include Functions; no paid granular scopes/Secrets Controller, cloud builds/Forms/proxy/snippet injection. Runtime server bindings and explicit public-only Vite values remain separate."
+  },
+  "originalBaseSha": "f7c7a0e144e633bbc8e495c934658b43ecf1c4a2"
+}
