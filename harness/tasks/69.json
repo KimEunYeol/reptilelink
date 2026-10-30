@@ -30,6 +30,12 @@
     "fullVerification": "required fixed full report before push; this task status is not proof of full verification",
     "remaining": "Google client confirmation and actual operator policy facts; actual remote Google/member/photo/withdrawal/API recovery tests; final rollout remains62/69 pending",
     "latestBase": "Rebased on verified main71f9bc3 including #87 clock isolation and #88 confirmed published policy; previous full failures retained; fresh fixed full required",
-    "actualMember": "Source real Google OAuth/verified invite/session and active private profile now exist; real photo/nonempty remote Auth+Storage recovery still pending"
+    "actualMember": "Source real Google OAuth/verified invite/session and active private profile now exist; real photo/nonempty remote Auth+Storage recovery still pending",
+    "remoteActual": "Archive dfad2bec:32 app tables, Google user1/identity1,2 real WebP/198396B; real target Google new session/API/policy/private profile/480x360 photo reconnected; RLS/raw/triggers/quarantine verified",
+    "withdrawalActual": "Explicitly approved disposable recovery copy only; inherited source upload deadline1 controlled-expired; actual Auth/profile/animal/Storage/session0 and minimal withdrawal1; old request token401 without persisted token; two prior Storage paths HTTP400/semantic404; source1 user/1animal/2files preserved and relogin verified",
+    "recoveryClosed": "Target Google/signup/email/phone disabled again; temporary4178server stopped; no production cutover or source withdrawal",
+    "fullFailures": "Original journal/profile-clock failures retained; latest bac2491 full192/221 due independently reproduced local Worker static404; own dev restart4routes200 and two actual failing flows2/2; final fixed full required",
+    "limitations": "Source real-user withdrawal/journal end-to-end not performed; offline4 scenarios cover reconciliation; exact unexpired signed URL recheck not captured; actual deleted Storage paths checked; complete all-screen/other-member/CPU validation not claimed",
+    "review": "Direct implementation diff unchanged from24688eb; current main includes verified87/88; intended refs/TLS/CLIstdin/crypto/snapshots/no sessions/vault/live file hashes/target isolation/restore quarantine reviewed; no unresolved implementation finding; not independent approval"
   }
 }

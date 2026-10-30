@@ -62,3 +62,17 @@ Storage 업로드/네트워크/후속 확인이 실패하면 DB는 이미 commit
 #87/PR89는 프로필 사진 응답손실 재시도 중 WSL 벽시계 역행(단조+134.431ms/벽시계-1542.158ms)을 검사 Date만 고정해 격리하고, 고정 전체verify/E2E221·정확HEAD병합을 통과했다. #69의 이전 full2회 실패 기록은 보존했으며 최신 main71f9bc3(#88정책v1게시 포함)에 반영 후 새 고정 full을 수행한다.
 
 현재 운영 Netlify version6ae4a79b1485f6e33851bd3f(main71f9bc3)에서 실제 본인 Google 로그인·초대연결·pending→active 승인·사용자 승인한v1필수동의·비공개 프로필생성과 관리화면 접근을 확인했다. Auth signup은 사용자 별도 승인으로 초대Hook 제한 지속허용,10명한도·Google만사용을 유지한다. 앞선32테이블/사용자0/실파일0 원격복구는 당시 초기 빈snapshot 증거이며, 현재 실회원/실제사진의 원격 Auth·Storage·API 재연결 증거를 대신하지 않는다. 본인의 새 실사용 계정은 원본 탈퇴시험에 사용하지 않는다. 자동데몬/운영복구 완료로 체크하지 않는다.
+
+## 실제 Google·사진 원격 복구 결과 (2026-10-31 KST)
+
+운영 source는 실제 Google 계정1·v1필수동의2항목·비공개 프로필1·개체1·ready 사진1asset/2WebP·198,396B를 보유한다. 사용자 승인한 Netlify main71f9bc3/version6ae4a79b1485f6e33851bd3f에서 저장/새로고침/480×360 디코드와 재로그인을 확인했다. Google OAuth 앱은 별도 승인 후 프로덕션으로 게시했고 초대Hook·승인·10명한도는 유지한다. 운영 원본의 탈퇴/데이터삭제는 실행하지 않았다.
+
+archive dfad2bec-629f-4d19-9932-abdd12fdb205와 최신 인증journal로 별도Free 대상에32테이블·Google user/identity1·실파일2/198,396B를 복구했다. 재다운로드 해시/크기·RLS/원시권한거절·트리거 복구·공개0/세션0/쓰기·가입·통계·Cronoff를 확인했다. 복구 API의 exposed schemas public/api·100행 제한은 별도 적용이 필요하며, schema migration만으로 Data API 설정이 복제되지는 않는다. 초기 API406/PGRST106을 기록하고 API 두 필드만 적용해 실제 policy_context200·동일v1/digest를 확인했다.
+
+사용자 승인한 별도 Reptilelink Recovery Verification 클라이언트를 복구 Supabase에만 연결하고,127.0.0.1:4178 임시 frontend/기존 호스트 핸들러에서 실제 Google 재로그인·새세션1·기존 프로필/개체·480×360 사진 조회를 확인했다. 이는 별도 Netlify 복구 배포나 운영DNS 전환이 아니다. OAuth 비밀값은 로컬파일 없이 해당Supabase에 직접 저장했다. 상세조회 중 기존 복구용키가 접근성이름에 나타난 실수가 있어 승인된 교체 후 기존키 사용중지를 확인했고 새키만 연결했다. 운영키는 변경하지 않았다.
+
+사용자가 복구 검증용 복사본만 탈퇴하도록 별도 승인했다. 원본에서 복사된 미래 업로드 정리기한 때문에 실제 세션해지 후 정리대기를 관측했다. 복구본에는 서명 업로드를 발급하지 않았으므로 그 복사본의 asset1개만 만료조건으로 조정했다. 운영기한/제품guard는 변경하지 않았다. 이후 실제 Auth·프로필·개체·Storage·세션0/완료탈퇴기록1을 확인했다. 정리요청의 이전토큰은 파일/로그 없이 서버메모리에서1회 재사용해401을 확인했고, 기존2개 Storage 경로의 인증 다운로드는HTTP400/semantic404로 실제 제거를 확인했다. 같은 만료전 signed URL 자체의 재요청은 확보되지 않아 별도 성공으로 주장하지 않는다.
+
+복구 Google 공급자를 다시off/가입닫힘/email·phoneoff로 확인하고 자기 임시4178서버만 종료했다. 원본은 계정1·프로필1·개체1·Storage2·새로그인세션1/쓰기·초대가입true/공개프로필0을 유지한다. 양쪽 익명 원시profiles는401, 운영 비공개주소/사진은404/no-store, 관리HTML에 개인자료가 없음을 재확인했다. 실제 운영 source의 회원을 탈퇴시킨 post-backup journal 통합은 실행하지 않았으며, 탈퇴·비공개·중지 재등장 방지는 기존 오프라인4시나리오와 복구본 강제비공개 검증으로 구분한다.
+
+이전 full 실패들은 보존했다: 최초 custom-store journal stale 원인미확정, profile-media 실제 벽시계 역행은#87로격리, 최신bac2491의 Worker정적asset404는192/221로실패했다. APIhealth200/auth·dashboard/index404를 독립재현한 뒤 자기 local frontend/Worker만 재시작해4라우트200/실패2흐름2/2를 확인했다. DB/Docker/기존28사진·환경·운영은 유지했다. 최종 고정전체검증과 최신HEAD직접리뷰/PR결과는 실제 report를 따른다. 자연만료 대기/전체운영화면·타실회원/CPU상한 검증을 과장하지 않는다.
