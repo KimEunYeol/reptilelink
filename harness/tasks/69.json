@@ -2,7 +2,7 @@
   "issue": 69,
   "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/69",
   "branch": "codex/chore/69-production-recovery",
-  "baseSha": "43d6ddb1e50d26b02d91df3889f995ee7cdd054c",
+  "baseSha": "71f9bc3d4046c6a0bbcba1edbb99d6bfae9c4c81",
   "scope": "운영 전용 일관된 암호화 DB/Auth/실제Storage 백업·최신journal과 별도Free프로젝트 복구 검증",
   "acceptance": [
     "기존 local:backup/doctor 원격 차단과 기존 DB/사진/키/타서비스를 보존한다.",
@@ -28,6 +28,8 @@
     "implementation": "source snapshot/Auth identities/real Storage bytes+hash/journal/encryption/retention; exact dedicated restore target; Google provider/signup must be disabled; existing account-state trigger remains enabled",
     "failures": "TLS public system trust insufficient: official Supabase CA pinned; CLI import cycle separated; replica privilege denied: no grant, defer FK/own app USER triggers then restore; cron direct UPDATE denied: use cron.alter_job; fixture generated columns/two variants corrected",
     "fullVerification": "required fixed full report before push; this task status is not proof of full verification",
-    "remaining": "Google client confirmation and actual operator policy facts; actual remote Google/member/photo/withdrawal/API recovery tests; final rollout remains62/69 pending"
+    "remaining": "Google client confirmation and actual operator policy facts; actual remote Google/member/photo/withdrawal/API recovery tests; final rollout remains62/69 pending",
+    "latestBase": "Rebased on verified main71f9bc3 including #87 clock isolation and #88 confirmed published policy; previous full failures retained; fresh fixed full required",
+    "actualMember": "Source real Google OAuth/verified invite/session and active private profile now exist; real photo/nonempty remote Auth+Storage recovery still pending"
   }
 }
