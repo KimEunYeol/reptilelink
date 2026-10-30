@@ -506,3 +506,6 @@ reserve_parent_photo(animal,role,request)와 cancel_parent_photo_request는 본�
 
 ## #40 최소 미읽음 요약
 api.my_notification_summary()는 private.actor()/본인 profile 확인 뒤 recipient_id=actor, read_at IS NULL, created_at>now()-90days의 count만 반환한다. 최근 알림 목록과 같은 의미이며 타인 ID 입력·본문/작성자/원문은 없다. 일반 테이블 권한을 늘리지 않고 authenticated만 실행한다. 기존 recipient/date 인덱스를 재사용한다(베타 한도에서 유사 인덱스 추가 없음).
+
+## #56 자체 사진 예약/취소 영수증
+api.reserve_self_photo(animal,request)는 기존 reserve_photo_edit 예산/3장/동시2세트·역할/동의 검사를 재사용하고 reserve_self_photo 영수증에 같은 자산ID를 기록한다. api.cancel_self_photo_request는 동일계정/자식과 self역할만 처리하고 연결 자산은 거절하며, 예약보다 취소가 먼저 이기면 취소 tombstone을 남긴다. 일반 테이블 권한/기존RPC는 유지한다.
