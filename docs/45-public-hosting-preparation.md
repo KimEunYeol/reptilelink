@@ -1,5 +1,7 @@
 # 실제 공개 호스팅 기반과 최종 주소 준비 (#77)
 
+이 문서는 #77 당시 준비 기록이다. 최신 단독 호스팅 선택과 검증은 [docs46](46-netlify-single-host.md)을 따른다.
+
 2026-10-30 KST 관측이다. **기반 호스팅은 게시됐으나 최종 운영주소·Google인증·회원개방은 미완료**다. 상위 [#62](https://github.com/KimEunYeol/reptilelink/issues/62), 원격백업/복구는[#69](https://github.com/KimEunYeol/reptilelink/issues/69)에서 추적한다.
 
 ## 현재 계약
