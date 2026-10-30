@@ -8,4 +8,4 @@
 
 관련 검사의 첫 실행은25통과/1실패였다. 사진예약만 만료시키는 테스트에서 trace의 wall clock이1.135초 역행한 반면 monotonic time은 증가해 기존 명령 만료 보호가 동작했다. 운영 보호는 수정하지 않았다. 해당 테스트만 [Playwright setFixedTime](https://playwright.dev/docs/clock)으로 Date를 고정하고 실제 예약 만료를 DB 시각5분 전으로 설정·경과240초 이상을 검사했다. 단일 검사와 관련26흐름이 통과했으며 최초 실패 trace는 비공개 보존했다. 시간 역행 자체의 단위검사는 기존대로 유지한다.
 
-고정 HEAD 전체검사와 최신diff 리뷰/PR/명시병합 결과는 실제 검증보고서·PR을 따른다. 이 문서는 운영 Google OAuth·정책/자산권리·공개 배포·원격복구 완료 증거가 아니다. 자료와 남은 작업은 [docs41](41-desktop-execution-checklist.md),[docs42](42-production-readiness.md),#62/#69를 따른다.
+source f16a76d의 고정 전체 build+1,421검사(19/77/1070/34/221)는2026-10-30 15:26:39KST에 통과했다. 정확HEAD 직접리뷰의 미해결지적0·원격head/파일/mergeability확인 후 [PR74](https://github.com/KimEunYeol/reptilelink/pull/74)를 명시적squash로 병합했다. clean main9477a49와 검증트리 d438985가 일치한다. 이 문서는 운영 Google OAuth·정책/자산권리·공개 배포·원격복구 완료 증거가 아니다. 자료와 남은 작업은 [docs41](41-desktop-execution-checklist.md),[docs42](42-production-readiness.md),#62/#69를 따른다.
