@@ -430,3 +430,10 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 ## 2026-10-30 WSL 현행 안내·Windows 초기 자료 정리 (#66)
 
 사용자는 외부설정/무료배포/검증까지의 계획을 승인했다. 운영자료는 아직 미제공이므로 정책게시·공개배포는 자료확정 뒤 수행한다. WSL README의 첫흐름 소개/구형진입점과 START_HERE/첫작업계약을 현재 docs40·41/이슈62로 연결하고 역사적 검증기록은 유지한다. Windows 초기자료61파일의 원래해시·판단·명세차이는 비공개 `.local/windows-cleanup-66`에 기록하고 구형캡처4개는 ignored WSL artifacts로 해시대조해 보존했다. Windows 정리 후 실제목록은 README/실행기/.git 3개이며 안내/실행기 전달해시·대상문서존재 검사가 통과했다. 문서검증/리뷰/병합은 실제결과로 확인한다. 제품UI/design97PNG/DB/사진/키/외부자원 변경은 이 문서단계에 포함하지 않는다.
+
+
+## 2026-10-30 무료 운영 기반 준비 (#68)
+
+전용 Supabase Free 서울 suuemuqwjwbddbjevvmg에 main5838c5d의37 migration을 원래버전으로 적용/대조했다.32테이블 RLS·private WebP버킷·단일Cron·Hook/비공개권한·가입/provider차단과 정책unconfigured를 실제 확인했고 쓰기/가입/통계는 출시전중지로 유지한다. 기존 gain-music-club/로컬DB/사진/키를 보존했다. Cloudflare Free/이메일확인/CLI·예상workers.dev와 프로젝트0·요청0을 확인하고 격리production build/Worker dry-run·fixture버튼제거를 확인했다. 운영자료·실제Google/OAuth·공개배포/원격CPU·복구는 미완료다. 상세 결과/설정/재개는 docs42, 자료양식은 docs41을 따른다.
+
+고정전체verify는 build+1420개 통과/브라우저1개 실패(220/221)로 종료했다. 만료 목록의 최신조회실패 뒤 공개스위치가 활성인 기존 결함 #71을 우선 수정하고, 원본450px 대조에서 발견한 모바일아바타 버튼배치 #70도 독립 수정한다. 이 기록은 전체통과나출시완료가 아니다. 실패로그/trace/full report를 비공개 보존하고 문서 변경만 docs-only 검사한다. 운영 백업도구/실제원격복구는 독립 #69로 남겨 로컬28파일 격리실험과 구분한다.
