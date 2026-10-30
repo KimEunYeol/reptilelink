@@ -1,0 +1,37 @@
+{
+  "issue": 68,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/68",
+  "branch": "codex/chore/68-production-readiness",
+  "baseSha": "5838c5d1f71087596659d9830956f28a62f4cb3b",
+  "scope": "Free 운영 기반37migration/권한·초대Hook/가입차단·출시전중지·격리빌드와 실제결과/전체검사실패·후속이슈 문서화",
+  "acceptance": [
+    "전용Free 대상의37 원래migration·32RLS테이블/private bucket/단일Cron·Hook/예산·운영중지 설정을 실제 확인하고 타서비스/로컬자료를 보존한다.",
+    "격리production build/Worker dry-run/익명API와 직접권한 거절·자료대기/미배포를 명확히 기록한다.",
+    "전체검사를 실제 수행하고 220/221 브라우저 실패는 #71로 분리해 성공으로 표시하지 않는다. 원격복구 #69와 디자인차이 #70도 미완료로 유지한다.",
+    "최종 변경은 문서/task만이며 docs-only/링크/정확HEAD직접리뷰·PR/명시병합·cleanmain을 확인한다."
+  ],
+  "plan": [
+    "실제CLI인증/계정·무료상태/공식변경·빈 원격DB 확인 뒤 원래migration 버전의 dry-run/적용을 검토한다.",
+    "원격 DB/RLS/Storage/Hook/예산·정책미준비를 확인하고 비밀을 노출하지 않는 설정 준비/격리빌드·원본비교 증거를 모은다.",
+    "자료대기와 실제완료/원격복구 미구현을 구분해 기록하고 변경범위에 맞는 검증/리뷰·PR/병합·cleanmain을 확인한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "운영 준비와 문서/검증 기록. 제품 UI/design 원본을 변경하지 않는다. 원본 최종 비교는 읽기 전용 증거로 별도 기록."
+  },
+  "results": {
+    "remoteMigrations": 37,
+    "remoteRlsTables": 32,
+    "remoteApi": "passed: policy unconfigured / private schema406 / auth signup+providers disabled / raw grants0",
+    "production": "isolated build + dry-run + fixture UI absence passed; no deployment/OAuth verification",
+    "fullLocal": "FAILED:1420 passed, receipt-retention collection interlock1 failed; issue71",
+    "followups": [
+      "#71 collection unresolved lock",
+      "#70 mobile avatar source layout",
+      "#69 remote backup/restore",
+      "#62 operator materials/OAuth/deploy/real validation"
+    ],
+    "finalVerificationScope": "docs-only; does not supersede failed full report"
+  }
+}
