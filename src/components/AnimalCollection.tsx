@@ -1,3 +1,4 @@
+import{rpcCommand}from'../lib/supabase';
 import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
@@ -71,7 +72,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
     const body = JSON.stringify(parsed.data);
     if (request.current?.body !== body) request.current = { body, id: crypto.randomUUID() };
     try {
-      const result = await rpc<{ revision: number }>('apply_animal_collection', { p_items: parsed.data, p_expected: expected, p_request_id: request.current.id });
+      const result = await rpcCommand<{ revision: number }>('apply_animal_collection', { p_items: parsed.data, p_expected: expected, p_request_id: request.current.id },request.current);
       const authoritative = await refresh();
       if (!authoritative.profile || authoritative.account_status !== 'active' || authoritative.profile.revision < result.revision) throw new Error('NOT_FOUND');
       initial.current = collectionItems(authoritative.animals); setDraft(initial.current); setCatalog(authoritative.animals);
@@ -79,7 +80,7 @@ export function AnimalCollection({ animals, revision, active, onCreate, onEdit, 
     } catch (reason) {
       setUnresolved(true);
       const message = String((reason as { message?: string })?.message ?? reason);
-      if (/VERSION_CONFLICT|REQUEST_CONFLICT|REQUEST_EXPIRED|VALIDATION_FAILED/.test(message)) { setConflict(true); setLatest(null); }
+      if (/VERSION_CONFLICT|REQUEST_CONFLICT|REQUEST_EXPIRED|COMMAND_TOO_OLD|VALIDATION_FAILED/.test(message)) { setConflict(true); setLatest(null); }
       setError(/VALIDATION_FAILED/.test(message) ? '목록이 변경됐거나 입력값이 올바르지 않습니다. 최신 목록을 확인해주세요.' : userMessage(reason));
     } finally { submitting.current = false; setBusy(false); }
   }

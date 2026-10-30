@@ -7,7 +7,8 @@ type SelfUpload={animal:string;request:string;file:File;attempted:boolean;asset?
 // One weakly owned state per live editor's photo map; no persistent/global UUID cache.
 const states=new WeakMap<UploadedPhotos,Map<string,SelfUpload>>();
 function uploadsFor(uploaded:UploadedPhotos){let rows=states.get(uploaded);if(!rows){rows=new Map();states.set(uploaded,rows);}return rows;}
-async function cancelUpload(v:SelfUpload){if(v.attempted)await serverRequest('/api/uploads/cancel-request',{animal_id:v.animal,request_id:v.request});}
+export function hasSelfUploadAttempts(uploaded:UploadedPhotos){return [...(states.get(uploaded)?.values()??[])].some(value=>value.attempted);}
+async function cancelUpload(v:SelfUpload){if(v.attempted){await serverRequest('/api/uploads/cancel-request',{animal_id:v.animal,request_id:v.request});if(v.asset)await queuePhotoCleanup([v.asset]);}}
 export async function cleanupSelfUploads(uploaded:UploadedPhotos,retained:Set<string>){
  const rows=uploadsFor(uploaded);
  for(const [key,v]of rows)if(!v.asset||!retained.has(v.asset)){await cancelUpload(v);rows.delete(key);uploaded.delete(key);}

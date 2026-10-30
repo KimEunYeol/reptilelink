@@ -1,3 +1,4 @@
+import{assertCommandFresh}from'./commandWindow';
 import {authIssue} from './authReturn';
 import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -14,8 +15,9 @@ export async function rpc<T>(name: string, args?: Record<string, unknown>): Prom
   if (error) throw error;
   return data as T;
 }
-export async function serverRequest<T>(path: string, body?: unknown): Promise<T> {
+export async function serverRequest<T>(path: string, body?: unknown, check?:()=>void): Promise<T> {
   const { data } = await supabase.auth.getSession();
+  check?.();
   const response = await fetch(path, {
     method: body === undefined ? 'GET' : 'POST',
     headers: { ...(data.session ? { Authorization: `Bearer ${data.session.access_token}` } : {}), ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
@@ -25,3 +27,6 @@ export async function serverRequest<T>(path: string, body?: unknown): Promise<T>
   if (!response.ok) throw new Error(result.code || 'REQUEST_FAILED');
   return result as T;
 }
+
+export async function rpcCommand<T>(name:string,args:Record<string,unknown>,command:object=args):Promise<T>{assertCommandFresh(command);return rpc<T>(name,args);}
+export async function serverCommand<T>(path:string,body:unknown,command:object):Promise<T>{assertCommandFresh(command);return serverRequest<T>(path,body,()=>assertCommandFresh(command));}

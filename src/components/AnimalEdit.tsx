@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { animalDetailsSchema, seoulDate, sexLabels, statusLabels, userMessage, type Animal, type AnimalDetailsInput, type Dashboard } from '../lib/domain';
 import { rpc } from '../lib/supabase';
 import { AnimalPhotoDraft } from './AnimalPhotoDraft';
-import { cleanupSelfUploads,queuePhotoCleanup, uploadDraftPhotos, type PhotoDraft } from '../lib/photoDraft';
+import { cleanupSelfUploads,hasSelfUploadAttempts,queuePhotoCleanup, uploadDraftPhotos, type PhotoDraft } from '../lib/photoDraft';
 import { useUnsavedChanges } from '../lib/useUnsavedChanges';
 import {ParentPhotoDraft} from './ParentPhotos';
 import {animalParents,parentLabels,parentRoles,type ParentAssets} from '../lib/parents';
@@ -151,11 +151,15 @@ export function AnimalEdit({ animal, revision, renderPhoto, reconcile, onClose, 
     submitting.current = true; setBusy(true);
     try {
       let retained = new Set([...initialPhotos.current,...Object.values(initialParents.current).filter((id):id is string=>Boolean(id))]);
-      if (unresolved) {
+      if (unresolved || hasSelfUploadAttempts(uploaded.current) || [...parentUploads.current.values()].some(value=>value.attempted)) {
         await settlePending();
         const current = await reconcile(), found = current.animals.find(item => item.id === animal.id);
-        if (current.account_status !== 'active' || !found) throw new Error('NOT_FOUND');
-        retained = new Set([...found.photos.map(p => p.asset_id),...Object.values(animalParents(found)).filter((id):id is string=>Boolean(id))]);
+        if (current.account_status !== 'active' || !current.profile) throw new Error('ACCOUNT_NOT_ACTIVE');
+        if (!found && !current.pending_deletions?.some(item=>item.id===animal.id)) {
+          if (forNavigation) navigation.leave(); else onClose();
+          return; // An actual successful read confirms that both the live target and cleanup job are gone.
+        }
+        retained = new Set(found?[...found.photos.map(p => p.asset_id),...Object.values(animalParents(found)).filter((id):id is string=>Boolean(id))]:[]);
       }
       await cleanupSelfUploads(uploaded.current,retained);
       await queuePhotoCleanup([...allocated.current].filter(id => !retained.has(id)));

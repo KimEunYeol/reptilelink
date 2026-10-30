@@ -1,3 +1,5 @@
+import{commandExpired}from'../lib/commandWindow';
+import{rpcCommand}from'../lib/supabase';
 import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState } from 'react';
 import { X, Plus } from 'lucide-react';
@@ -51,7 +53,7 @@ export function AnimalGrowth({ animal, refresh, onClose }: { animal: Animal; ref
   useEffect(() => { const previous = document.querySelector<HTMLButtonElement>(`[data-collection-id="${animal.id}"] .collection-open`) ?? document.activeElement as HTMLElement | null; dialog.current?.showModal(); const request = ++seq.current; fetchData('month').then(value => { if (request === seq.current) accept(value); }).catch(reason => { if (request === seq.current) setError(userMessage(reason)); }); return () => { seq.current++; dialog.current?.close(); previous?.focus(); }; }, [animal.id]);
   async function retryInitial() { if (submitting.current) return; submitting.current = true; setError(''); const request = ++seq.current; try { const value = await fetchData(period); if (request === seq.current) accept(value); } catch (reason) { if (request === seq.current) setError(userMessage(reason)); } finally { submitting.current = false; } }
   async function readLatest() { const d = await refresh(); if (!d.animals.some(a => a.id === animal.id)) { onClose(); return null; } return fetchData(period); }
-  async function settle() { if (!pending.current) return; try { await rpc('save_animal_growth', pending.current); } catch (reason) { if (!definitive(reason)) throw reason; pending.current = null; } }
+  async function settle() { if (!pending.current || commandExpired(pending.current)) return; try { await rpcCommand('save_animal_growth', pending.current); } catch (reason) { if (!definitive(reason)) throw reason; pending.current = null; } }
   async function save() {
     if (submitting.current || conflict || !data) return;
     const upsert = growthDelta(rows, baseline), problem = growthProblem(rows, data.today, note);
@@ -59,7 +61,7 @@ export function AnimalGrowth({ animal, refresh, onClose }: { animal: Animal; ref
     if (!pending.current && (upsert.length > 100 || removed.length > 100)) { setError('한 번에 변경할 수 있는 기록은 100개입니다. 먼저 저장해주세요.'); return; }
     if (!pending.current) pending.current = { p_animal_id: animal.id, p_data: { upsert, remove: removed, note, show_growth: show }, p_expected: data.revision, p_request_id: crypto.randomUUID() };
     submitting.current = true; setBusy(true); setUnresolved(true); setError('');
-    try { await rpc('save_animal_growth', pending.current); await refresh(); pending.current = null; setUnresolved(false); onClose(); }
+    try { await rpcCommand('save_animal_growth', pending.current); await refresh(); pending.current = null; setUnresolved(false); onClose(); }
     catch (reason) { if (definitive(reason)) { pending.current = null; setUnresolved(false); if (/VERSION_CONFLICT|NOT_FOUND/.test(errorCode(reason))) setConflict(true); } setError(userMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }

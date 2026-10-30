@@ -1,3 +1,4 @@
+import{serverCommand}from'../lib/supabase';
 import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
@@ -6,7 +7,7 @@ import { serverRequest } from '../lib/supabase';
 import { useUnsavedChanges } from '../lib/useUnsavedChanges';
 
 export function AnimalDelete({ animal, revision, refresh, onClose }: { animal: Animal; revision: number; refresh: () => Promise<Dashboard>; onClose: () => void }) {
-  const dialog = useRef<HTMLDialogElement>(null), submitting = useRef(false), requestId = useRef(crypto.randomUUID());
+  const dialog = useRef<HTMLDialogElement>(null), submitting = useRef(false), requestId = useRef(crypto.randomUUID()), command = useRef<object>({});
   const [expected, setExpected] = useState(revision), [name, setName] = useState(animal.name);
   const [busy, setBusy] = useState(false), [started, setStarted] = useState(false), [conflict, setConflict] = useState(false), [error, setError] = useState('');
   const navigation = useUnsavedChanges(started, busy);
@@ -15,11 +16,11 @@ export function AnimalDelete({ animal, revision, refresh, onClose }: { animal: A
     if (submitting.current || conflict) return;
     submitting.current = true; setBusy(true); setStarted(true); setError('');
     try {
-      await serverRequest(`/api/animals/${animal.id}/delete`, { expected, request_id: requestId.current });
+      await serverCommand(`/api/animals/${animal.id}/delete`, { expected, request_id: requestId.current }, command.current);
       await refresh();
       if (forNavigation) navigation.leave(); else onClose();
     } catch (reason) {
-      if (/VERSION_CONFLICT|NOT_FOUND|REQUEST_CONFLICT|REQUEST_EXPIRED|CONSENT_REQUIRED|ACCOUNT_NOT_ACTIVE/.test(String(reason))) { if (!started) setStarted(false); setConflict(true); }
+      if (/VERSION_CONFLICT|NOT_FOUND|REQUEST_CONFLICT|REQUEST_EXPIRED|COMMAND_TOO_OLD|CONSENT_REQUIRED|ACCOUNT_NOT_ACTIVE/.test(String(reason))) { if (!started) setStarted(false); setConflict(true); }
       setError(userMessage(reason));
     } finally { submitting.current = false; setBusy(false); }
   }
@@ -30,7 +31,7 @@ export function AnimalDelete({ animal, revision, refresh, onClose }: { animal: A
       const d = await refresh(), found = d.animals.find(item => item.id === animal.id);
       if (!found) { onClose(); return; }
       if (!d.profile || d.account_status !== 'active') throw new Error('ACCOUNT_NOT_ACTIVE');
-      setExpected(d.profile.revision); setName(found.name); setConflict(false); setStarted(false); requestId.current = crypto.randomUUID();
+      setExpected(d.profile.revision); setName(found.name); setConflict(false); setStarted(false); requestId.current = crypto.randomUUID(); command.current={};
       setError('최신 상태를 확인했습니다. 삭제할 개체를 확인한 뒤 다시 선택해주세요.');
     } catch (reason) { setError(userMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }

@@ -1,7 +1,7 @@
 {
   "name": "reptilelink",
   "version": "0.1.0",
-  "description": "브리더가 파충류 개체·성장 기록·일정·외부 링크를 관리하고 자신의 공개 페이지로 공유하는 모바일 우선 웹 서비스.",
+  "description": "\ube0c\ub9ac\ub354\uac00 \ud30c\ucda9\ub958 \uac1c\uccb4\u00b7\uc131\uc7a5 \uae30\ub85d\u00b7\uc77c\uc815\u00b7\uc678\ubd80 \ub9c1\ud06c\ub97c \uad00\ub9ac\ud558\uace0 \uc790\uc2e0\uc758 \uacf5\uac1c \ud398\uc774\uc9c0\ub85c \uacf5\uc720\ud558\ub294 \ubaa8\ubc14\uc77c \uc6b0\uc120 \uc6f9 \uc11c\ube44\uc2a4.",
   "directories": {
     "doc": "docs"
   },
@@ -16,13 +16,13 @@
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
-    "test": "vitest run tests/domain.test.ts tests/growth.test.ts tests/links.test.ts tests/socials.test.ts tests/schedules.test.ts tests/design.test.ts tests/activity.test.ts tests/likes.test.ts tests/analytics.test.ts tests/authReturn.test.ts tests/support.test.ts tests/publicPage.test.ts tests/parents.test.ts",
+    "test": "vitest run tests/domain.test.ts tests/growth.test.ts tests/links.test.ts tests/socials.test.ts tests/schedules.test.ts tests/design.test.ts tests/activity.test.ts tests/likes.test.ts tests/analytics.test.ts tests/authReturn.test.ts tests/support.test.ts tests/publicPage.test.ts tests/parents.test.ts tests/commandWindow.test.ts",
     "test:e2e": "playwright test",
     "local:start": "bash scripts/local-start.sh",
     "local:stop": "supabase stop",
     "local:env": "node scripts/local-env.mjs",
     "local:seed": "node scripts/local-seed.mjs",
-    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs && node scripts/test-animal-growth.mjs && node scripts/test-growth-race.mjs && node scripts/test-external-links.mjs && node scripts/test-social-links.mjs && node scripts/test-schedules.mjs && node scripts/test-profile-design.mjs && node scripts/test-profile-media.mjs && node scripts/test-account-deletion.mjs && node scripts/test-comments.mjs && node scripts/test-comments-limits.mjs && node scripts/test-activity-races.mjs && node scripts/test-activity-ops.mjs && node scripts/test-activity-retention.mjs && node scripts/test-activity-batches.mjs && node scripts/test-profile-likes.mjs && node scripts/test-like-races.mjs && node scripts/test-notifications.mjs && node scripts/test-notification-races.mjs && node scripts/test-analytics.mjs && node scripts/test-analytics-worker.mjs && node scripts/test-analytics-races.mjs && node scripts/test-analytics-retention.mjs && node scripts/test-public-boundary.mjs && node scripts/test-policy.mjs && node scripts/test-policy-races.mjs && node scripts/test-animal-parents.mjs && node scripts/test-notification-summary.mjs && node scripts/test-self-photo-recovery.mjs",
+    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs && node scripts/test-animal-growth.mjs && node scripts/test-growth-race.mjs && node scripts/test-external-links.mjs && node scripts/test-social-links.mjs && node scripts/test-schedules.mjs && node scripts/test-profile-design.mjs && node scripts/test-profile-media.mjs && node scripts/test-account-deletion.mjs && node scripts/test-comments.mjs && node scripts/test-comments-limits.mjs && node scripts/test-activity-races.mjs && node scripts/test-activity-ops.mjs && node scripts/test-activity-retention.mjs && node scripts/test-activity-batches.mjs && node scripts/test-profile-likes.mjs && node scripts/test-like-races.mjs && node scripts/test-notifications.mjs && node scripts/test-notification-races.mjs && node scripts/test-analytics.mjs && node scripts/test-analytics-worker.mjs && node scripts/test-analytics-races.mjs && node scripts/test-analytics-retention.mjs && node scripts/test-public-boundary.mjs && node scripts/test-policy.mjs && node scripts/test-policy-races.mjs && node scripts/test-animal-parents.mjs && node scripts/test-notification-summary.mjs && node scripts/test-self-photo-recovery.mjs && node scripts/test-receipt-retention.mjs",
     "worker:preview": "wrangler dev --local --ip 127.0.0.1 --port 8787",
     "dev:all": "node scripts/dev.mjs",
     "local:cleanup": "node scripts/local-cleanup.mjs",

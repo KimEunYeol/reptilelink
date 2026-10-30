@@ -469,7 +469,7 @@ input[type=checkbox] { accent-color: #2cbb50; margin-top: 1px; width: 15px; heig
 .link-add-row { display: flex; justify-content: flex-end; margin-bottom: 28px; }
 .link-add-row .button { border-radius: 12px; min-height: 40px; }
 .link-list { display: grid; gap: 28px; }
-.managed-link { position: relative; border-radius: 12px; padding: 20px 14px 14px 62px; min-height: 128px; box-shadow: 0 2px 2px #0002; }
+.managed-link { min-width: 0; position: relative; border-radius: 12px; padding: 20px 14px 14px 62px; min-height: 128px; box-shadow: 0 2px 2px #0002; }
 .link-title { padding-right: 50px; min-width: 0; }
 .link-title strong { display: block; font-size: 14px; overflow-wrap: anywhere; }
 .link-title > span { display: block; font-size: 13px; margin-top: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
