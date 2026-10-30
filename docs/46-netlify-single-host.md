@@ -68,3 +68,13 @@
 Netlify CLI 인증·이름 확보·실제 앱 공개 배포·게스트 URL 검증·정확한 Supabase 복귀 URL 적용은 완료했다. Google 웹 클라이언트 생성/provider 연결, 운영자 신원/정책 확정·회원 개방/실제 원격 회원 검증은 별도 미완료다. #69 원격 백업·Free 복구 프로젝트 시험도 미완료이며 로컬 28파일 복구 성공으로 대체하지 않는다. 최종 출시 결정은 사용자에게 남긴다.
 
 Netlify Edge의 공식 한도는 요청당 CPU50ms(IO 대기 제외), 메모리512MB, 압축 번들20MB, 응답 헤더 제한40초다. [공식 한도](https://docs.netlify.com/build/edge-functions/limits/)와 실제 사용을 별도로 확인한다. 현재 HTTP 왕복만으로 CPU 한도 충족을 단정하지 않는다. [공개/미리보기 분리](https://docs.netlify.com/manage/security/secure-access-to-sites/project-visibility/)와 [Free 배지](https://docs.netlify.com/manage/projects/powered-by-netlify-badge/)는 실제 저장한 상태를 따른다.
+
+## Google 연결·운영 정책 게시 (#88)
+
+2026-10-30 개인정보 담당자 고경윤/홈페이지 문의770_official@naver.com을 사용자가 확정했다. 운영 표시는 렙타일링크이며 내부 Google 운영 계정과 구분한다. 참고사이트의 회사·사업자번호·주소·도메인을 서비스 신원으로 복제하지 않았다.
+
+승인된 Google 웹 OAuth 클라이언트 Reptilelink Supabase Production과 단일 source callback을 생성하고 비밀값은 로컬파일 없이 source Supabase에만 직접 저장했다. 실제 Auth settings google=true/가입닫힘/email·phone=false와302 accounts.google.com/source callback 일치, 본인 Google Testing 사용자1개 저장을 확인했다. 이는 실제 로그인 성공 증거가 아니다.
+
+비preview 불변 정책 reptilelink-20261030-v1을 source에 새로 등록하고 published로 설정했다. digest e1b0f8c6df74fcc9a79841fb5305b4d106ddfa69e4b424846ef1a3449a8a4e27. 실제 익명 HTTPS policy_context에서 본문이 문서와 일치하고 /terms·/privacy 브라우저 버전/담당자/문의표시를 확인했다. 완료 탈퇴기록7일 정리와 수동 일일 암호화백업/최대7일·별도키 원칙을 명시했다. 자동데몬·실계정/사진 원격복구 완료로 표현하지 않았다. 업체처리 사실은 Supabase 공식 data residency FAQ와 Netlify2026-06-09 DPA/2026-04-10 Privacy를 대조했다.
+
+재확인한 Netlify Free 잔여285/300·카드없음. 이 문서 시점 앱 배포는 기존959e254/version6ae461b7이며 Google 버튼과 신규가입은 아직 닫혀 있다. 다음 실제 검증은 Google Branding 정책URL/검증main WSL빌드·수동배포/본인 OAuth·필수동의·승인·개체/사진 관리와 #69 실물 원격복구다. 최종 출시 완료로 체크하지 않는다.

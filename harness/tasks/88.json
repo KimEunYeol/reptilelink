@@ -1,0 +1,31 @@
+{
+  "issue": 88,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/88",
+  "branch": "codex/docs/88-operating-policy",
+  "baseSha": "99f3c29e733575853cc299cfaf13593f811e0e52",
+  "scope": "확정 담당자와 실제 운영 사실에 맞는 불변 정책 게시",
+  "acceptance": [
+    "렙타일링크/개인정보담당자 고경윤/문의770_official@naver.com과 내부 Google 운영 계정을 구분한다.",
+    "완료탈퇴기록7일·수동일일백업7일·서울/글로벌 처리 사실과 공식 자료를 대조한다.",
+    "새 비preview 불변버전/published를 source에만 등록하고 실제 공개 URL/metadata·Google 연결을 확인한다.",
+    "문서전용 검증/최신HEAD직접리뷰·정확HEAD PR 병합 후 실제 로그인/실사용은 별도 검증한다."
+  ],
+  "plan": [
+    "사용자 확정 사실과 공식 처리 자료를 반영해 문서화한다.",
+    "정책 불변버전과 공개URL을 실제 검증한다.",
+    "고정 docs-only검증/직접리뷰/PR·병합 후 운영로그인 활성화에 연결한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "확정 정책 본문/운영 기록만 변경하며 UI배치/원본/스타일/제품코드는 변경하지 않는다."
+  },
+  "results": {
+    "materials": "Privacy contact 고경윤 confirmed; service 렙타일링크/contact770_official@naver.com; internal Google separate",
+    "policy": "Source only new immutable nonpreview reptilelink-20261030-v1/published; digest e1b0f8c6df74fcc9a79841fb5305b4d106ddfa69e4b424846ef1a3449a8a4e27",
+    "actual": "Anonymous HTTPS context exact body equality and live terms/privacy version/contact rendered",
+    "scope": "Markdown/task record only; docs-only verification appropriate; no product source/schema/dependency change",
+    "review": "Direct diff review: factual names/current retention/manual backup/provider facts; no invented770entity; no unresolved findings; not independent approval",
+    "pending": "Google Branding policyURL save, actual Google member login/consent/animal/photos and nonempty remote recovery remain unverified"
+  }
+}

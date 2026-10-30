@@ -486,3 +486,7 @@ PR82 source1d069a 전체1472 통과 → 명시 병합 dc9e09b → 문서 PR84 ma
 ## 프로필 사진 검사 시계 격리 (#87)
 
 #69 고정 전체검증의 profile-media 응답 손실 재시도가 WSL 벽시계 역행(단조 +134.431ms/벽시계 -1542.158ms)으로 차단됐다. 실패 증거는 비공개 기록에 보존했다. 검사별 브라우저 Date만 고정하며 제품의 역행/24h 차단·실제 Storage·단조타이머·서버시각·기존 검증은 유지한다. 관련 반복검사와 고정 전체 verify 결과는 PR의 실제 기록을 따른다. 운영 Google 로그인/정책/실회원·복구 검증은 별개이며 완료로 간주하지 않는다.
+
+## 운영 담당자·불변 정책 게시 (#88)
+
+사용자 확정 개인정보 담당자 고경윤/문의770_official@naver.com과 내부 Google 운영 계정을 구분했다. 운영 source에 reptilelink-20261030-v1 비preview/published 새 버전을 등록하고 실제 익명RPC 본문·공개 /terms·/privacy 표시를 확인했다. Google provider는 실제 연결됐으나 앱 버튼/가입/실제 로그인·관리 및 실계정·사진 원격복구는 아직 미완료다. 결과/버전은 [Netlify 운영 기록](46-netlify-single-host.md)을 따른다. #87/PR89는 고정 전체verify/E2E221·직접리뷰·정확HEAD 병합 후 clean main99f3c29/검증트리262706b 일치를 확인했다.
