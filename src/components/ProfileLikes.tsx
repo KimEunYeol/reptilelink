@@ -26,12 +26,12 @@ function LikeMemberList({onClose}:{onClose:()=>void}){
 
 const ignoreLock=(_value:boolean)=>{};
 function useProfileLike(slug:string,onLocked:(value:boolean)=>void=ignoreLock){
- const [state,setState]=useState<LikeState|null>(null),[loaded,setLoaded]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[loginHint,setLoginHint]=useState(false),[members,setMembers]=useState(false),[pending,setPending]=useState<LikeCommand|null>(null),[expired,setExpired]=useState(false),[identityChanged,setIdentityChanged]=useState(false);
+ const [state,setState]=useState<LikeState|null>(null),[loaded,setLoaded]=useState(false),[initialSettled,setInitialSettled]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[loginHint,setLoginHint]=useState(false),[members,setMembers]=useState(false),[pending,setPending]=useState<LikeCommand|null>(null),[expired,setExpired]=useState(false),[identityChanged,setIdentityChanged]=useState(false);
  const pendingRef=useRef<LikeCommand|null>(null),sending=useRef(false),identity=useRef<string|undefined>(undefined),mounted=useRef(true),version=useRef(0);
  function assign(command:LikeCommand|null){pendingRef.current=command;setPending(command);}
  function accept(current:LikeState|null){setState(current);setLoaded(true);}
  async function read():Promise<LikeState|null>{const current=await rpc<LikeState|null>('public_profile_likes',{p_slug:slug});if(current)return {...current,available:true};const own=await rpc<{liked:boolean;can_cancel:boolean;signed_in:boolean}>('my_existing_profile_like',{p_slug:slug});return own.liked?{count:null,liked:true,ready:own.can_cancel,signed_in:own.signed_in,is_owner:false,available:false}:null;}
- async function refresh(){if(sending.current||pendingRef.current)return;sending.current=true;setBusy(true);setError('');const request=++version.current;try{const current=await read();if(mounted.current&&request===version.current)accept(current);}catch(e){if(mounted.current&&request===version.current)setError(userMessage(e));}finally{sending.current=false;if(mounted.current)setBusy(false);}}
+ async function refresh(){if(sending.current||pendingRef.current)return;sending.current=true;setBusy(true);setError('');const request=++version.current;try{const current=await read();if(mounted.current&&request===version.current)accept(current);}catch(e){if(mounted.current&&request===version.current)setError(userMessage(e));}finally{sending.current=false;if(mounted.current&&request===version.current){setBusy(false);setInitialSettled(true);}}}
  useEffect(()=>{mounted.current=true;void refresh();const listener=supabase.auth.onAuthStateChange((_event,session)=>{const next=session?.user.id??'';if(identity.current!==undefined&&identity.current!==next){setMembers(false);if(pendingRef.current)setIdentityChanged(true);else setTimeout(()=>{if(mounted.current)void refresh();},0);}identity.current=next;});return()=>{mounted.current=false;listener.data.subscription.unsubscribe();};},[slug]);
  useEffect(()=>{onLocked(busy||Boolean(pending));return()=>onLocked(false);},[busy,pending,onLocked]);
  async function run(command:LikeCommand){if(sending.current||identityChanged)return;if(likeRequestExpired(command.started,performance.now(),command.wallStarted,Date.now())){setExpired(true);setNotice('요청 보장 시간이 지났습니다. 재전송하지 않고 최신 상태를 확인해주세요.');return;}sending.current=true;setBusy(true);onLocked(true);assign(command);version.current++;setError('');setNotice('');setLoginHint(false);let acknowledged=false,definite=false;
@@ -42,7 +42,7 @@ function useProfileLike(slug:string,onLocked:(value:boolean)=>void=ignoreLock){
  async function inspectExpired(){if(sending.current||identityChanged)return;sending.current=true;setBusy(true);setError('');try{accept(await read());assign(null);setExpired(false);setNotice('이전 요청은 재전송하지 않았습니다. 현재 상태를 확인한 뒤 새로 선택해주세요.');}catch(e){setError(userMessage(e));}finally{sending.current=false;setBusy(false);}}
  function click(){if(!state||busy||pending)return;if(state.is_owner){setMembers(true);return;}if(!state.ready){setLoginHint(true);return;}void run({slug:slug,liked:!state.liked,id:crypto.randomUUID(),started:performance.now(),wallStarted:Date.now()});}
  const label=state?.is_owner?`좋아요 회원 보기 ${state.count}명`:state?.ready?(state.liked?'좋아요 취소':'좋아요 하기'):'좋아요 이용 안내';
- return {state,loaded,busy,error,notice,loginHint,members,setMembers,pending,expired,identityChanged,refresh,run,inspectExpired,click,label};
+ return {state,loaded,initialSettled,busy,error,notice,loginHint,members,setMembers,pending,expired,identityChanged,refresh,run,inspectExpired,click,label};
 }
 
 function LikeNotice({control:c}:{control:ReturnType<typeof useProfileLike>}){
@@ -57,8 +57,9 @@ function LikeNotice({control:c}:{control:ReturnType<typeof useProfileLike>}){
  </section>;
 }
 
-export function ProfileLikes({profile,initialCount,onLocked,children,account}:{children?:ReactNode;account?:ReactNode;profile:PublicPage['profile'];initialCount?:number;onLocked:(value:boolean)=>void}){
+export function ProfileLikes({profile,initialCount,onLocked,onInitialSettled,children,account}:{children?:ReactNode;account?:ReactNode;profile:PublicPage['profile'];initialCount?:number;onLocked:(value:boolean)=>void;onInitialSettled?:()=>void}){
  const c=useProfileLike(profile.slug,onLocked);
+ useEffect(()=>{if(c.initialSettled&&!c.busy)onInitialSettled?.();},[c.initialSettled,c.busy,onInitialSettled]);
  return <><div className={`public-cover theme-${profile.theme_token||'green'}`}><ProfileImage purpose="cover" asset={profile.cover_asset_id} publicOnly/>{account}<div className="profile-reactions"><button type="button" className="profile-like-button" aria-label={c.label} aria-pressed={c.state?.ready&&!c.state.is_owner?c.state.liked:undefined} disabled={c.busy||Boolean(c.pending)||!c.state||c.identityChanged} onClick={c.click}><Heart size={22} aria-hidden="true" fill={c.state?.liked?'currentColor':'none'}/><span>{c.state?.count??(c.loaded?'—':initialCount??'…')}</span></button>{children}</div></div><div className="public-avatar"><ProfileImage purpose="avatar" asset={profile.avatar_asset_id} publicOnly/></div><LikeNotice control={c}/>{c.members&&<LikeMemberList onClose={()=>c.setMembers(false)}/>}</>;
 }
 
