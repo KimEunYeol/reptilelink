@@ -1,0 +1,42 @@
+{
+  "issue": 58,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/58",
+  "branch": "codex/fix/58-public-focus-settlement",
+  "baseSha": "24d4027908856a0ddaf5ad5823e5c7e61604bf05",
+  "scope": "공개 상세 닫기·페이지/카드 초점 복원과 초기 반응 조회 잠금 경합 복구",
+  "acceptance": [
+    "실제 전체검증의 카드6초점실패/trace·초기반응조회/disabled/rAF 완료순서를 실제 재현·관측",
+    "초기 반응 조회가 정리되기 전 복원완료로 처리하지 않고 정확한 현재카드/현재라우트/스크롤을 복원",
+    "이후좋아요·미확인댓글·Auth/실패조회/직접경로/Back에서 초점강탈·잠금우회 없음",
+    "원본 PC/m/보드·7폭/키보드·실제 반응/초점 회귀·전체verify/정확HEAD리뷰/명시병합/main/보고",
+    "56리뷰수정stash/DB선적용이력 보존·58완료후56재통합 및51→52→53계속"
+  ],
+  "plan": [
+    "실제실패trace·source39/공개원본·반응잠금/초점표시 순서 확인",
+    "폐기용 실제 공개페이지에서 반복/제어한 응답으로 재현",
+    "현재라우트의 초기반응조회 완료/실패정리 후 초점복원·완료표시 보완",
+    "반복/지연응답/실제좋아요·Auth·7폭/원본회귀·전체검증/리뷰/병합/main보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/링크페이지.png",
+      "design/링크페이지-m.png",
+      "design/링크페이지-m-1.png"
+    ],
+    "notes": "전체보드 모바일우선/PC같은본문(0,8400,5000,1000) 안내와 공개링크PC/m/m-1의 좁은본문·상세 닫기·카드/5개 페이지를 사용한다. 새 그림/배치/창 없음. 기존data공개조건·미확인댓글/좋아요 이동잠금 유지. 실제화면 toBeFocused 카드6 실패는 첫public39코드부터 동일한 구간이며 실제trace/반응초기조회/disabled/rAF를 확인한다.",
+    "review": {
+      "status": "passed",
+      "summary": "원본PC/m/m-1 및 보드PC설명의 동일좁은본문/5카드/상세닫기를 실제 source39의7폭/키보드·direct/Back/스크롤·Worker/noJS/dirty댓글·실제좋아요로 확인. CSS/그림/배치 변화없고 활성카드에초점복원시점만정리한다. 수정전4회째disabled focus/activeBODY 재현→수정후60회실패0. 지연성공/503 실패후복원·재조회/좋아요후초점재강탈없음. 제품Auth/알림코드변경없음. 관련16개+메인이미지5반복통과; 관련첫실행이미지1실패/잘못된버튼focus기대 수정 이력은docs36. 최종전체는고정파일verify/PR참조; 폰트/권리/운영콘솔미확인. 경로재조회시 완료표시초기화로 빠른상세닫기/동일목록복귀에서도 이전초기조회완료 재사용을 차단한다. 첫전체1283통과뒤 추가했으므로최종파일은다시전체검증한다."
+    },
+    "evidence": [
+      ".local/focus58-before-repro.json 4회째 native disabled focus/activeBODY 실제재현; after-repro.json 60회 실패0/ownQA탈퇴정리",
+      "tests/e2e/public-source.spec.ts 10개(신규2)/7폭·직접상세/Back/dirty댓글/미확인좋아요/실제Storage·Worker/noJS; 관련10통과",
+      "tests/e2e/common-management.spec.ts 지연읽음/Auth2개40회연속통과; 관련공통6통과/메인이미지파일고정5회통과",
+      "artifacts/public-39/root-{320,360,390,450,768,1440,1920}.png 및 detail-{390,1440}.png·static-detail7폭 원본비교",
+      "docs/36-public-focus-settlement.md 실제실패/수정/한계; 최종전체 npm run verify 보고서/PR"
+    ]
+  }
+}
