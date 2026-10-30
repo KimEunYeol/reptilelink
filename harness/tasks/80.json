@@ -1,0 +1,30 @@
+{
+  "issue": 80,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/80",
+  "branch": "codex/fix/80-media-recovery-clock",
+  "baseSha": "f7c7a0e144e633bbc8e495c934658b43ecf1c4a2",
+  "scope": "사진 예약 복구 브라우저 검사를 호스트 벽시계 역행에서 격리; 운영 만료/역행 보호는 유지",
+  "acceptance": [
+    "실패 trace의 단조 +106.373ms / 벽시계 -1339ms와 실제 만료 alert를 근거로 기록한다.",
+    "사진 복구 시나리오의 브라우저 Date만 Playwright setFixedTime으로 고정하고 monotonic timer·DB 서버시각·실제 파일/UUID 검사를 유지한다.",
+    "운영 commandWindow 역행/24h 경계 단위와 사진 복구 반복·전체 verify·최신diff 리뷰/PR·정확HEAD 병합/main을 확인한다.",
+    "Netlify 이슈79 미병합 소스/생성물과 기존 자료/키/서비스를 보존하고 해당 브랜치의 검증은 최신 main 반영 뒤 다시 수행한다."
+  ],
+  "plan": [
+    "실패 화면/trace에서 시계 역행을 확인하고 최신 main의 독립 이슈/브랜치에서 테스트 시계만 격리한다.",
+    "실제 사진 복구 흐름 반복과 commandWindow 경계 단위를 검사하고 고정 전체 검증/직접 리뷰를 수행한다.",
+    "정확HEAD PR/명시 병합과 clean main을 확인한 뒤 이슈79에 최신 기반을 반영한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "테스트 브라우저의 wall clock 설정만 변경하며 제품 UI·HTML·CSS·원본/브랜딩·DB/Worker 동작은 변경하지 않는다."
+  },
+  "results": {
+    "observedFailure": "monotonic +106.373ms / wall -1339ms; UI COMMAND_TOO_OLD; original failed full report retained",
+    "targeted": "27/27 real media recovery browser scenarios (9 x3), no retries/skip/timeout increase; commandWindow3/3",
+    "production": "src/worker/schema unchanged; Date only fixed per media recovery test, performance timers and DB clock live",
+    "review": "direct diff review: test hook only; all existing UUID/real bytes/quota/cancellation/privacy/withdrawal assertions preserved; no unresolved code findings",
+    "fullVerification": "Required on fixed commit; authoritative result is the actual harness report and PR evidence"
+  }
+}
