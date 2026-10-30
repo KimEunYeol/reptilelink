@@ -1,0 +1,33 @@
+{
+  "issue": 69,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/69",
+  "branch": "codex/chore/69-production-recovery",
+  "baseSha": "43d6ddb1e50d26b02d91df3889f995ee7cdd054c",
+  "scope": "운영 전용 일관된 암호화 DB/Auth/실제Storage 백업·최신journal과 별도Free프로젝트 복구 검증",
+  "acceptance": [
+    "기존 local:backup/doctor 원격 차단과 기존 DB/사진/키/타서비스를 보존한다.",
+    "명시한 전용 source ref·정상 CLI 인증만 사용하며 읽기전용 exported snapshot과 파일 해시·migration SHA를 검증한다.",
+    "Auth users/Google identities를 보관하되 기존 세션/토큰/MFA·서버키를 복구하지 않고 최신 탈퇴/숨김/중지 journal을 적용한다.",
+    "AES-GCM/분리키/비공개 경로/인증후 해석·7일보관·잘못된 대상/변조/누락/오래된journal 거절을 실제 검사한다.",
+    "운영 source와 다른 확인된Free 빈 복구 프로젝트에서 DB/Storage/Auth/API 재연결을 검증하고 원격 미검증을 로컬성공으로 대체하지 않는다.",
+    "고정 전체검사·최신HEAD 직접리뷰·PR/정확HEAD 명시병합/cleanmain과 실제미완료를 보고한다."
+  ],
+  "plan": [
+    "현재 현황/공식문서와 snapshot·Auth·Storage·키/대상 안전계약을 확정한다.",
+    "별도 읽기전용 source/제한된 restore 도구와 journal·암호화/권한/실파일 검증을 구현한다.",
+    "실제 로컬 격리회귀·원격Free격리복구·최종 전체verify/리뷰/PR/인계를 순차 수행한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "운영도구/문서만 변경하며 제품 UI와 design97PNG를 바꾸지 않는다."
+  },
+  "results": {
+    "targeted": "8 safety scenarios and4 network-none SQL recovery scenarios passed; existing local tools unchanged",
+    "remote": "Free$0 dedicated recovery berprfddzalsotnrxpdb; source0users0files/32tables restored; raw/ledger denial RLS and quarantine passed",
+    "implementation": "source snapshot/Auth identities/real Storage bytes+hash/journal/encryption/retention; exact dedicated restore target; Google provider/signup must be disabled; existing account-state trigger remains enabled",
+    "failures": "TLS public system trust insufficient: official Supabase CA pinned; CLI import cycle separated; replica privilege denied: no grant, defer FK/own app USER triggers then restore; cron direct UPDATE denied: use cron.alter_job; fixture generated columns/two variants corrected",
+    "fullVerification": "required fixed full report before push; this task status is not proof of full verification",
+    "remaining": "Google client confirmation and actual operator policy facts; actual remote Google/member/photo/withdrawal/API recovery tests; final rollout remains62/69 pending"
+  }
+}
