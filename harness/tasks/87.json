@@ -1,0 +1,29 @@
+{
+  "issue": 87,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/87",
+  "branch": "codex/fix/87-profile-media-clock",
+  "baseSha": "43d6ddb1e50d26b02d91df3889f995ee7cdd054c",
+  "scope": "프로필 사진 응답 손실 재시도 검사를 호스트 벽시계 역행에서 격리; 제품 보호 유지",
+  "acceptance": [
+    "실패 trace의 단조 +134.431ms/벽시계 -1542.158ms와 COMMAND_TOO_OLD alert를 기록한다.",
+    "profile-media 각 브라우저 Date만 고정하며 performance timer·DB시각·실제사진·동일asset 검사는 유지한다.",
+    "관련 반복검사/기존 commandWindow 단위/고정 전체verify/최신HEAD 직접리뷰·정확HEAD 병합을 완료한다."
+  ],
+  "plan": [
+    "trace를 보존하고 Date만 격리한다.",
+    "실제 사진 브라우저 흐름과 역행/24h 단위검사를 실행한다.",
+    "고정 전체검증과 최신HEAD리뷰 후 PR/명시 병합/main을 확인한다."
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": false,
+    "reason": "테스트 브라우저 Date 설정만 변경하며 UI/원본/제품/DB/배포는 변경하지 않는다."
+  },
+  "results": {
+    "observedFailure": "monotonic +134.431ms / wall -1542.158ms; actual expired retry alert; original failure retained",
+    "targeted": "20/20 actual profile-media browser flows, 10 scenarios x2; commandWindow3/3; no skip/retry/timeout increase",
+    "production": "Only test beforeEach Date fixed; product source/DB/server unchanged; performance and server clocks live",
+    "review": "Direct diff review preserves every existing real Storage/asset/revision/quota/privacy assertion; no unresolved finding",
+    "fullVerification": "Required on fixed commit; authoritative result is actual harness report and PR"
+  }
+}
