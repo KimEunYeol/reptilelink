@@ -12,7 +12,7 @@
 
 ## IDE handoff and workflow
 
-- Start with `START_HERE.md`, then docs/01, docs/02, docs/03 and docs/05. IDE setup is in docs/06; the first scoped task is in prompts/first-task.md.
+- Start with `START_HERE.md`, then docs/01, docs/02, docs/03 and docs/05. IDE setup is in docs/06; prompts/first-task.md is historical. Current desktop execution starts at docs/40 and docs/41.
 - Keep the existing stack and accepted D-01~D-08 decisions. Follow specification → one user flow → data/RPC/UI → meaningful verification → status documentation.
 - Use local Codex with the existing ChatGPT entitlement. Never switch to API-key billing, buy credits or delegate cloud work when a limit is reached; stop until the allowance resets.
 - Preserve user changes and local data. Use `codex/` branches; do not reset the local database or remove volumes as a routine startup or migration step.
@@ -39,3 +39,10 @@
 - Maintain the issue → latest-main branch → spec/data/design → implementation → fixed full verify → latest-HEAD completed review/fixes → explicit expected-HEAD merge → closed issue/clean main/verified tree/report workflow for future changes. The current sequential user delegation authorizes these merges; external deployment remains separate.
 
 데스크톱 외부 설정·자료·출시 미검증 항목은 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)와 [운영/인계서](docs/39-local-operations-handoff.md)로 추적한다. 로컬 검증/병합과 외부 출시를 구분한다.
+
+## Active desktop execution delegation (2026-10-30)
+
+- The user explicitly approved docs/41 execution through external configuration/deployment/verification at zero additional cost. This supersedes the older desktop-excluded scope for this plan only; verified PR merges remain authorized.
+- Work in the canonical WSL checkout. Windows folder cleanup is limited to the approved README/launcher-only result, preserving its .git and any unique evidence in ignored WSL records.
+- Create a dedicated Free Supabase project in Seoul after current zero-cost/slot checks; preserve gain-music-club. Use workers.dev, with no domain purchase or DNS changes.
+- Operator materials are not yet supplied. Do not invent/publish production policies or publicly deploy the app before confirmed policy/contact/asset-rights materials. Continue independent preparation; record actual results in issue62.
