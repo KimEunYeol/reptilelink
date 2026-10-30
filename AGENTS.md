@@ -50,5 +50,5 @@
 ## Current launch clarification (2026-10-30)
 
 - Latest user direction: 770.kr is reference material only, never the service domain. Its pending Cloudflare custom-domain association was removed; do not change its DNS or use its subdomains. No domain purchases. Use a free provider hostname containing reptilelink and no dev for the eventual public frontend.
-- Use 770_official@naver.com for service and Google support contact. Do not substitute the logged-in Gmail address. The corresponding Google account/eligible project access and Netlify Free account are pending user sign-in.
+- Latest email clarification: 770_official@naver.com is the website inquiry address only. Google project/OAuth administration uses the user's own currently signed-in Google account; a Google account for the Naver address is not required. Netlify browser login is complete; hosting choice (Netlify-only or Netlify + Cloudflare) is pending user preference.
 - docs45 records actual backend hosting versus incomplete final-domain/OAuth/member release. Candidate policy documents are not published or confirmed operator identity. Keep admission paused until actual policy/auth prerequisites are resolved.

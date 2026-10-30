@@ -6,7 +6,7 @@
 
 770.kr은 약관 등 문서의 참고자료일 뿐 서비스도메인이 아니다. 최신사용자지시로 이전서브도메인연결을철회해 Cloudflare연결삭제/빈목록재조회와허용origin제거/403을확인했다. NHN DNS/770본사이트는변경하지않았다. 도메인을구매하지않고 reptilelink를포함하며dev가없는무료제공주소를사용한다. NetlifyFree의reptilelink.netlify.app은현재**후보이며미예약**이다. 계정로그인뒤이름충돌/실제Free사용량을확인한뒤확보한다.
 
-서비스문의는사용자가지정한770_official@naver.com이다. Google지원메일도같은주소를요청했으므로현재로그인Gmail로대체하지않는다. Google은현재Google계정또는관리그룹만지원메일로허용하므로 해당Naver주소를Google계정으로등록·직접로그인/프로젝트접근이필요하다. 전용reptilelink-production프로젝트만생성했고OAuth앱/클라이언트/비밀키는아직생성하지않았다. 카드/업그레이드/시험판·유료API를추가하지않았다.
+서비스문의표시만사용자가지정한770_official@naver.com을사용한다. 이후사용자가Google프로젝트/OAuth는본인의현재Google계정으로진행한다고명확히했으므로Naver주소의Google계정등록은요구하지않는다. 전용reptilelink-production프로젝트만생성했고OAuth앱/클라이언트/비밀키는아직생성하지않았다. Netlify브라우저로그인은완료됐으며단독호스팅과Cloudflare분리구성의용도를설명하고사용자선택을기다린다. 카드/업그레이드/시험판·유료API를추가하지않았다.
 
 ## 실제 게시·검증
 
@@ -30,6 +30,6 @@
 
 ## 이어서 수행
 
-NetlifyFree계정의이름/실제0원조건을확인해무료주소를확보하고검증된Worker뒤에동일경로를연결한다. 공개HTML/공유메타/동일origin·캐시·권한을새주소에서검증하고필요한코드변경은새이슈/최신main/전체verify/리뷰·PR로처리한다. Google지원계정로그인과정확callback/client/provider·확정정책게시후초대/승인·실계정검증을수행한다. #69의운영전용백업/실제원격복구도미완료이며최종출시증거로바꾸지않는다. 자동데몬/Actions/클라우드빌드/유료플랜은설치·사용하지않는다.
+NetlifyFree계정의이름/실제0원조건을확인해무료주소를확보하고검증된Worker뒤에동일경로를연결한다. 공개HTML/공유메타/동일origin·캐시·권한을새주소에서검증하고필요한코드변경은새이슈/최신main/전체verify/리뷰·PR로처리한다. 사용자본인Google계정의정확callback/client/provider·확정정책게시후초대/승인·실계정검증을수행한다. #69의운영전용백업/실제원격복구도미완료이며최종출시증거로바꾸지않는다. 자동데몬/Actions/클라우드빌드/유료플랜은설치·사용하지않는다.
 
 비공개기록은.local/production-launch-77,읽기전용화면증거는ignoredartifacts/launch-77이다. 공개이슈/Git에키·실제계정세션·사진바이트를첨부하지않는다.

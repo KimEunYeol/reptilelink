@@ -456,4 +456,4 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 
 ## 2026-10-30 실제 공개 호스팅 기반과 최신 주소 계약 (#77)
 
-최신사용자지시로770은문서참고에한정하고서비스도메인에서제외했다. Cloudflare대기연결삭제/빈목록·770origin403과기존DNS미변경을확인했다. 동일검증main78e9029 런타임을PagesAdvancedMode production13a7de4d에게시하고7폭·익명권한/숨김404/인증캐시/fixture0·미구성Google비활성/문의처설정을검증했다.5익명실제tailCPU0~6ms통과는회원/사진/부하성능검증과구분한다. CC0웹사진source/license/SHA·실제decode/7폭초안취소/업로드0을확인했다. docs45/참고정책후보에실제증거와오류/제한을기록한다. 저장소변경은문서/task뿐이므로docs-only로검증하고이전기능1421검사와구분한다. dev없는무료reptilelink사용자주소/Netlify로그인·770Naver주소Google계정/정책published/실제회원·사진/원격복구는#62/#69에서미완료다.
+최신사용자지시로770은문서참고에한정하고서비스도메인에서제외했다. Cloudflare대기연결삭제/빈목록·770origin403과기존DNS미변경을확인했다. 동일검증main78e9029 런타임을PagesAdvancedMode production13a7de4d에게시하고7폭·익명권한/숨김404/인증캐시/fixture0·미구성Google비활성/문의처설정을검증했다.5익명실제tailCPU0~6ms통과는회원/사진/부하성능검증과구분한다. CC0웹사진source/license/SHA·실제decode/7폭초안취소/업로드0을확인했다. docs45/참고정책후보에실제증거와오류/제한을기록한다. 저장소변경은문서/task뿐이므로docs-only로검증하고이전기능1421검사와구분한다. dev없는무료reptilelink사용자주소/Netlify로그인·사용자본인Google계정의OAuth/정책published/실제회원·사진/원격복구는#62/#69에서미완료다.
