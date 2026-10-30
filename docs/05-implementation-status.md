@@ -413,6 +413,8 @@ PR57의 첫source36ca73f 전체1314개는 통과했으나 코드리뷰 P2의 등
 
 ## #52 완료와 마지막 #53 로컬 진단/인계
 
-#52/PR61은 고정build1402개·정확2d96f6f 코드리뷰completed/지적0/스레드0·명시squash mainc1e04b8·이슈종료/cleanmain·검증트리22e30bf일치/보고로 완료했다. 실제 기본 비공개 archive/별도키/최신journal을 생성하고 networknone/Cronoff에서32테이블·28파일/28디코드·권한 복구도 통과했다. 최신main 새53에서는 read-only doctor·현재정책preview/예산·실제Storage바이트·유효loopback/단일Cron·보관/작업backlog·암호백업/신선도와현재journal 일치·장애/desktop인계를 마감한다. 실제진단15/경계단위3·하네스12/백업암호4가 통과했다. 19/77/1069/34/221의 최종 고정전체검증과 PR 리뷰/병합·이슈/cleanmain 확인 전에는 완료로 대체하지 않는다. 외부미검증은 docs/39/데스크톱 이슈로 남긴다.
+#52/PR61은 고정build1402개·정확2d96f6f 코드리뷰completed/지적0/스레드0·명시squash mainc1e04b8·이슈종료/cleanmain·검증트리22e30bf일치/보고로 완료했다. 실제 기본 비공개 archive/별도키/최신journal을 생성하고 networknone/Cronoff에서32테이블·28파일/28디코드·권한 복구도 통과했다. 최신main 새53에서는 read-only doctor·현재정책preview/예산·실제Storage바이트·유효loopback/단일Cron·보관/작업backlog·암호백업/신선도와현재journal 일치·장애/desktop인계를 마감한다. 실제진단16/경계단위3·하네스12/백업암호4가 통과했다. 19/77/1070/34/221의 최종 고정전체검증과 PR 리뷰/병합·이슈/cleanmain 확인 전에는 완료로 대체하지 않는다. 외부미검증은 docs/39/데스크톱 이슈로 남긴다.
 
 데스크톱 외부 설정·자료·출시 미검증 항목은 [이슈62](https://github.com/KimEunYeol/reptilelink/issues/62)와 [운영/인계서](39-local-operations-handoff.md)로 추적한다. 로컬 검증/병합과 외부 출시를 구분한다.
+
+PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에서 실제HEAP_LIMIT→한파일씩인증/최신payload만재검증·메타데이터만보존→같은8archive 성공으로 보완했다. 운영진단16/최종build1421개는 새고정전체검증/정확HEAD 재리뷰로 확인한다.

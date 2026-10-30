@@ -78,6 +78,12 @@ read-only doctor는 유효 loopback6컨테이너/게시3포트·Storage28/128184
 
 하네스 인자 실수로 생성된 빈 branch/task를 발견했다. 원래main/사용자작업을 보존해 올바른53 기록으로 바로잡았고, 이제 정확3인자·양의 안전한 issue 정수·slug 검사를 **fetch/branch 생성 전**에 수행한다. 실제 임시 Git 저장소에서 잘못된 issue/누락/추가/unsafe 정수 인자가 branch/파일을 바꾸지 않는 검사를 기존 통합회귀에 추가했다. 첫 doctor 쿼리의 존재하지 않는 policy 함수 오류는 attention으로 관측 후 실제 immutable policy 테이블 계약으로 수정했다.
 
-암호화 임시 store/실제 로컬 API·새 QA로 진단15개, URL/비밀파일/키분류·Cron/예산/대기 경계 단위3개, 기존 하네스12/백업암호4개가 통과했다. 실제 Storage 접속실패/원격 URL 사전거절·키권한·현재 상태와 journal 불일치·오래됨/epoch/7일보관·변조/부분파일·자체보관정리·실제 탈퇴대기attention→정리후passed를 확인했다. 실제 키/UUID/파일경로/SQL이 report에 없음을 검사한다. 최종 고정 전체verify·정확HEAD리뷰/명시병합/main·이슈/검증트리·최신doctor 증거는 task/PR·로컬보고서로 확인한다.
+암호화 임시 store/실제 로컬 API·새 QA로 진단16개, URL/비밀파일/키분류·Cron/예산/대기 경계 단위3개, 기존 하네스12/백업암호4개가 통과했다. 실제 Storage 접속실패/원격 URL 사전거절·키권한·현재 상태와 journal 불일치·오래됨/epoch/7일보관·변조/부분파일·자체보관정리·실제 탈퇴대기attention→정리후passed를 확인했다. 실제 키/UUID/파일경로/SQL이 report에 없음을 검사한다. 최종 고정 전체verify·정확HEAD리뷰/명시병합/main·이슈/검증트리·최신doctor 증거는 task/PR·로컬보고서로 확인한다.
 
 현재 task 기록31개 중53 이전30개는 verified이며, main의 단계별 병합 이력과 GitHub 열린 이슈를 대조했다. #52 종료 이후 남은 로컬 이슈53은 이 PR에서 마감하고 별도 외부 이슈62는 미수행으로 유지한다. 역사적 문서의 당시 계획을 재착수 근거로 쓰지 않도록 docs/05 상단 표/남은순서·START_HERE/AGENTS도 실제 현재상태로 갱신했다.
+
+PR63의 P2 리뷰에서7일보관 archive를 모두 복호화해 배열에 유지하는 메모리 문제가 지적됐다. 실제 별도 암호 store에 기존28파일/SQL을 포함한24MiB 시험 payload archive7개를 추가한192MiB 힙 프로세스에서 HEAP_LIMIT 종료를 재현했다. core dump는 금지하고 stderr 원문 대신 고정 오류 코드만 기록했다. 이제 각 파일을 하나씩 인증해 숫자 생성시각·파일명·개수만 유지하고 최신 archive만 다시 인증/검증한다. 파싱한 JSON의 짧은 문자열조차 큰 backing string을 붙잡지 않게 반복문 사이에는 복호화된 문자열/SQL/base64를 보존하지 않는다. 같은192MiB/8archive 검사와 기존 진단을 포함한16개가 통과했다. 최초1420개 전체결과를 새 파일 상태의 증거로 쓰지 않고 보완 뒤 고정전체/정확새HEAD 리뷰를 다시 수행한다.
+
+메모리 보완 뒤 전체 재검증에서는 기존 영수증9건이 다음 시간 Cron을 기다리는 시각에 도달해 doctor가 정확히 CLEANUP_PENDING을 반환했고, 테스트의‘기존대기0/항상passed’가정 때문에 실패했다. 원래 데이터/영수증을 prune하거나 경고를 숨기지 않았다. 이제 비DB 점검과 쓰기/가입/통계/정책 준비는 통과를 요구하되 실제 기존 정리대기는 attention으로 보존하고, 새 QA의 account job이 기준+1→원래 기준으로 복귀하는지 확인한다. 같은16개가 통과했으며 최종 전체는 다시 고정해 검증한다. 최종진단에 남는 정상 보관대기는 실제 개수/다음 Cron과 함께 보고한다.
+
+다음 전체 실행은 기존 일정QA의1초 전 영수증 만료 조건에서 REQUEST_EXPIRED 기대가 실패했다. 운영수명/함수는 바꾸지 않고 그QA가 만든 한 영수증만 clock_timestamp 기준5분 전으로 옮기며 실제 my_schedules.server_now보다4분 이상 과거임을 확인한다. 추가 검사 작성 중 psql UPDATE 태그를 날짜로 읽은 오류도 단일SELECT의 양수 epoch 숫자로 수정했다. 일정65개가 통과했고 실패 로그를 보존한 채 마지막 고정전체를 재실행한다.

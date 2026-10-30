@@ -25,9 +25,12 @@
       "summary": "제품 UI/Worker 표시/정적자산·원본97PNG 변경 없음. 읽기전용 로컬 CLI·하네스 인자검증·운영 문서만 마감."
     },
     "evidence": [
-      "실제 진단15·단위3·기존하네스12/암호4 통과; loopback/API/Storage28실바이트·SHA·키/보관/현재journal·자기QA탈퇴주의→복구·최소출력 검증",
+      "실제 진단16·단위3·기존하네스12/암호4 통과; loopback/API/Storage28실바이트·SHA·키/보관/현재journal·자기QA탈퇴주의→복구·최소출력 검증",
       "task:start 누락/추가/잘못된issue·unsafe정수 인자 실제Git 무변경 거절; 외부전용이슈62/운영docs39·현재상태문서 정합성",
-      "최종 고정 npm run verify(19/77/1069/34/221)·정확HEAD리뷰·명시병합/main/이슈·검증트리는 실제PR/로컬보고서 기준"
+      "최종 고정 npm run verify(19/77/1070/34/221)·정확HEAD리뷰·명시병합/main/이슈·검증트리는 실제PR/로컬보고서 기준",
+      "PR63 P2:192MiB 힙/추가24MiB payload7개로 실제HEAP_LIMIT 재현→파일별인증·숫자/파일명만유지/최신payload만재검증→같은8archive 및16진단 통과; 새고정전체/정확새HEAD 재리뷰",
+      "전체재검증에서 기존 영수증9건 정상Cron대기를 doctor가attention으로정확표시→기존대기0 QA가정만보완·원래자료정리없음·자기탈퇴job기준+1→기준복귀 및16개통과·최종전체다시고정",
+      "기존일정QA1초만료기대실패→자기영수증clock5분전/실제APIserver_now4분이상과거확인·psql명령태그제외SELECTepoch→65표적통과·운영수명/UI변경없음·마지막고정전체"
     ]
   }
 }
