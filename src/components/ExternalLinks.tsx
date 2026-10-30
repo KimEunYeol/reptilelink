@@ -1,3 +1,5 @@
+import{commandExpired}from'../lib/commandWindow';
+import{rpcCommand}from'../lib/supabase';
 import {PolicyRenewalLink} from './PolicyRenewalLink';
 import { useEffect, useRef, useState } from 'react';
 import { Check, Menu, X } from 'lucide-react';
@@ -22,12 +24,12 @@ function LinkEditor({ row,revision,refresh,onClose }: { row:ExternalLink|null;re
   const [values,setValues]=useState(original.current),[busy,setBusy]=useState(false),[error,setError]=useState(''),[unresolved,setUnresolved]=useState(false),[conflict,setConflict]=useState(false),[latest,setLatest]=useState<LinkSnapshot|null>(null),[expected,setExpected]=useState(revision);
   const dirty=unresolved||JSON.stringify(values)!==JSON.stringify(original.current),navigation=useUnsavedChanges(dirty,busy);
   useEffect(()=>{const previous=row?document.querySelector<HTMLButtonElement>(`[data-link-id="${row.id}"] [data-link-edit]`):document.querySelector<HTMLButtonElement>('[data-link-add]');dialog.current?.showModal();return()=>{dialog.current?.close();if(previous?.isConnected)previous.focus();else document.querySelector<HTMLButtonElement>('[data-link-add]')?.focus();};},[]);
-  async function settle(){if(!pending.current)return false;try{await rpc('save_external_link',pending.current);return true;}catch(reason){if(!definitiveLinkError(reason))throw reason;pending.current=null;return false;}}
+  async function settle(){if(!pending.current||commandExpired(pending.current))return false;try{await rpcCommand('save_external_link',pending.current);return true;}catch(reason){if(!definitiveLinkError(reason))throw reason;pending.current=null;return false;}}
   async function save(){
     if(submitting.current||conflict)return;
     if(!pending.current){const parsed=linkInputSchema.safeParse(values);if(!parsed.success){setError(parsed.error.issues[0]?.message??'입력값을 확인해주세요.');return;}pending.current={p_link_id:row?.id??null,p_data:parsed.data,p_expected:expected,p_request_id:crypto.randomUUID()};}
     submitting.current=true;setBusy(true);setUnresolved(true);setError('');
-    try{await rpc('save_external_link',pending.current);await refresh();pending.current=null;setUnresolved(false);onClose();}
+    try{await rpcCommand('save_external_link',pending.current);await refresh();pending.current=null;setUnresolved(false);onClose();}
     catch(reason){if(definitiveLinkError(reason)){pending.current=null;setUnresolved(false);if(/VERSION_CONFLICT|NOT_FOUND/.test(commandMessage(reason)))setConflict(true);}setError(userMessage(reason));}
     finally{submitting.current=false;setBusy(false);}
   }
@@ -38,7 +40,7 @@ function LinkEditor({ row,revision,refresh,onClose }: { row:ExternalLink|null;re
     <fieldset disabled={busy||unresolved||conflict} className="link-fields"><legend className="sr-only">링크 내용</legend><label><span>제목</span><input aria-label="링크 제목" value={values.title} onChange={e=>setValues(v=>({...v,title:e.target.value}))}/></label><fieldset className="link-palette"><legend>배경색상</legend>{linkTokens.map(token=><button key={token} type="button" aria-label={`배경색 ${linkColors[token].label}`} aria-pressed={values.color_token===token} style={{backgroundColor:linkColors[token].background,color:linkTextColor(token)}} onClick={()=>setValues(v=>({...v,color_token:token}))}>{values.color_token===token&&<Check size={22}/>}</button>)}</fieldset><label><span>링크</span><input aria-label="링크 주소" type="url" placeholder="https://" value={values.url} onChange={e=>setValues(v=>({...v,url:e.target.value}))}/></label></fieldset>
     {error&&<p className="notice" role="alert">{error}<PolicyRenewalLink message={error}/></p>}{unresolved&&<p className="edit-photo-hint">저장 결과를 확인하지 못했습니다. 같은 요청으로 다시 확인하거나 취소해주세요.</p>}
     {(conflict||unresolved)&&<button type="button" className="text-button" disabled={busy} onClick={()=>void inspect()}>최신 링크 확인</button>}
-    {latest&&<section className="edit-conflict" aria-label="최신 링크 내용"><p>{row?latest.links.find(l=>l.id===row.id)?.title??'이 링크는 삭제됐습니다.':`현재 링크 ${latest.links.length}개`}</p>{row&&latest.links.find(l=>l.id===row.id)&&<p className="latest-link-url">{latest.links.find(l=>l.id===row.id)!.url} · {linkColors[latest.links.find(l=>l.id===row.id)!.color_token].label}</p>}<button type="button" className="text-button" onClick={()=>void navigator.clipboard.writeText(`${values.title}\n${values.url}`).catch(()=>setError('입력 내용을 직접 복사해주세요.'))}>입력 복사</button><button type="button" className="text-button" onClick={accept}>{row?'최신 링크 사용':'입력 유지·최신 상태 사용'}</button></section>}
+    {latest&&<section className="edit-conflict" aria-label="최신 링크 내용"><p>{row?latest.links.find(l=>l.id===row.id)?.title??'이 링크는 삭제됐습니다.':`현재 링크 ${latest.links.length}개`}</p>{!row&&<ul>{latest.links.map(link=><li className="latest-link-url" key={link.id}>{link.title} · {link.url}</li>)}</ul>}{row&&latest.links.find(l=>l.id===row.id)&&<p className="latest-link-url">{latest.links.find(l=>l.id===row.id)!.url} · {linkColors[latest.links.find(l=>l.id===row.id)!.color_token].label}</p>}<button type="button" className="text-button" onClick={()=>void navigator.clipboard.writeText(`${values.title}\n${values.url}`).catch(()=>setError('입력 내용을 직접 복사해주세요.'))}>입력 복사</button><button type="button" className="text-button" onClick={accept}>{row?'최신 링크 사용':'입력 유지·최신 상태 사용'}</button></section>}
     {navigation.blocked&&<div data-navigation-prompt><p className="notice" role="alert">저장하지 않은 링크 내용이 있습니다.</p><button ref={navigation.stayButton} type="button" className="text-button" onClick={navigation.stay}>계속 편집</button><button type="button" className="text-button" disabled={busy} onClick={()=>void discard(true)}>변경 버리고 이동</button></div>}
     <footer className="edit-actions"><button className="button" disabled={busy||conflict||(!dirty&&!unresolved)}>{busy?'저장 중':unresolved?'저장 다시 확인':'저장'}</button><button type="button" className="text-button" disabled={busy} onClick={()=>void discard()}>취소</button></footer>
   </form></dialog>;
@@ -57,13 +59,13 @@ export function ExternalLinks({ revision,refreshDashboard,onLocked }: { revision
   useEffect(()=>{if(submitting.current||blockRead.current||(state.current&&state.current.revision===revision))return;const request=++serial.current;setLoading(true);fetchLinks().then(value=>{if(request!==serial.current)return;if(blockRead.current){setConflict(true);setError('다른 화면에서 변경됐습니다. 최신 링크 목록을 확인해주세요.');return;}accept(value);}).catch(reason=>{if(request===serial.current)setError(userMessage(reason));}).finally(()=>{if(request===serial.current)setLoading(false);});return()=>{serial.current++;};},[revision]);
   async function refresh(){serial.current++;await refreshDashboard();const value=await fetchLinks();accept(value);return value;}
   async function reload(){if(submitting.current)return;submitting.current=true;setLoading(true);setError('');try{await refresh();}catch(reason){setError(userMessage(reason));}finally{submitting.current=false;setLoading(false);}}
-  async function settle(){if(!pending.current)return;try{await rpc('apply_external_links',pending.current);}catch(reason){if(!definitiveLinkError(reason))throw reason;pending.current=null;}}
+  async function settle(){if(!pending.current||commandExpired(pending.current))return;try{await rpcCommand('apply_external_links',pending.current);}catch(reason){if(!definitiveLinkError(reason))throw reason;pending.current=null;}}
   async function cancel(){if(submitting.current)return false;submitting.current=true;setBusy(true);try{if(unresolved||conflict){await settle();await refresh();}else if(snapshot)accept(snapshot);setError('');setSaved(false);return true;}catch(reason){setError(`실제 저장 상태를 확인하지 못했습니다. ${userMessage(reason)}`);return false;}finally{submitting.current=false;setBusy(false);}}
   async function apply(){
     if(submitting.current||conflict||!snapshot||(!dirty&&!unresolved))return;
     if(!pending.current)pending.current={p_items:draft.map(r=>({...r})),p_remove:[...removed],p_expected:snapshot.revision,p_request_id:crypto.randomUUID()};
     submitting.current=true;setBusy(true);setUnresolved(true);setError('');setSaved(false);
-    try{await rpc('apply_external_links',pending.current);await refresh();setSaved(true);}
+    try{await rpcCommand('apply_external_links',pending.current);await refresh();setSaved(true);}
     catch(reason){if(definitiveLinkError(reason)){pending.current=null;setUnresolved(false);if(/VERSION_CONFLICT|VALIDATION_FAILED|NOT_FOUND/.test(commandMessage(reason)))setConflict(true);}setError(userMessage(reason));}
     finally{submitting.current=false;setBusy(false);}
   }

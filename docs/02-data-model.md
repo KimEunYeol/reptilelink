@@ -509,3 +509,10 @@ api.my_notification_summary()는 private.actor()/본인 profile 확인 뒤 recip
 
 ## #56 자체 사진 예약/취소 영수증
 api.reserve_self_photo(animal,request)는 기존 reserve_photo_edit 예산/3장/동시2세트·역할/동의 검사를 재사용하고 reserve_self_photo 영수증에 같은 자산ID를 기록한다. api.cancel_self_photo_request는 동일계정/자식과 self역할만 처리하고 연결 자산은 거절하며, 예약보다 취소가 먼저 이기면 취소 tombstone을 남긴다. 일반 테이블 권한/기존RPC는 유지한다.
+
+
+## 요청 메타데이터 정리 계약 (#51)
+
+private.mutation_receipts의기존24h expires_at/actor-request PK·Auth cascade와인덱스를유지한다. 프로젝트receipt_limit 기본100000(0은신규중지)·신규INSERT softguard를 추가하며 기존행재확인과 delete_account 내구요청은 예외다. SELECT 기반제한은공유전역카운터/추가잠금없이동시작은초과가가능하고 실제행크기/쿼리비용을측정해기록한다. 새로운unknowncancel만 private.action_buckets의upload_cancel/3600초120회로제한하고47h정리는기존경로를재사용한다.
+
+서비스전용 영수증500행정리는 expires_at<now()-1h·진행private.account_deletions(user_id)없음·관련media_assets.cleanup_after 유효기간보존을확인하고SKIPLOCKED로삭제한다. 기존단일Cron에루프/분리COMMIT을추가한다. 신규함수는emptysearch_path·PUBLIC/anon/authenticated실행회수·service_role만허용하며 실제역할/경합/예약610건/기존자료보존을검사한다. 클라이언트명령시계는같은캡처객체의WeakMap으로보관하고별도영구/무제한UUID저장소를만들지않는다.

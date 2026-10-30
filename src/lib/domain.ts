@@ -87,6 +87,7 @@ export function userMessage(error: unknown): string {
     UPLOAD_EXPIRED: '사진 업로드 시간이 만료됐습니다. 다시 시도해주세요.',
     VALIDATION_FAILED: '입력값을 확인해주세요.',
     REQUEST_CONFLICT: '저장 요청 내용이 달라졌습니다. 입력값을 확인하고 다시 저장해주세요.',
+    COMMAND_TOO_OLD: '요청을 다시 보낼 수 있는 시간이 지났습니다. 입력을 유지한 채 최신 상태를 확인해주세요.',
     REQUEST_EXPIRED: '저장 요청이 만료됐습니다. 최신 내용을 불러온 뒤 다시 저장해주세요.',
   };
   for (const [code, translation] of Object.entries(translations)) if (message.includes(code)) return translation;

@@ -2,7 +2,7 @@ import {preparePhoto} from './images';
 import {serverRequest,supabase} from './supabase';
 import {likeRequestExpired} from './likes';
 import {parentRoles,parentLabels,type ParentAssets,type ParentRole} from './parents';
-import type {PhotoDraft} from './photoDraft';
+import {queuePhotoCleanup,type PhotoDraft} from './photoDraft';
 
 export type ParentDraft = Record<ParentRole,PhotoDraft|null>;
 export type ParentUpload = {
@@ -14,7 +14,7 @@ export function parentDraft(assets:ParentAssets):ParentDraft {
 }
 export function parentDraftKeys(draft:ParentDraft){return parentRoles.map(role=>draft[role]?.key??null);}
 export async function cancelParentUpload(upload:ParentUpload) {
-  if(upload.attempted)await serverRequest('/api/parent/uploads/cancel-request',{animal_id:upload.animal_id,role:upload.role,request_id:upload.request_id});
+  if(upload.attempted){await serverRequest('/api/parent/uploads/cancel-request',{animal_id:upload.animal_id,role:upload.role,request_id:upload.request_id});if(upload.asset_id)await queuePhotoCleanup([upload.asset_id]);}
 }
 export async function cleanupParentUploads(uploads:Map<string,ParentUpload>,retained:Set<string>) {
   for(const upload of uploads.values())if(!upload.asset_id||!retained.has(upload.asset_id))await cancelParentUpload(upload);

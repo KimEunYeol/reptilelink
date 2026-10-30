@@ -1,0 +1,46 @@
+{
+  "issue": 51,
+  "issueUrl": "https://github.com/KimEunYeol/reptilelink/issues/51",
+  "branch": "codex/chore/51-receipt-retention-recovery",
+  "baseSha": "cf1721f3d19188e50103aee6470891fc27b6b99e",
+  "scope": "24h 미확인 명령 재전송 수명·입력보존/현재조회·영수증 제한배치 물리정리/메타데이터 예산과 알수없는 취소 남용 제한",
+  "acceptance": [
+    "모든영수증API/예약·취소와 pending 초안을 감사해 자연멱등/24h/탈퇴내구 예외·소유권/현재확인 경계를 기록",
+    "오래된 명령은 같은UUID라도재전송하지않고 실제현재조회/명시새결정; 읽기실패는pending/입력유지·같은요청24h내재시도유지·단조/벽시계 역행/비정상값 보호",
+    "1h보수여유·기존단일시간Cron에500/SKIPLOCKED/분리COMMIT/배출종료조건; 정상물리보관26h이내와지연/진행탈퇴/유효업로드예외구분",
+    "프로젝트영수증soft100000행기준·기존재전송/탈퇴보호와새unknowncancel시간당120회; 글로벌공유카운터/새교착잠금/무제한캐시없음",
+    "새CLI migration·실제권한/동시성/경계/610예약실행·advisors/lint/shadow·원본오류/재확인패턴/7폭·전체verify/정확HEAD리뷰/명시병합/cleanmain/보고후52→53"
+  ],
+  "plan": [
+    "현재RPC·소유권/보관/인덱스·pending수명 감사와명세/데이터계약 확정",
+    "최소SQL정리/단일Cron·metadata softbudget/unknowncancel제한→실제권한/경합/TTL/610검증",
+    "공통약한참조명령시계·각초안의만료후실제조회/명시새선택·프로필파일준비/삭제·탈퇴/댓글 보호",
+    "원본PC/m/보드·실제Storage/브라우저/7폭→전체고정검증/리뷰/병합/main/보고"
+  ],
+  "status": "verified",
+  "design": {
+    "applicable": true,
+    "references": [
+      "design/렙타일링크_디자인.png",
+      "design/마이페이지-개체관리.png",
+      "design/마이페이지-개체관리-m.png",
+      "design/마이페이지-개체관리-m-1.png",
+      "design/마이페이지-링크관리-m.png",
+      "design/마이페이지-일정관리-m.png",
+      "design/마이페이지-디자인수정-m.png",
+      "design/링크페이지-m-1.png",
+      "design/마이페이지-기본정보-m.png"
+    ],
+    "notes": "이전기능별로직접확인한보드 PC설명(0,8400,5000,1000) 모바일동일본문/팝업과 등록/수정(5300,4050,1650,2400)·각PC/m의기존폼/오류/텍스트버튼/저장취소·현재값선택패턴 재사용. 새창/배치/그림없이 만료시 기존 최신조회/초안유지 패턴만 연결. 해당추가오류/재확인상태를 실제폭/캡처로 재비교한다.",
+    "review": {
+      "status": "passed",
+      "summary": "기존PC/m/보드의좁은본문/폼·오류/텍스트버튼·최신값선택·저장취소패턴만재사용. 링크/일정현재목록·댓글만료잠금·프로필실패조회/명시사진재준비7폭(320/360/390/450/768/1440/1920)검사와320/390/1440캡처직접비교. 실제긴URL배경grid가로늘어남을min-width0으로복구하고프로필버튼은기존edit-conflict블록으로구분·최종7폭1재통과. 새창/그림/시각방향없음·원본97PNG보존. 신규15포함관련60/단위77/DB22통과. 폰트/native날짜/권리/원격검증경계유지; 최종전체1358은고정파일verify/PR로확인."
+    },
+    "evidence": [
+      "artifacts/receipts-51/{link,schedule,comment-expired,profile-prepare}-{320,360,390,450,768,1440,1920}.png 실제현재값/조회실패·입력보존·버튼/가로넘침없음; 320/390/1440직접비교",
+      "신규DB/Cron22·단위77·신규15+기존45=관련60통과; 최종프로필블록구분7폭1재검증통과",
+      "CLI20261030003535스키마/20261030003720Cron데이터·로컬이력·lint/advisors이상없음·shadow차이없음; 기존migration/실데이터/볼륨초기화없음",
+      "docs/37-receipt-retention-recovery.md 수명/예외감사·soft예산관측·실제삭제대상취소실패/긴URL재현·검사오류/복구·제품/검증한계; 최종전체build1358(12/77/1014/34/221)고정verify/PR참조"
+    ]
+  }
+}
