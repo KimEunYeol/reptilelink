@@ -11,7 +11,7 @@
     "task:start": "node scripts/harness.mjs start",
     "design:check": "node scripts/design-inventory.mjs",
     "design:inventory": "node scripts/design-inventory.mjs --write",
-    "test:harness": "node --test tests/harness.test.mjs && node tests/backup-safety.test.mjs",
+    "test:harness": "node --test tests/harness.test.mjs && node tests/backup-safety.test.mjs && node tests/local-doctor.test.mjs",
     "verify": "node scripts/harness.mjs verify",
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
@@ -22,7 +22,7 @@
     "local:stop": "supabase stop",
     "local:env": "node scripts/local-env.mjs",
     "local:seed": "node scripts/local-seed.mjs",
-    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs && node scripts/test-animal-growth.mjs && node scripts/test-growth-race.mjs && node scripts/test-external-links.mjs && node scripts/test-social-links.mjs && node scripts/test-schedules.mjs && node scripts/test-profile-design.mjs && node scripts/test-profile-media.mjs && node scripts/test-account-deletion.mjs && node scripts/test-comments.mjs && node scripts/test-comments-limits.mjs && node scripts/test-activity-races.mjs && node scripts/test-activity-ops.mjs && node scripts/test-activity-retention.mjs && node scripts/test-activity-batches.mjs && node scripts/test-profile-likes.mjs && node scripts/test-like-races.mjs && node scripts/test-notifications.mjs && node scripts/test-notification-races.mjs && node scripts/test-analytics.mjs && node scripts/test-analytics-worker.mjs && node scripts/test-analytics-races.mjs && node scripts/test-analytics-retention.mjs && node scripts/test-public-boundary.mjs && node scripts/test-policy.mjs && node scripts/test-policy-races.mjs && node scripts/test-animal-parents.mjs && node scripts/test-notification-summary.mjs && node scripts/test-self-photo-recovery.mjs && node scripts/test-receipt-retention.mjs && node scripts/test-backup-ledger.mjs && node scripts/test-backup-restore.mjs",
+    "test:db": "node scripts/test-db.mjs && node scripts/test-animal-edit.mjs && node scripts/test-animal-collection.mjs && node scripts/test-photo-edit.mjs && node scripts/test-animal-delete.mjs && node scripts/test-animal-growth.mjs && node scripts/test-growth-race.mjs && node scripts/test-external-links.mjs && node scripts/test-social-links.mjs && node scripts/test-schedules.mjs && node scripts/test-profile-design.mjs && node scripts/test-profile-media.mjs && node scripts/test-account-deletion.mjs && node scripts/test-comments.mjs && node scripts/test-comments-limits.mjs && node scripts/test-activity-races.mjs && node scripts/test-activity-ops.mjs && node scripts/test-activity-retention.mjs && node scripts/test-activity-batches.mjs && node scripts/test-profile-likes.mjs && node scripts/test-like-races.mjs && node scripts/test-notifications.mjs && node scripts/test-notification-races.mjs && node scripts/test-analytics.mjs && node scripts/test-analytics-worker.mjs && node scripts/test-analytics-races.mjs && node scripts/test-analytics-retention.mjs && node scripts/test-public-boundary.mjs && node scripts/test-policy.mjs && node scripts/test-policy-races.mjs && node scripts/test-animal-parents.mjs && node scripts/test-notification-summary.mjs && node scripts/test-self-photo-recovery.mjs && node scripts/test-receipt-retention.mjs && node scripts/test-backup-ledger.mjs && node scripts/test-backup-restore.mjs && node scripts/test-local-doctor.mjs",
     "worker:preview": "wrangler dev --local --ip 127.0.0.1 --port 8787",
     "dev:all": "node scripts/dev.mjs",
     "local:cleanup": "node scripts/local-cleanup.mjs",
@@ -31,7 +31,8 @@
     "local:moderate": "node scripts/local-moderate.mjs",
     "local:policy-preview": "node scripts/local-policy-preview.mjs",
     "test:backup": "node tests/backup-safety.test.mjs",
-    "local:backup": "node scripts/backup-restore.mjs"
+    "local:backup": "node scripts/backup-restore.mjs",
+    "local:doctor": "node scripts/local-doctor.mjs"
   },
   "repository": {
     "type": "git",

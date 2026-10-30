@@ -138,6 +138,12 @@ test('task:start fetches main, preserves dirty work and installs hooks without r
     assert.notEqual(run('start', 'feat', '9', 'existing').status, 0);
     assert.equal(runGit(clone, 'branch', '--show-current'), 'previous-feature');
     assert.equal(JSON.parse(readFileSync(join(clone, 'harness/tasks/9.json'), 'utf8')).scope, 'existing user record');
+    for (const args of [['chore','53-local-doctor-handoff'],['chore','53'],['chore','53-bad','slug'],['chore','53','bad_slug'],['chore','53','doctor','extra'],['chore','999999999999999999999','doctor']]) {
+      const before = runGit(clone, 'status', '--porcelain');
+      assert.notEqual(run('start', ...args).status, 0);
+      assert.equal(runGit(clone, 'branch', '--show-current'), 'previous-feature');
+      assert.equal(runGit(clone, 'status', '--porcelain'), before);
+    }
     const started = run('start', 'feat', '3', 'animal-edit');
     assert.equal(started.status, 0, started.stderr);
     assert.equal(runGit(clone, 'branch', '--show-current'), branch);

@@ -6,14 +6,14 @@ const maxFiles=4096,maxFilesBytes=256*1024*1024;const objectId=o=>sha(o.bucket_i
 function migrations(){return fs.readdirSync(path.join(repoRoot,'supabase/migrations')).filter(n=>/^\d+_.+\.sql$/.test(n)).sort().map(name=>({name,sha256:sha(fs.readFileSync(path.join(repoRoot,'supabase/migrations',name)))}));}
 function envelope(kind,store,data){return{format:'reptilelink-backup-v1',kind,id:randomUUID(),ownerId:store.id,createdAt:new Date().toISOString(),...data};}
 export async function createJournal(options={}){const{store,key}=backupStore(options.root,options.keyRoot,{create:true});const state=await journalState(),value=envelope('journal',store,{...state});const file=path.join(store.path,value.id+'.rljr');publishPrivate(file,encrypt(value,key,'journal'));return{file,value};}
-async function download(object,status){
+export async function downloadStorage(object,status){
  const url=new URL('/storage/v1/object/authenticated/'+encodeURIComponent(object.bucket_id)+'/'+object.name.split('/').map(encodeURIComponent).join('/'),status.url);
  let response;try{response=await fetch(url,{headers:{apikey:status.secret,Authorization:'Bearer '+status.secret},signal:AbortSignal.timeout(15000),redirect:'error'});}catch{throw Error('BACKUP_STORAGE_READ_FAILED');}
  insist(response.ok&&response.body,'BACKUP_STORAGE_OBJECT_MISSING');let size=0;const chunks=[];for await(const chunk of response.body){size+=chunk.length;insist(size<=512*1024,'BACKUP_STORAGE_OBJECT_TOO_LARGE');chunks.push(chunk);}return Buffer.concat(chunks);
 }
 export async function createBackup(options={}){
  const{store,key}=backupStore(options.root,options.keyRoot,{create:true}),status=localStatus();const captured=await captureDatabase(),{meta,sql}=captured;insist(meta.objects.length<=maxFiles,'BACKUP_TOO_MANY_FILES');let total=0;const files=[];
- for(const object of meta.objects){const bytes=await download(object,status);total+=bytes.length;insist(total<=maxFilesBytes,'BACKUP_FILES_TOO_LARGE');files.push({id:objectId(object),bytes:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')});}
+ for(const object of meta.objects){const bytes=await downloadStorage(object,status);total+=bytes.length;insist(total<=maxFilesBytes,'BACKUP_FILES_TOO_LARGE');files.push({id:objectId(object),bytes:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')});}
  const value=envelope('backup',store,{createdAt:meta.createdAt,meta,sql,migrations:migrations(),files});validateBackup(value);
  const plain=JSON.stringify(value);captured.assertNoSecrets(plain);for(const secret of[status.secret,status.publishable])insist(!plain.includes(secret),'BACKUP_SECRET_DETECTED');
  // A complete journal is published before the backup becomes visible; incomplete work has no final backup filename.
