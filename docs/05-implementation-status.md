@@ -490,3 +490,10 @@ PR82 source1d069a 전체1472 통과 → 명시 병합 dc9e09b → 문서 PR84 ma
 ## 운영 담당자·불변 정책 게시 (#88)
 
 사용자 확정 개인정보 담당자 고경윤/문의770_official@naver.com과 내부 Google 운영 계정을 구분했다. 운영 source에 reptilelink-20261030-v1 비preview/published 새 버전을 등록하고 실제 익명RPC 본문·공개 /terms·/privacy 표시를 확인했다. Google provider는 실제 연결됐으나 앱 버튼/가입/실제 로그인·관리 및 실계정·사진 원격복구는 아직 미완료다. 결과/버전은 [Netlify 운영 기록](46-netlify-single-host.md)을 따른다. #87/PR89는 고정 전체verify/E2E221·직접리뷰·정확HEAD 병합 후 clean main99f3c29/검증트리262706b 일치를 확인했다.
+## #69 운영 백업·복구 구현 진행
+
+아래는 초기 빈 source 검증 시점의 기록이며 최신 실제 로그인 상태는 docs47의 최신 기반 절을 따른다. 별도 production:backup 도구는 명시 ref/CLI 임시 DB 연결·공식 CA verify-full·읽기 전용 exported snapshot·실파일 해시·암호화/분리키·최신journal·제한된 대상 복구를 구현 중이다. 운영 사용자/사진0 source의32테이블 백업과 별도Free berprfddzalsotnrxpdb 격리 복구·RLS/원시거절·중지 상태를 확인했다. 안전8개/오프라인합성4개 회귀가 통과했다. source/타서비스/로컬 원격 차단을 보존하며 모든 복구 공개는 기본off다. 전체 고정검사와 직접HEAD리뷰/실제 Google·사진 재연결 증거가 필요하며 아직 main 병합/운영 회원 개방 완료가 아니다. [계약과 실제 한계](47-production-backup-recovery.md)를 따른다.
+
+## #69 실제 원격 복구·운영 사용 확인
+
+운영 URL에서 본인 Google 로그인·사용자승인v1동의·비공개 공간·개체와198,396B/2파일 저장 및 재로그인을 확인했다. 별도Free에 실계정1/2파일/32테이블 복구→실제Google/API/480×360사진 재연결→승인된 복사본만 탈퇴/실파일0·기존토큰401/원본유지를 확인했다. 복구본의 원본 복사 업로드기한1건은 만료조건으로 조정한 통제검증이며 운영기한은 변경하지 않았다. 복구Google·임시서버는 다시중지했다. 최신 full의 로컬Worker정적자산404 실패를 보존하고 소스변경 없이 자기서비스 재시작으로4라우트200/관련2흐름 통과를 확인했다. 최종 고정 full/리뷰·PR은 실제기록을 따르며 자세한 범위/한계는 docs47에 명시한다.
