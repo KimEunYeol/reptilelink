@@ -482,3 +482,7 @@ PR63 P2의 보관 archive 전체 복호화내용 유지 문제는192MiB 힙에�
 ## #85 실제 Netlify 공개 배포 기록
 
 PR82 source1d069a 전체1472 통과 → 명시 병합 dc9e09b → 문서 PR84 main959e254의 동일 runtime을 WSL production 빌드/수동 no-build 배포했다. version6ae461b7fe048afa4a082df9/18:22KST, Production Public/Previews Private·실제 URL HTTP20/7폭14뷰가 통과했다. Supabase Site URL/정확 callback2필드만 변경하고 다른15필드 동일을 확인했다. 실제 청구화면 Free$0·카드없음·15사용/285잔여이며 capability used0은 실제 잔여 근거가 아니다. Google/정책·회원/원격 CPU·#69 복구는 미완료다. 상세/실패/승인 해소·로컬 정상 Cron/서비스 복구·journal/28파일은 docs46에 기록했다. 본 변경은 문서/task만이며 docs-only 검사는 런타임 전체검사나 실제 회원 검증을 대체하지 않는다.
+
+## 프로필 사진 검사 시계 격리 (#87)
+
+#69 고정 전체검증의 profile-media 응답 손실 재시도가 WSL 벽시계 역행(단조 +134.431ms/벽시계 -1542.158ms)으로 차단됐다. 실패 증거는 비공개 기록에 보존했다. 검사별 브라우저 Date만 고정하며 제품의 역행/24h 차단·실제 Storage·단조타이머·서버시각·기존 검증은 유지한다. 관련 반복검사와 고정 전체 verify 결과는 PR의 실제 기록을 따른다. 운영 Google 로그인/정책/실회원·복구 검증은 별개이며 완료로 간주하지 않는다.
