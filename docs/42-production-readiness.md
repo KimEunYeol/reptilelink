@@ -62,18 +62,20 @@ Hook은 Auth 관리자 실행 권한이 있고 anon에는 없다. DBA로 호출�
 
 로컬 메인·로그인·문의와 관리 6화면을 320/360/390/450/768/1440/1920px에서 캡처했다. 63개 캡처의 가로 넘침과 이미지 실패는 0건이다. 원본 보드의 PC 공통 설명(0,8400,5000,1000)과 디자인 열(1950,1200,1200,4400), 관련 PC/m 화면을 직접 대조했다. ‘메인 외 본문은 모바일과 같은 크기/레이아웃, 상세 팝업은 모바일 기준’ 설명을 적용 기준으로 확인했다.
 
-대표 화면의 비교 중 모바일 아바타 등록·삭제 버튼이 원본과 달리 아래로 내려가는 차이를 찾아 [이슈 #70](https://github.com/KimEunYeol/reptilelink/issues/70)으로 분리했다. 임시 브라우저 스타일의 7폭 검사는 통과했지만 아직 소스 수정 완료는 아니다. 정확한 폰트·자산 배포 권리와 모든 팝업/미저장/실패 상태의 최종 시각 비교는 남아 있다. 캡처는 ignored `artifacts/desktop-preflight-62`에 보관한다.
+대표 화면의 비교 중 모바일 아바타 등록·삭제 버튼이 원본과 달리 아래로 내려가는 차이를 찾아 [이슈 #70](https://github.com/KimEunYeol/reptilelink/issues/70)으로 분리했다. 이후 #70에서 같은 옆배치를 소스에 적용하고 실제7폭/관련26흐름을 검증했다. 고정전체검사·병합은 해당 PR의 실제결과를 따른다. [배치 수정 기록](44-mobile-avatar-layout.md). 정확한 폰트·자산 배포 권리와 모든 팝업/미저장/실패 상태의 최종 시각 비교는 남아 있다. 캡처는 ignored `artifacts/desktop-preflight-62`에 보관한다.
 
 새 로컬 암호화 백업·최신 journal과 networknone/Cronoff 격리 복구는 32테이블·실파일 28개/128,184바이트·WebP 디코드 28개·권한 검사에 통과했다. 원격 복구 증거로 사용하지 않는다.
 
-**전체 `npm run verify`는 실패했다.** build·하네스 19·단위 77·DB/Worker 1,070·미디어 34는 통과했고, 브라우저는 220/221이었다. 완료는 2026-10-30 14:21:00 KST, source HEAD는 `5838c5d`다. 만료 목록의 최신 조회가 실패한 뒤 스위치가 활성화되는 결함을 [이슈 #71](https://github.com/KimEunYeol/reptilelink/issues/71)에서 우선 수정한다. 실패 로그·trace·full report는 비공개 경로에 보존했다. 이번 문서 변경의 docs-only 검사는 실패한 기능 전체 검사를 대체하지 않는다.
+**전체 `npm run verify`는 실패했다.** build·하네스 19·단위 77·DB/Worker 1,070·미디어 34는 통과했고, 브라우저는 220/221이었다. 완료는 2026-10-30 14:21:00 KST, source HEAD는 `5838c5d`다. 만료 목록의 최신 조회가 실패한 뒤 스위치가 활성화되는 결함을 [이슈 #71](https://github.com/KimEunYeol/reptilelink/issues/71)로 분리했다. 이후 PR73에서 수정하고 source b807a040의 고정 전체 build+1,421개를 14:49:43 KST에 통과해 main 3cfb2ae로 병합했다. 초기 실패는 과거 관측으로 보존한다. 실패 로그·trace·full report는 비공개 경로에 보존했다. 이번 문서 변경의 docs-only 검사는 실패한 기능 전체 검사를 대체하지 않는다.
 
 ## 남은 작업과 재개 기준
 
-1. #71의 미확인 목록 잠금과 #70의 모바일 배치를 독립 PR로 수정하고 전체 검사를 다시 수행한다.
+1. #71/PR73은 전체검사 후 병합됐다. #70의 모바일 배치는 독립 PR의 고정 전체검사/정확HEAD 리뷰·병합을 마감한다.
 2. 실제 운영 주체·공개 문의 이메일·확정 약관/개인정보 본문·보관/삭제/백업 방침·자산 권리·검증용 Google 계정/사진을 확보한다. 미제공 자료는 창작·게시하지 않는다.
 3. 확정 자료로 새 불변 정책 버전/published와 Google provider·초대/승인을 구성한다. Google callback은 Supabase Auth callback, 앱 복귀 URL은 workers.dev의 `/auth/callback`으로 구분한다.
 4. 검증한 main과 자료로 production 빌드·원격 secret/Worker 배포 후 실제 URL의 OAuth·권한·사진·공유 HTML·탈퇴 실물 정리·CPU/egress를 검증한다. 현재 예상 주소를 배포 URL로 보고하지 않는다.
 5. [이슈 #69](https://github.com/KimEunYeol/reptilelink/issues/69)에서 운영 전용 암호화 백업·별도 키·최신 탈퇴 journal과 Free 원격 복구의 Auth/Storage/API·실제 계정/사진 복구를 구현·검증한다. 로컬 도구의 loopback 제한을 풀지 않는다.
 
 검증 전에는 가입·쓰기·통계를 자동 재개하지 않는다. 문제가 있으면 중지 상태를 유지하고 코드는 보완 PR, DB는 새 migration으로 수정한다. 이력 삭제·전체 schema 재실행·reset·다른 프로젝트 변경은 하지 않는다. 기본 백업 담당은 사용자이며 일일 실행/7일 보관·최신 journal·키 보관 절차를 실제 운영 방침으로 확정해야 한다. 자동 데몬은 설치하지 않았다. #62/#69는 실제 증거가 확보될 때까지 유지하고 출시 판단은 사용자에게 남긴다.
+
+추가 원격 관측: 단일 Cron의 2026-10-30 14:17:00 KST 실행 성공을 확인했다. Google 콘솔의 기존 My First Project는 OAuth 미구성이며 새 OAuth 앱/client나 유료 리소스는 만들지 않았다. 대상 운영 주체/권리 자료와 검증용 계정이 확정된 뒤 구성한다.
