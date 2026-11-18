@@ -2,7 +2,7 @@
 
 파충류 브리더가 개체와 사진을 관리하고 자신의 공개 페이지로 공유하는 모바일 우선 웹 서비스.
 
-- GitHub: https://github.com/KimEunYeol/reptilelink (비공개)
+- GitHub: https://github.com/KimEunYeol/reptilelink (공개)
 - 기준 작업 디렉토리: WSL `/home/eykim/projects/reptilelink`
 - 현재 상태: **Google 로그인 후 운영 관리페이지 실사용 확인 완료**. 본인 계정 승인·필수동의·비공개 공간·개체/사진 저장·재접속과 관리 화면 6개 접근을 확인했다.
 - 운영 주소: **[reptilelink.netlify.app](https://reptilelink.netlify.app)**. Netlify Free 단독 앱 + Supabase Free DB/Auth/Storage다. 770.kr은 운영 도메인·DNS와 무관하다.

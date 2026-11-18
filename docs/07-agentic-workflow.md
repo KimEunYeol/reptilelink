@@ -57,13 +57,13 @@ git push -u origin HEAD
 
 - Issues와 분류 라벨, 기능/버그 이슈 폼, PR 템플릿, CODEOWNERS를 사용한다. CODEOWNERS는 소유권 안내이며 현재 플랜의 강제 리뷰 설정이 아니다. 단독 소유자에게 자기 PR 승인 요청을 보내지 않는다.
 - squash merge만 허용하고 PR 제목/본문을 병합 커밋 기본값으로 사용한다. 병합한 작업 브랜치 자동 삭제와 Update branch 버튼을 허용하고 auto-merge는 끈다.
-- 비공개 유지, Actions 저장소 권한 비활성. 비용 제한 때문에 hosted/self-hosted Actions·Codespaces·유료 보안 기능을 켜지 않는다.
-- 2026-10-28 rulesets와 main protection 조회는 모두 HTTP 403, `Upgrade to GitHub Pro or make this repository public`를 반환했다. 업그레이드하거나 공개로 전환하지 않는다. **서버에서 direct push/리뷰를 강제 차단하지 못한다.** 로컬 훅은 우회 가능하고 GitHub 웹/API에는 적용되지 않는다. PR 검토자가 절차 준수를 확인한다.
+- 저장소는 2026-11-18 사용자 승인으로 공개로 전환했다(과거 "비공개 유지" 기준을 대체). Actions 저장소 권한은 비활성으로 유지한다. 비용 제한 때문에 hosted/self-hosted Actions·Codespaces·유료 보안 기능을 켜지 않는다. 공개 저장소이므로 키·평문 DB·비공개 사진·운영 개인정보는 게시하지 않는다.
+- 2026-10-28 rulesets와 main protection 조회는 모두 HTTP 403, `Upgrade to GitHub Pro or make this repository public`를 반환했다(당시 비공개 Free 기록). 2026-11-18 소유자 승인으로 공개로 전환했으나 보호 규칙은 켜지 않았고, 연결된 GitHub 통합 토큰은 protection·Actions 권한 조회에 여전히 403 `Resource not accessible by integration`을 받는다. **서버에서 direct push/리뷰를 강제 차단하지 못한다.** 로컬 훅은 우회 가능하고 GitHub 웹/API에는 적용되지 않는다. PR 검토자가 절차 준수를 확인한다.
 - 여러 작업 관리가 필요해지면 GitHub Projects를 기존 계정에서 무료 사용 가능한지 확인해 도입할 수 있다. 현재는 issue label·assignee·PR 링크로 충분하며 중복 상태 보드는 만들지 않는다.
 
 ## 인증·환경 복구
 
-이 세션에서는 WSL의 Windows Git Credential Manager가 `git.exe`를 찾지 못했다. 먼저 일회성 helper로 기존 인증을 재사용해 파일럿 fetch/push를 수행했고, 이어 이 저장소의 로컬 `credential.helper`에서 기존 Git for Windows bin을 Windows PATH에 추가하도록 보정해 일반 `git fetch origin`도 검증했다. 전역 설정은 변경하지 않았다. 기존 helper 설정은 무시되는 `.local/git-credential-helper-before.json`에 보존했다. 토큰을 새로 발급하거나 파일에 저장하지 않았다. 임시 helper는 다음 세션의 전제 조건이 아니다. 새 clone/다른 PC에서 인증이 실패하면 GitHub 연결 도구를 사용하거나 그 PC의 기존 Git 인증 경로를 복구한다. 인증 우회를 위해 비공개 저장소를 공개로 바꾸지 않는다.
+이 세션에서는 WSL의 Windows Git Credential Manager가 `git.exe`를 찾지 못했다. 먼저 일회성 helper로 기존 인증을 재사용해 파일럿 fetch/push를 수행했고, 이어 이 저장소의 로컬 `credential.helper`에서 기존 Git for Windows bin을 Windows PATH에 추가하도록 보정해 일반 `git fetch origin`도 검증했다. 전역 설정은 변경하지 않았다. 기존 helper 설정은 무시되는 `.local/git-credential-helper-before.json`에 보존했다. 토큰을 새로 발급하거나 파일에 저장하지 않았다. 임시 helper는 다음 세션의 전제 조건이 아니다. 새 clone/다른 PC에서 인증이 실패하면 GitHub 연결 도구를 사용하거나 그 PC의 기존 Git 인증 경로를 복구한다. 인증 문제를 이유로 저장소 공개 상태를 다시 바꾸지 않는다. 2026-11-18 공개는 소유자가 승인한 별도 결정이며, 인증·보호 우회 수단으로 저장소 공개 여부를 쓰지 않는다.
 
 새 환경의 Docker 권한/브라우저/네트워크 제한과 원격 OAuth·배포 미검증은 구분해서 보고한다. 로컬 실행 증거는 원격 운영 검증이 아니다.
 

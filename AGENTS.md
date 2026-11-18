@@ -38,7 +38,7 @@
 - Do not treat the existing UI or handcrafted `Gecko` illustration as approved design. Existing gaps are tracked separately; they are not permission for new invention. Preserve accepted D-01~D-08 behavior; record conflicts with old design text explicitly rather than silently undoing those decisions.
 - Install repo-local hooks with `npm run harness:install`. Run `npm run harness:check` and `npm run verify` before push. `verify -- --docs-only` is permitted only for documentation-only work, never runtime/harness/tooling changes. UI changes require design evidence and human-readable review in the task record.
 - Use a main-targeted GitHub Pull Request (the GitHub equivalent of MR), the PR template, `Closes #<issue>`, type/area labels and actual local test results. Inspect the remote head/base, issue link, changed files and mergeability after creation. Keep the issue open until merge. No direct main push, force push, self-approval, auto-merge, paid CI or deployment.
-- Local hooks and recorded review are bypassable safeguards. Private-repository server branch protection is unavailable on the current plan (403 confirmed 2026-10-28); never claim server enforcement. See docs/07 for the settings audit and recovery procedure.
+- Local hooks and recorded review are bypassable safeguards. No server branch protection or ruleset is configured: the 2026-10-28 403 was the Private Free plan, and after the 2026-11-18 public transition the connected integration still gets 403 for protection APIs. Never claim server enforcement. The repository is public, so never commit keys, plaintext dumps, real photos, operating personal data or unpublished policy materials. See docs/07 for the settings audit and recovery procedure.
 
 ## Local operations
 

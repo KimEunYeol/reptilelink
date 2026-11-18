@@ -13,9 +13,9 @@
   },
   "actions": { "enabled": false },
   "constraints": {
-    "visibility": "private",
+    "visibility": "public",
     "default_branch": "main",
     "additional_spending": 0,
-    "server_protection": "Unavailable on current private Free plan; HTTP 403 verified 2026-10-28. Local hooks and PR review are bypassable substitutes."
+    "server_protection": "No branch protection or ruleset is configured. The 2026-10-28 403 was the Private Free plan; the repository became public on 2026-11-18, so that plan block no longer applies. On 2026-11-18 the connected GitHub integration token still returned 403 'Resource not accessible by integration' for protection and Actions-permission reads, so no protection was applied or verified. Repository public; local hooks and PR review are bypassable substitutes."
   }
 }

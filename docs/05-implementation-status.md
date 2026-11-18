@@ -9,7 +9,7 @@
 | 항목 | 상태 |
 |---|---|
 | WSL 작업 디렉토리·Git·Node·로컬 Docker | 구성 |
-| GitHub 비공개 저장소 | 생성, 초기 코드와 명세의 원격 저장소 |
+| GitHub 공개 저장소 | 생성, 초기 코드와 명세의 원격 저장소. 2026-11-18 Private→Public 전환 |
 | React·TypeScript·Vite·Tailwind UI | 메인, 인증, 프로필, 관리 목록, 등록 모달, 공개 페이지 |
 | 실제 로컬 Auth와 승인 상태 | fixture 계정으로 동작·권한 검사 |
 | 프로필 이름·주소·소개·공개 전환 | DB 저장·주소 잠금·버전 충돌 검사 |
@@ -85,8 +85,8 @@
 - 기존에는 이슈/PR 템플릿·분류 라벨·기능별 main 분기·디자인 검토 계약이 없었다. AGENTS/시작 안내/첫 작업 프롬프트/IDE 작업에 [개발 하네스](07-agentic-workflow.md)를 연결했다.
 - 원본 PNG 97개(17,542,550 bytes)를 Git 추적 대상으로 추가하고 경로·치수·SHA-256 인벤토리를 만들었다. 전체 보드 설명과 PC/모바일 화면 참조·새 창작 금지·기존 패턴 재사용·시안/기능 충돌 기록 기준은 [디자인 계약](08-design-contract.md)에 있다. 자동 검사는 의미/시각 일치 판정을 대신하지 않는다.
 - `task:start`, `harness:install/check`, `design:check/inventory`, `verify`와 pre-commit/pre-push를 구성했다. main/다른 ref/강제 갱신, 디자인 기록 누락, 미검증 파일 상태를 거절한다. 소스·도구 변경에는 문서 전용 검사로 우회할 수 없다. task:start는 사용자 변경을 자동 stash/reset하지 않는다.
-- GitHub 16개 관리 라벨, 기능/버그 이슈 폼, PR 템플릿, CODEOWNERS를 추가했다. Issues·squash 전용 병합·PR 제목/본문 기본값·병합 브랜치 자동 정리·Update branch 활성과 auto-merge 비활성을 실제 API로 적용·재조회했다. Actions는 저장소 권한 자체를 비활성으로 변경하고 재확인했다. 저장소 비공개와 main 기본 브랜치를 유지했다.
-- Rulesets와 main branch protection 조회는 현재 비공개 Free 플랜에서 모두 403으로 거절됐다. 유료 전환·공개 전환 없이 로컬 훅과 PR 검토를 사용한다. 로컬 훅은 우회 가능하며 서버 보호를 활성화한 상태가 아니다.
+- GitHub 16개 관리 라벨, 기능/버그 이슈 폼, PR 템플릿, CODEOWNERS를 추가했다. Issues·squash 전용 병합·PR 제목/본문 기본값·병합 브랜치 자동 정리·Update branch 활성과 auto-merge 비활성을 실제 API로 적용·재조회했다. Actions는 저장소 권한 자체를 비활성으로 변경하고 재확인했다. 당시 저장소 비공개와 main 기본 브랜치를 유지했다(저장소는 2026-11-18 공개로 전환).
+- Rulesets와 main branch protection 조회는 당시 비공개 Free 플랜에서 모두 403으로 거절됐다. 2026-11-18 공개 전환과 보호 규칙 미설정 이후에도 연결된 통합 토큰은 조회·적용에 403 `Resource not accessible by integration`을 받는다. 유료 기능 없이 로컬 훅과 PR 검토를 사용하며, 로컬 훅은 우회 가능하고 서버 보호를 활성화한 상태가 아니다.
 
 실행 결과: production build 성공(기존 번들 500kB 초과 경고 유지), 단위 5개, 실제 로컬 Auth/DB/RLS/한도 20개, 업로드 API 8개, Playwright 3개 통과. 하네스 회귀 12개는 잘못된 브랜치·이슈/디자인 기록·stale/불완전 테스트 증거·비정상 push·디자인 변경 감지 및 실제 임시 Git 저장소의 main 분기/사용자 변경 보존/기존 훅 보존을 포함한다. 샌드박스 내 Node 자식 프로세스·Docker 접근은 EPERM/권한 오류여서 허용된 로컬 실행 권한으로 재검증했다. DB 초기화·운영 OAuth·원격 배포는 수행하지 않았다.
 
@@ -504,3 +504,7 @@ PR82 source1d069a 전체1472 통과 → 명시 병합 dc9e09b → 문서 PR84 ma
 #69 고정 source cf88364d4f811432db7bb8a824b8813012d4743c: build 및 전체 1,484개 검사(하네스27·단위77·DB/호스팅/복구1,125·미디어34·E2E221)가 통과했다. 완료 2026-10-30T15:35:05.148Z, fingerprint 85f59991b74cdfc91e8c26045dcb4123a0c550b944f5f3200abffb0bd2510c63. 최신HEAD 직접리뷰 지적0·정확HEAD PR병합 후 main 1514373143bb4f69c581ca5e4c786454515555be에 반영했다. 실제 Google·정책·실회원/사진·별도 원격복구와 승인 복사본 탈퇴/old token401·원본보존 및 통제조건/미검증은 docs47/48에 구분한다.
 
 #91은 최신main의 독립 docs 브랜치에서 README/START_HERE/AGENTS·docs40/41/46 및 새 docs48을 현행화한다. 문서검사·직접리뷰·정확HEAD PR병합은 해당 실제 보고서/PR을 따른다. Windows README/실행기/.git 세 항목·수정 전후 해시와 실제 WSL 연결은 비공개 감사에 남긴다. 운영배포 main71f9bc3/version6ae4a79b와 도구/문서main은 구분한다. 추가 지출0원·기존 자료 보존·수동 일일백업/7일/키분리/최신journal·자동데몬 없음·잔여 #62·사용자 최종출시 판단을 유지한다.
+
+## 2026-11-18 저장소 공개 전환 표기 정정 (#94)
+
+사용자 승인(2026-11-18 "응 변경해줘")으로 Private→Public 전환한 원격 상태(`visibility: public`, API 확인)에 맞춰 저장소 자신의 공개 상태 표기만 정정했다. README 저장소 표기, `.github/repository-settings.json`의 `constraints.visibility`·`server_protection`, `.github/CODEOWNERS`, AGENTS와 docs 05/07/40의 "비공개 저장소" 현재형 서술이 대상이며, 2026-10-28 403 같은 날짜가 붙은 과거 기록은 사실로 보존하고 2026-11-18 전환과 현재 조건을 함께 적었다. 보호 규칙은 켜지 않았고 연결된 통합 토큰은 protection·Actions 권한 조회에 403을 받아 서버 보호를 주장하지 않는다. 앱의 비공개 개체·메모·버킷·`private` 스키마·공개/비공개 UI 표기와 키·평문 DB·비공개 사진 게시 금지 문구는 변경하지 않았다. 런타임·DB·디자인 변경이 없어 이 단계에서는 `npm run verify`를 실행하지 못했고(실행 환경에 Node.js·Docker·로컬 Supabase 없음), JSON 파싱·`git diff --check`·전후 grep 대조만 수행한 사실을 PR에 명시했다.

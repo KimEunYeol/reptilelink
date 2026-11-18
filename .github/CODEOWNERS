@@ -1,4 +1,4 @@
-# Ownership routing; current private Free plan does not enforce code-owner approval.
+# Ownership routing; no branch protection is configured, so code-owner approval is not enforced.
 * @KimEunYeol
 /design/ @KimEunYeol
 /supabase/ @KimEunYeol
